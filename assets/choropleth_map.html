@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Choropleth Map</title>
+<link rel="stylesheet" href="leaflet.css" />
+<script src="leaflet.js"></script>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0F172A; font-family: 'Segoe UI', sans-serif; }
+    #map { width: 100%; height: 100vh; background: #0F172A; }
+
+    .info-panel {
+        padding: 10px 14px;
+        background: rgba(30, 41, 59, 0.95);
+        border-radius: 10px;
+        border: 1px solid #334155;
+        color: #E2E8F0;
+        font-size: 13px;
+        line-height: 1.6;
+        backdrop-filter: blur(6px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    .info-panel h4 {
+        margin: 0 0 4px 0;
+        font-size: 14px;
+        color: #FFFFFF;
+    }
+    .info-panel .value {
+        font-size: 20px;
+        font-weight: 700;
+    }
+    .info-panel .label {
+        color: #94A3B8;
+        font-size: 11px;
+    }
+
+    .legend {
+        padding: 10px 14px;
+        background: rgba(30, 41, 59, 0.95);
+        border-radius: 10px;
+        border: 1px solid #334155;
+        color: #94A3B8;
+        font-size: 11px;
+        line-height: 1.8;
+        backdrop-filter: blur(6px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    .legend h4 {
+        color: #E2E8F0;
+        margin-bottom: 4px;
+    }
+    .legend i {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin-right: 6px;
+        border-radius: 3px;
+        vertical-align: middle;
+    }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+// ── Configuration injected by Python ──
+const FACTOR_KEY   = "__FACTOR_KEY__";
+const FACTOR_LABEL = "__FACTOR_LABEL__";
+const FACTOR_UNIT  = "__FACTOR_UNIT__";
+const FACTOR_EMOJI = "__FACTOR_EMOJI__";
+const COLOR_SCALE  = __COLOR_SCALE__;
+const DATA_YEAR    = "__DATA_YEAR__";
+const ENV_DATA     = __ENV_DATA__;
+
+// GeoJSON embedded inline (injected by Python)
+const GEO_DATA     = __GEO_DATA__;
+
+// ── Build lookup: country_code → row ──
+const dataMap = {};
+ENV_DATA.forEach(r => { dataMap[r.country_code.trim()] = r; });
+
+// ── Map init ──
+const map = L.map('map', {
+    center: [20, 0],
+    zoom: 2,
+    minZoom: 2,
+    maxZoom: 7,
+    zoomControl: true,
+    attributionControl: false,
+    worldCopyJump: true,
+    maxBoundsViscosity: 1.0
+});
+
+// ── Color function ──
+function getColor(value) {
+    if (value == null || isNaN(value)) return '#1E293B';
+    for (let i = COLOR_SCALE.length - 1; i >= 0; i--) {
+        if (value >= COLOR_SCALE[i][0]) return COLOR_SCALE[i][1];
+    }
+    return COLOR_SCALE[0][1];
+}
+
+// ── Style ──
+function style(feature) {
+    const code = (feature.id || feature.properties.iso || '').trim();
+    const row = dataMap[code];
+    const val = row ? row[FACTOR_KEY] : null;
+    return {
+        fillColor: getColor(val),
+        weight: 1,
+        opacity: 1,
+        color: '#334155',
+        fillOpacity: 0.8
+    };
+}
+
+// ── Info control ──
+let geojsonLayer;
+const info = L.control({ position: 'topright' });
+
+info.onAdd = function() {
+    this._div = L.DomUtil.create('div', 'info-panel');
+    this.update();
+    return this._div;
+};
+
+info.update = function(props, code) {
+    if (!props) {
+        this._div.innerHTML = '<h4>' + FACTOR_EMOJI + ' ' + FACTOR_LABEL + '</h4>' +
+                              '<span class="label">Hover over a country</span>';
+        return;
+    }
+    const row = dataMap[(code || '').trim()];
+    const val = row ? row[FACTOR_KEY] : null;
+    const name = props.name || (row ? row.country_name : 'Unknown');
+    this._div.innerHTML =
+        '<h4>' + name + '</h4>' +
+        '<span class="value" style="color:' + getColor(val) + '">' +
+            (val != null ? val.toFixed(2) : 'N/A') +
+        '</span> ' +
+        '<span class="label">' + FACTOR_UNIT + '</span><br>' +
+        '<span class="label">Year: ' + DATA_YEAR + '</span>';
+};
+
+info.addTo(map);
+
+// ── Interaction handlers ──
+function highlightFeature(e) {
+    const layer = e.target;
+    layer.setStyle({ weight: 2, color: '#FFFFFF', fillOpacity: 0.95 });
+    layer.bringToFront();
+    info.update(layer.feature.properties, layer.feature.id || layer.feature.properties.iso);
+}
+
+function resetHighlight(e) {
+    geojsonLayer.resetStyle(e.target);
+    info.update();
+}
+
+function zoomToFeature(e) {
+    map.fitBounds(e.target.getBounds());
+}
+
+function onEachFeature(feature, layer) {
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomToFeature
+    });
+}
+
+// ── Legend ──
+const legend = L.control({ position: 'bottomright' });
+legend.onAdd = function() {
+    const div = L.DomUtil.create('div', 'legend');
+    div.innerHTML = '<h4>' + FACTOR_UNIT + '</h4>';
+    for (let i = 0; i < COLOR_SCALE.length; i++) {
+        const from = COLOR_SCALE[i][0];
+        const to = COLOR_SCALE[i + 1] ? COLOR_SCALE[i + 1][0] : null;
+        div.innerHTML +=
+            '<i style="background:' + COLOR_SCALE[i][1] + '"></i> ' +
+            from + (to ? ' &ndash; ' + to : '+') + '<br>';
+    }
+    return div;
+};
+legend.addTo(map);
+
+// ── Add GeoJSON directly (already inline) ──
+geojsonLayer = L.geoJson(GEO_DATA, {
+    style: style,
+    onEachFeature: onEachFeature
+}).addTo(map);
+</script>
+</body>
+</html>

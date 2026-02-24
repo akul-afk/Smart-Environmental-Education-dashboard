@@ -1,0 +1,366 @@
+2026-02-24 00:27:19,307 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 00:27:20,134 [INFO] smartedu._run_migrations:108 - Database migrations completed
+2026-02-24 00:27:21,106 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 00:27:21,108 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-02-24 00:28:20,980 [INFO] smartedu.login_user:141 - Login failed: incorrect password for user ID 3
+2026-02-24 00:29:30,857 [INFO] smartedu.register_user:104 - User registered: 1234 (ID: 4)
+2026-02-24 00:29:30,867 [INFO] smartedu._on_login_success:196 - Logged in as 1234 (ID: 4)
+2026-02-24 00:47:32,327 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 00:47:33,179 [INFO] smartedu._run_migrations:108 - Database migrations completed
+2026-02-24 00:47:34,173 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 00:47:34,173 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-02-24 00:48:33,447 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-02-24 00:48:33,455 [INFO] smartedu._on_login_success:196 - Logged in as 1234 (ID: 4)
+2026-02-24 00:54:18,998 [ERROR] smartedu.get_ai_insight:59 - AI insight generation failed: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+Please retry in 39.85971766s. [links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_input_token_count"
+  quota_id: "GenerateContentInputTokensPerModelPerMinute-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+}
+violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+}
+violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+}
+, retry_delay {
+  seconds: 39
+}
+]
+2026-02-24 01:02:37,556 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 01:02:38,379 [INFO] smartedu._run_migrations:108 - Database migrations completed
+2026-02-24 01:02:39,400 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 01:02:39,400 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-02-24 01:02:59,901 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-02-24 01:02:59,905 [INFO] smartedu._on_login_success:196 - Logged in as 1234 (ID: 4)
+2026-02-24 01:03:35,202 [ERROR] smartedu.get_ai_insight:59 - AI insight generation failed: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash
+Please retry in 23.647469974s. [links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+}
+violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+}
+violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_input_token_count"
+  quota_id: "GenerateContentInputTokensPerModelPerMinute-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+}
+, retry_delay {
+  seconds: 23
+}
+]
+2026-02-24 01:04:53,730 [ERROR] smartedu.get_ai_insight:59 - AI insight generation failed: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+Please retry in 5.117547431s. [links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_input_token_count"
+  quota_id: "GenerateContentInputTokensPerModelPerMinute-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+}
+violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+}
+violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+}
+, retry_delay {
+  seconds: 5
+}
+]
+2026-02-24 01:13:18,608 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 01:13:19,570 [INFO] smartedu._run_migrations:108 - Database migrations completed
+2026-02-24 01:13:20,534 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 01:13:20,633 [INFO] smartedu.ingest_lessons:53 - Ingesting lessons for biome 'blue_sphere' (id=1)
+2026-02-24 01:13:20,732 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: coral_reef_bleaching (id=1)
+2026-02-24 01:13:21,410 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: plastic_pollution_oceans (id=2)
+2026-02-24 01:13:22,088 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: ocean_acidification (id=3)
+2026-02-24 01:13:22,772 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: marine_food_web_biodiversity (id=4)
+2026-02-24 01:13:23,395 [INFO] smartedu.ingest_lessons:135 - Ingestion complete for 'blue_sphere': 4 inserted, 0 skipped, 4 quiz Qs, 20 terms
+2026-02-24 01:13:23,492 [INFO] smartedu.ingest_lessons:53 - Ingesting lessons for biome 'green_lungs' (id=2)
+2026-02-24 01:13:23,590 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: deforestation_global_impact (id=5)
+2026-02-24 01:13:24,364 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: biodiversity_ecosystem_services (id=6)
+2026-02-24 01:13:25,233 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: soil_degradation_sustainable_agriculture (id=7)
+2026-02-24 01:13:26,027 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: carbon_sequestration_forests (id=8)
+2026-02-24 01:13:26,849 [INFO] smartedu.ingest_lessons:135 - Ingestion complete for 'green_lungs': 4 inserted, 0 skipped, 10 quiz Qs, 20 terms
+2026-02-24 01:13:26,944 [INFO] smartedu.ingest_lessons:53 - Ingesting lessons for biome 'energy_grid' (id=3)
+2026-02-24 01:13:27,041 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: solar_panels_electricity (id=9)
+2026-02-24 01:13:27,912 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: wind_turbines_mechanical (id=10)
+2026-02-24 01:13:28,781 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: fossil_fuels_emissions (id=11)
+2026-02-24 01:13:29,650 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: nuclear_energy_fission (id=12)
+2026-02-24 01:13:30,468 [INFO] smartedu.ingest_lessons:135 - Ingestion complete for 'energy_grid': 4 inserted, 0 skipped, 12 quiz Qs, 20 terms
+2026-02-24 01:14:11,835 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 01:14:11,940 [INFO] smartedu.ingest_lessons:53 - Ingesting lessons for biome 'blue_sphere' (id=1)
+2026-02-24 01:14:11,992 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: coral_reef_bleaching
+2026-02-24 01:14:12,043 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: plastic_pollution_oceans
+2026-02-24 01:14:12,093 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: ocean_acidification
+2026-02-24 01:14:12,146 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: marine_food_web_biodiversity
+2026-02-24 01:14:12,197 [INFO] smartedu.ingest_lessons:135 - Ingestion complete for 'blue_sphere': 0 inserted, 4 skipped, 0 quiz Qs, 0 terms
+2026-02-24 01:14:12,298 [INFO] smartedu.ingest_lessons:53 - Ingesting lessons for biome 'green_lungs' (id=2)
+2026-02-24 01:14:12,350 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: deforestation_global_impact
+2026-02-24 01:14:12,402 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: biodiversity_ecosystem_services
+2026-02-24 01:14:12,454 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: soil_degradation_sustainable_agriculture
+2026-02-24 01:14:12,504 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: carbon_sequestration_forests
+2026-02-24 01:14:12,557 [INFO] smartedu.ingest_lessons:135 - Ingestion complete for 'green_lungs': 0 inserted, 4 skipped, 0 quiz Qs, 0 terms
+2026-02-24 01:14:12,659 [INFO] smartedu.ingest_lessons:53 - Ingesting lessons for biome 'energy_grid' (id=3)
+2026-02-24 01:14:12,709 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: solar_panels_electricity
+2026-02-24 01:14:12,760 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: wind_turbines_mechanical
+2026-02-24 01:14:12,812 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: fossil_fuels_emissions
+2026-02-24 01:14:12,864 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: nuclear_energy_fission
+2026-02-24 01:14:12,916 [INFO] smartedu.ingest_lessons:135 - Ingestion complete for 'energy_grid': 0 inserted, 4 skipped, 0 quiz Qs, 0 terms
+2026-02-24 01:16:08,787 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 01:16:08,896 [INFO] smartedu.ingest_lessons:53 - Ingesting lessons for biome 'energy_grid' (id=3)
+2026-02-24 01:16:08,945 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: solar_panels_electricity
+2026-02-24 01:16:08,997 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: wind_turbines_mechanical
+2026-02-24 01:16:09,049 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: fossil_fuels_emissions
+2026-02-24 01:16:09,099 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: nuclear_energy_fission
+2026-02-24 01:16:09,150 [INFO] smartedu.ingest_lessons:135 - Ingestion complete for 'energy_grid': 0 inserted, 4 skipped, 0 quiz Qs, 0 terms
+2026-02-24 01:18:40,842 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 01:18:41,835 [INFO] smartedu._run_migrations:108 - Database migrations completed
+2026-02-24 01:18:42,870 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 01:18:42,975 [INFO] smartedu.ingest_lessons:53 - Ingesting lessons for biome 'circular_economy' (id=4)
+2026-02-24 01:18:43,081 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: what_is_circular_economy (id=13)
+2026-02-24 01:18:44,014 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: recycling_systems_material_recovery (id=14)
+2026-02-24 01:18:44,932 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: composting_organic_waste (id=15)
+2026-02-24 01:18:45,860 [INFO] smartedu.ingest_lessons:90 - Inserted lesson: life_cycle_assessment (id=16)
+2026-02-24 01:18:46,735 [INFO] smartedu.ingest_lessons:135 - Ingestion complete for 'circular_economy': 4 inserted, 0 skipped, 12 quiz Qs, 20 terms
+2026-02-24 01:22:10,944 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 01:22:12,003 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 01:22:13,033 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 01:22:13,139 [INFO] smartedu.ingest_lessons:53 - Ingesting lessons for biome 'blue_sphere' (id=1)
+2026-02-24 01:22:13,190 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: coral_reef_bleaching
+2026-02-24 01:22:13,242 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: plastic_pollution_oceans
+2026-02-24 01:22:13,294 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: ocean_acidification
+2026-02-24 01:22:13,346 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: marine_food_web_biodiversity
+2026-02-24 01:22:13,398 [INFO] smartedu.ingest_lessons:141 - Ingestion complete for 'blue_sphere': 0 inserted, 4 skipped, 0 quiz Qs, 0 terms
+2026-02-24 01:22:13,500 [INFO] smartedu.ingest_lessons:53 - Ingesting lessons for biome 'green_lungs' (id=2)
+2026-02-24 01:22:13,553 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: deforestation_global_impact
+2026-02-24 01:22:13,605 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: biodiversity_ecosystem_services
+2026-02-24 01:22:13,656 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: soil_degradation_sustainable_agriculture
+2026-02-24 01:22:13,708 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: carbon_sequestration_forests
+2026-02-24 01:22:13,761 [INFO] smartedu.ingest_lessons:141 - Ingestion complete for 'green_lungs': 0 inserted, 4 skipped, 0 quiz Qs, 0 terms
+2026-02-24 01:22:13,866 [INFO] smartedu.ingest_lessons:53 - Ingesting lessons for biome 'energy_grid' (id=3)
+2026-02-24 01:22:13,918 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: solar_panels_electricity
+2026-02-24 01:22:13,970 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: wind_turbines_mechanical
+2026-02-24 01:22:14,020 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: fossil_fuels_emissions
+2026-02-24 01:22:14,072 [INFO] smartedu.ingest_lessons:67 - Lesson already exists, skipping: nuclear_energy_fission
+2026-02-24 01:22:14,123 [INFO] smartedu.ingest_lessons:141 - Ingestion complete for 'energy_grid': 0 inserted, 4 skipped, 0 quiz Qs, 0 terms
+2026-02-24 01:41:37,605 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 01:41:38,864 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 01:41:39,933 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 01:41:39,935 [INFO] smartedu.ingest_general_quiz:33 - JSON loaded successfully from content/general_quiz_seed.json
+2026-02-24 01:41:39,935 [INFO] smartedu.ingest_general_quiz:43 - Found 120 questions in JSON (category: general_environment_easy)
+2026-02-24 01:41:46,469 [INFO] smartedu.ingest_general_quiz:96 - Transaction committed: 120 inserted, 0 skipped
+2026-02-24 01:42:01,157 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 01:42:02,410 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 01:42:03,458 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 01:42:03,461 [INFO] smartedu.ingest_general_quiz:33 - JSON loaded successfully from content/general_quiz_seed.json
+2026-02-24 01:42:03,462 [INFO] smartedu.ingest_general_quiz:43 - Found 120 questions in JSON (category: general_environment_easy)
+2026-02-24 01:42:09,876 [INFO] smartedu.ingest_general_quiz:96 - Transaction committed: 0 inserted, 120 skipped
+2026-02-24 09:59:33,549 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 09:59:34,871 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 09:59:35,958 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 09:59:36,069 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)
+2026-02-24 09:59:37,293 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 09:59:38,381 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 09:59:38,491 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=easy)
+2026-02-24 09:59:39,720 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 09:59:40,825 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 09:59:40,938 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 20 questions (mode=challenge)
+2026-02-24 09:59:42,174 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 09:59:43,293 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 09:59:43,407 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)
+2026-02-24 09:59:44,622 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 09:59:45,714 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 09:59:45,830 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)
+2026-02-24 09:59:47,121 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 09:59:48,184 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 09:59:48,290 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)
+2026-02-24 09:59:48,347 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)
+2026-02-24 10:00:02,409 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 10:00:03,634 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 10:00:04,681 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 10:00:04,787 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)
+2026-02-24 10:00:06,020 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 10:00:07,099 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 10:00:07,224 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=easy)
+2026-02-24 10:00:08,405 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 10:00:09,703 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 10:00:09,851 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 20 questions (mode=challenge)
+2026-02-24 10:00:11,071 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 10:00:12,160 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 10:00:12,273 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)
+2026-02-24 10:00:13,455 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 10:00:14,510 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 10:00:14,618 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)
+2026-02-24 10:00:15,857 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 10:00:16,938 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 10:00:17,050 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)
+2026-02-24 10:00:17,106 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)
+2026-02-24 10:07:20,133 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 10:07:21,542 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 10:07:22,750 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 10:07:22,750 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-02-24 10:07:46,158 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-02-24 10:07:46,162 [INFO] smartedu._on_login_success:199 - Logged in as 1234 (ID: 4)
+2026-02-24 10:08:02,633 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=easy)
+2026-02-24 10:09:09,402 [INFO] smartedu.submit_session:170 - QuizService: session submitted — user=4, 9/10 correct, 175 XP awarded, time=64s, mode=easy
+2026-02-24 10:10:56,134 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 10:11:45,910 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 10:11:59,129 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 10:12:15,856 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 10:12:29,658 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 10:14:44,180 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 10:14:45,489 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 10:14:46,605 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 10:14:46,610 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-02-24 10:17:22,929 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-02-24 10:17:22,933 [INFO] smartedu._on_login_success:199 - Logged in as 1234 (ID: 4)
+2026-02-24 10:26:32,248 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 10:26:33,665 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 10:26:34,829 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 10:26:34,829 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-02-24 10:28:02,908 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-02-24 10:28:02,922 [INFO] smartedu._on_login_success:199 - Logged in as 1234 (ID: 4)
+2026-02-24 10:28:08,892 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)
+2026-02-24 11:08:49,195 [INFO] smartedu.load_and_merge_datasets:109 - Read co2_per_capita.csv: 266 rows
+2026-02-24 11:08:49,205 [INFO] smartedu.load_and_merge_datasets:109 - Read renewable_energy_share.csv: 266 rows
+2026-02-24 11:08:49,215 [INFO] smartedu.load_and_merge_datasets:109 - Read forest_area_percent.csv: 266 rows
+2026-02-24 11:08:49,227 [INFO] smartedu.load_and_merge_datasets:109 - Read pm25_air_pollution.csv: 266 rows
+2026-02-24 11:08:49,273 [INFO] smartedu._find_best_year:67 - Dataset loader: selected year 2020 (coverage score 1021 / max 1021)
+2026-02-24 11:08:49,320 [INFO] smartedu.load_and_merge_datasets:167 - Merged dataset: 217 rows, 7 columns
+2026-02-24 11:08:49,975 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 11:09:11,887 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 11:09:13,454 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 11:09:14,494 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 11:09:27,597 [INFO] smartedu.load_and_merge_datasets:109 - Read co2_per_capita.csv: 266 rows
+2026-02-24 11:09:27,608 [INFO] smartedu.load_and_merge_datasets:109 - Read renewable_energy_share.csv: 266 rows
+2026-02-24 11:09:27,617 [INFO] smartedu.load_and_merge_datasets:109 - Read forest_area_percent.csv: 266 rows
+2026-02-24 11:09:27,627 [INFO] smartedu.load_and_merge_datasets:109 - Read pm25_air_pollution.csv: 266 rows
+2026-02-24 11:09:27,701 [INFO] smartedu._find_best_year:67 - Dataset loader: selected year 2020 (coverage score 1021 / max 1021)
+2026-02-24 11:09:27,732 [INFO] smartedu.load_and_merge_datasets:167 - Merged dataset: 217 rows, 7 columns
+2026-02-24 11:09:28,172 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 11:09:39,816 [INFO] smartedu.load_and_merge_datasets:214 - Dataset loader complete — year: 2020 | processed: 217 | inserted: 217 | updated: 0 | validation_errors: 0
+2026-02-24 11:14:12,950 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 11:14:14,205 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 11:14:15,220 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 11:14:15,220 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-02-24 11:33:17,028 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 11:33:18,957 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 11:33:21,123 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 11:33:21,123 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-02-24 11:34:01,080 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-02-24 11:34:01,083 [INFO] smartedu._on_login_success:199 - Logged in as 1234 (ID: 4)
+2026-02-24 11:37:22,905 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 11:37:24,339 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 11:37:25,464 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 11:37:25,476 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-02-24 23:45:32,879 [INFO] smartedu.load_timeseries:93 - Timeseries: co2_per_capita → 203 countries, years 1960–2024
+2026-02-24 23:45:32,982 [INFO] smartedu.load_timeseries:93 - Timeseries: renewable_percentage → 212 countries, years 1960–2024
+2026-02-24 23:45:33,130 [INFO] smartedu.load_timeseries:93 - Timeseries: forest_area_percentage → 214 countries, years 1960–2024
+2026-02-24 23:45:33,273 [INFO] smartedu.load_timeseries:93 - Timeseries: pm25 → 200 countries, years 1960–2024
+2026-02-24 23:45:33,273 [INFO] smartedu.load_timeseries:98 - Timeseries loader complete: 217 countries across 4 factors
+2026-02-24 23:48:12,556 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-24 23:48:13,807 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-24 23:48:14,816 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-24 23:48:14,818 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-02-24 23:49:44,825 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-02-24 23:49:44,831 [INFO] smartedu._on_login_success:199 - Logged in as 1234 (ID: 4)
+2026-02-24 23:49:54,001 [INFO] smartedu.load_timeseries:93 - Timeseries: co2_per_capita → 203 countries, years 1960–2024
+2026-02-24 23:49:54,277 [INFO] smartedu.load_timeseries:93 - Timeseries: renewable_percentage → 212 countries, years 1960–2024
+2026-02-24 23:49:54,534 [INFO] smartedu.load_timeseries:93 - Timeseries: forest_area_percentage → 214 countries, years 1960–2024
+2026-02-24 23:49:54,793 [INFO] smartedu.load_timeseries:93 - Timeseries: pm25 → 200 countries, years 1960–2024
+2026-02-24 23:49:54,794 [INFO] smartedu.load_timeseries:98 - Timeseries loader complete: 217 countries across 4 factors
