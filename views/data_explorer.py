@@ -729,7 +729,7 @@ class DataExplorerWidget(QWidget):
         h_layout.addStretch()
 
 
-        
+        self._status_label = QLabel("")
         self._status_label.setFont(QFont("Segoe UI", 11))
         self._status_label.setStyleSheet(f"color: {COLORS['text_secondary']};")
         h_layout.addWidget(self._status_label)

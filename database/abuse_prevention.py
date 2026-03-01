@@ -20,6 +20,23 @@ def check_abuse(conn, user_id, action_type, source_ref_id=None):
 
     cur = conn.cursor()
 
+    # Lifetime check for one-time XP rewards (like completing a lesson for the very first time)
+    if action_type == "lesson_complete":
+        cur.execute(
+            """
+            SELECT 1 FROM xp_logs
+            WHERE user_id = %s AND action_type = %s AND source_ref_id = %s
+            LIMIT 1
+            """,
+            (user_id, action_type, source_ref_id)
+        )
+        if cur.fetchone():
+            cur.close()
+            return {
+                "allowed": False,
+                "reason": "XP already claimed for this lesson",
+            }
+
     # Check repeat limit for this specific action+source today
     cur.execute(
         """

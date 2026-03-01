@@ -1,0 +1,37 @@
+2026-03-01 22:32:16,534 [INFO] smartedu.get_db:34 - Database connection established
+2026-03-01 22:32:19,531 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-03-01 22:32:21,981 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-03-01 22:32:21,981 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-03-01 22:32:44,161 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-03-01 22:32:44,166 [INFO] smartedu._on_login_success:199 - Logged in as 1234 (ID: 4)
+2026-03-01 22:35:47,027 [INFO] smartedu.get_db:34 - Database connection established
+2026-03-01 22:35:50,152 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-03-01 22:35:53,018 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-03-01 22:35:53,020 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-03-01 22:36:20,707 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-03-01 22:36:20,710 [INFO] smartedu._on_login_success:199 - Logged in as 1234 (ID: 4)
+2026-03-01 22:36:25,146 [INFO] smartedu.load_timeseries:93 - Timeseries: co2_per_capita → 203 countries, years 1960–2024
+2026-03-01 22:36:25,290 [INFO] smartedu.load_timeseries:93 - Timeseries: renewable_percentage → 212 countries, years 1960–2024
+2026-03-01 22:36:25,370 [INFO] smartedu.load_timeseries:93 - Timeseries: forest_area_percentage → 214 countries, years 1960–2024
+2026-03-01 22:36:25,446 [INFO] smartedu.load_timeseries:93 - Timeseries: pm25 → 200 countries, years 1960–2024
+2026-03-01 22:36:25,446 [INFO] smartedu.load_timeseries:98 - Timeseries loader complete: 217 countries across 4 factors
+2026-03-01 22:45:41,434 [INFO] smartedu.get_db:34 - Database connection established
+2026-03-01 22:45:45,563 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-03-01 22:45:48,735 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-03-01 22:45:49,018 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)
+2026-03-01 22:45:52,904 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-03-01 22:45:56,622 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-03-01 22:45:57,001 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=easy)
+2026-03-01 22:46:01,609 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-03-01 22:46:04,643 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-03-01 22:46:04,922 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 20 questions (mode=challenge)
+2026-03-01 22:46:08,461 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-03-01 22:46:11,188 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-03-01 22:46:11,455 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)
+2026-03-01 22:46:14,252 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-03-01 22:46:16,325 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-03-01 22:46:16,498 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)
+2026-03-01 22:46:18,182 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-03-01 22:46:19,484 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-03-01 22:46:19,627 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)
+2026-03-01 22:46:19,697 [INFO] smartedu.fetch_questions:101 - QuizService: fetched 10 questions (mode=mixed)

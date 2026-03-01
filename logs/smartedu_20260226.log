@@ -1,0 +1,10 @@
+2026-02-26 13:47:02,274 [INFO] smartedu.get_db:34 - Database connection established
+2026-02-26 13:47:03,973 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-02-26 13:47:05,331 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-02-26 13:47:05,331 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-02-26 13:47:39,570 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-02-26 13:47:39,574 [INFO] smartedu._on_login_success:199 - Logged in as 1234 (ID: 4)
+2026-02-26 13:47:47,780 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-02-26 13:47:47,812 [INFO] smartedu._on_login_success:199 - Logged in as 1234 (ID: 4)
+2026-02-26 13:48:09,331 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-02-26 13:48:09,334 [INFO] smartedu._on_login_success:199 - Logged in as 1234 (ID: 4)
