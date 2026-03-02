@@ -36,6 +36,8 @@ class _AuthWorker(QThread):
         self.finished.emit(result)
 
 
+import os
+
 class LoginWidget(QWidget):
     """Combined Login / Signup view."""
 
@@ -44,7 +46,20 @@ class LoginWidget(QWidget):
         self.on_login_success = on_login_success
         self.mode = "login"  # "login" or "signup"
         self._auth_worker = None
-        self.setStyleSheet(f"background-color: {COLORS['background']};")
+        
+        # Resolve absolute path for Qt stylesheet
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        bg_path = os.path.join(base_dir, "assets", "login_bg.png").replace("\\", "/")
+        
+        # Make sure the container expands
+        self.setStyleSheet(f"""
+            LoginWidget {{
+                background-color: {COLORS['background']};
+                background-image: url({bg_path});
+                background-position: center;
+                background-repeat: no-repeat;
+            }}
+        """)
         self._build_ui()
 
     def _build_ui(self):

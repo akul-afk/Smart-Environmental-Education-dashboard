@@ -1,0 +1,52 @@
+2026-03-02 00:15:04,611 [INFO] smartedu.get_db:34 - Database connection established
+2026-03-02 00:15:05,889 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-03-02 00:15:06,957 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-03-02 00:15:06,958 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-03-02 00:18:55,803 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-03-02 00:18:55,805 [INFO] smartedu._on_login_success:199 - Logged in as 1234 (ID: 4)
+2026-03-02 00:18:59,762 [INFO] smartedu.load_timeseries:93 - Timeseries: co2_per_capita → 203 countries, years 1960–2024
+2026-03-02 00:19:00,073 [INFO] smartedu.load_timeseries:93 - Timeseries: renewable_percentage → 212 countries, years 1960–2024
+2026-03-02 00:19:00,291 [INFO] smartedu.load_timeseries:93 - Timeseries: forest_area_percentage → 214 countries, years 1960–2024
+2026-03-02 00:19:00,568 [INFO] smartedu.load_timeseries:93 - Timeseries: pm25 → 200 countries, years 1960–2024
+2026-03-02 00:19:00,568 [INFO] smartedu.load_timeseries:98 - Timeseries loader complete: 217 countries across 4 factors
+2026-03-02 00:35:41,043 [INFO] smartedu.get_db:34 - Database connection established
+2026-03-02 00:35:42,254 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-03-02 00:35:43,229 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-03-02 00:35:43,230 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-03-02 00:36:02,661 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-03-02 00:36:02,666 [INFO] smartedu._on_login_success:199 - Logged in as 1234 (ID: 4)
+2026-03-02 00:36:09,811 [INFO] smartedu.load_timeseries:93 - Timeseries: co2_per_capita → 203 countries, years 1960–2024
+2026-03-02 00:36:09,941 [INFO] smartedu.load_timeseries:93 - Timeseries: renewable_percentage → 212 countries, years 1960–2024
+2026-03-02 00:36:10,058 [INFO] smartedu.load_timeseries:93 - Timeseries: forest_area_percentage → 214 countries, years 1960–2024
+2026-03-02 00:36:10,172 [INFO] smartedu.load_timeseries:93 - Timeseries: pm25 → 200 countries, years 1960–2024
+2026-03-02 00:36:10,174 [INFO] smartedu.load_timeseries:98 - Timeseries loader complete: 217 countries across 4 factors
+2026-03-02 00:49:18,837 [INFO] smartedu.get_db:34 - Database connection established
+2026-03-02 00:49:19,977 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-03-02 00:49:20,920 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-03-02 00:49:20,921 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-03-02 00:49:39,521 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-03-02 00:49:39,524 [INFO] smartedu._on_login_success:199 - Logged in as 1234 (ID: 4)
+2026-03-02 00:49:40,452 [INFO] smartedu.load_timeseries:93 - Timeseries: co2_per_capita → 203 countries, years 1960–2024
+2026-03-02 00:49:40,510 [INFO] smartedu.load_timeseries:93 - Timeseries: renewable_percentage → 212 countries, years 1960–2024
+2026-03-02 00:49:40,574 [INFO] smartedu.load_timeseries:93 - Timeseries: forest_area_percentage → 214 countries, years 1960–2024
+2026-03-02 00:49:40,630 [INFO] smartedu.load_timeseries:93 - Timeseries: pm25 → 200 countries, years 1960–2024
+2026-03-02 00:49:40,631 [INFO] smartedu.load_timeseries:98 - Timeseries loader complete: 217 countries across 4 factors
+2026-03-02 00:50:53,458 [INFO] smartedu.get_db:34 - Database connection established
+2026-03-02 00:50:54,681 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-03-02 00:50:55,675 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-03-02 00:50:55,676 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-03-02 00:53:47,130 [INFO] smartedu.get_db:34 - Database connection established
+2026-03-02 00:53:48,296 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-03-02 00:53:49,253 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-03-02 00:53:49,254 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-03-02 01:00:58,827 [INFO] smartedu.get_db:34 - Database connection established
+2026-03-02 01:01:00,146 [INFO] smartedu._run_migrations:125 - Database migrations completed
+2026-03-02 01:01:01,185 [INFO] smartedu.init_db:47 - Database initialized successfully
+2026-03-02 01:01:01,187 [INFO] smartedu.__init__:37 - Database initialized successfully
+2026-03-02 01:01:28,378 [INFO] smartedu.login_user:152 - User logged in: 1234 (ID: 4)
+2026-03-02 01:01:28,384 [INFO] smartedu._on_login_success:199 - Logged in as 1234 (ID: 4)
+2026-03-02 01:01:30,417 [INFO] smartedu.load_timeseries:93 - Timeseries: co2_per_capita → 203 countries, years 1960–2024
+2026-03-02 01:01:30,517 [INFO] smartedu.load_timeseries:93 - Timeseries: renewable_percentage → 212 countries, years 1960–2024
+2026-03-02 01:01:30,687 [INFO] smartedu.load_timeseries:93 - Timeseries: forest_area_percentage → 214 countries, years 1960–2024
+2026-03-02 01:01:30,902 [INFO] smartedu.load_timeseries:93 - Timeseries: pm25 → 200 countries, years 1960–2024
+2026-03-02 01:01:30,904 [INFO] smartedu.load_timeseries:98 - Timeseries loader complete: 217 countries across 4 factors
