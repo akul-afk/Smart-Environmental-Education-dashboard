@@ -14,7 +14,7 @@ from PySide6.QtGui import QIcon, QFont
 
 from constants import COLORS, WINDOW, GLOBAL_STYLESHEET
 from app_logger import logger
-from views import LandingWidget, LoginWidget, HomeWidget, DataExplorerWidget, LearnWidget, ProgressWidget, QuizCenterWidget
+from views import LandingWidget, LoginWidget, HomeWidget, DataExplorerWidget, LearnWidget, ProgressWidget, QuizCenterWidget, CarbonCycleView
 
 
 class MainWindow(QMainWindow):
@@ -82,6 +82,7 @@ class MainWindow(QMainWindow):
             ("📚", "Learn"),
             ("🏆", "Progress"),
             ("🧠", "Quiz"),
+            ("🌍", "Phenomenas"),
         ]
 
         self.nav_buttons = []
@@ -143,12 +144,14 @@ class MainWindow(QMainWindow):
         self.learn_widget = LearnWidget(user_id=self.user_id)
         self.progress_widget = ProgressWidget(user_id=self.user_id)
         self.quiz_center_widget = QuizCenterWidget(user_id=self.user_id)
+        self.carbon_cycle_widget = CarbonCycleView()
 
         self.content_stack.addWidget(self.home_widget)
         self.content_stack.addWidget(self.explorer_widget)
         self.content_stack.addWidget(self.learn_widget)
         self.content_stack.addWidget(self.progress_widget)
         self.content_stack.addWidget(self.quiz_center_widget)
+        self.content_stack.addWidget(self.carbon_cycle_widget)
 
         layout.addWidget(self.content_stack)
 

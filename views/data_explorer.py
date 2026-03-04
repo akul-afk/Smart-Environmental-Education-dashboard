@@ -11,9 +11,9 @@ import os
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTabWidget,
     QSizePolicy, QSpacerItem, QFrame, QComboBox, QSpinBox,
-    QLineEdit, QPushButton,
+    QLineEdit, QPushButton, QGraphicsOpacityEffect,
 )
-from PySide6.QtCore import Qt, QThread, Signal, QUrl
+from PySide6.QtCore import Qt, QThread, Signal, QUrl, QPropertyAnimation, QEasingCurve
 from PySide6.QtGui import QFont
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebEngineCore import QWebEngineSettings
@@ -125,6 +125,89 @@ class _DataLoadWorker(QThread):
         except Exception as e:
             logger.error("DataLoadWorker error: %s", e)
             self.error.emit(str(e))
+
+
+# ══════════════════════════════════════════════════════════
+# Insight Engine — QThread worker + animated panel
+# ══════════════════════════════════════════════════════════
+
+class _InsightWorker(QThread):
+    """Generate a data insight off the UI thread."""
+    finished = Signal(str, str, str)  # (factor_key, view_type, insight_text)
+
+    def __init__(self, factor, view_type, data_summary):
+        super().__init__()
+        self._factor = factor
+        self._view_type = view_type
+        self._data_summary = data_summary
+
+    def run(self):
+        try:
+            from services.data_explorer_insights import generate_data_insight
+            text = generate_data_insight(self._factor, self._view_type, self._data_summary)
+            self.finished.emit(self._factor["key"], self._view_type, text)
+        except Exception as e:
+            logger.error("InsightWorker error: %s", e)
+            self.finished.emit(
+                self._factor["key"], self._view_type,
+                f"{self._factor.get('emoji', '📊')} Explore the data to discover environmental patterns."
+            )
+
+
+class _InsightPanel(QFrame):
+    """Dark-themed insight panel with fade-in animation."""
+
+    def __init__(self, accent_color: str, parent=None):
+        super().__init__(parent)
+        self._accent = accent_color
+        self.setFixedHeight(72)
+        self.setStyleSheet(f"""
+            _InsightPanel {{
+                background-color: {COLORS['card_bg']};
+                border: 1px solid {accent_color}44;
+                border-radius: 12px;
+            }}
+        """)
+
+        row = QHBoxLayout(self)
+        row.setContentsMargins(18, 10, 18, 10)
+        row.setSpacing(12)
+
+        bulb = QLabel("💡")
+        bulb.setFont(QFont("Segoe UI Emoji", 18))
+        bulb.setStyleSheet("border: none; background: transparent;")
+        row.addWidget(bulb)
+
+        self._text = QLabel("Generating insight…")
+        self._text.setFont(QFont("Segoe UI", 11))
+        self._text.setWordWrap(True)
+        self._text.setStyleSheet(f"color: {COLORS['text_secondary']}; border: none; background: transparent;")
+        row.addWidget(self._text, stretch=1)
+
+        # Opacity effect for fade-in
+        self._opacity = QGraphicsOpacityEffect(self)
+        self._opacity.setOpacity(1.0)
+        self.setGraphicsEffect(self._opacity)
+
+    def set_loading(self):
+        """Show loading state."""
+        self._text.setText("✨ Generating insight…")
+        self._text.setStyleSheet(f"color: {COLORS['text_secondary']}; border: none; background: transparent; font-style: italic;")
+
+    def set_insight(self, text: str):
+        """Update insight text with a subtle fade-in."""
+        self._text.setText(text)
+        self._text.setStyleSheet(f"color: #E2E8F0; border: none; background: transparent;")
+        # Fade-in animation
+        self._opacity.setOpacity(0.0)
+        anim = QPropertyAnimation(self._opacity, b"opacity", self)
+        anim.setDuration(350)
+        anim.setStartValue(0.0)
+        anim.setEndValue(1.0)
+        anim.setEasingCurve(QEasingCurve.Type.OutCubic)
+        anim.start()
+        # Store reference so it isn't garbage-collected
+        self._fade_anim = anim
 
 
 # ══════════════════════════════════════════════════════════
@@ -302,6 +385,7 @@ class _TimeSeriesWidget(QWidget):
         # ── Chart canvas ──
         self._figure = _dark_figure(10, 5.5)
         self._canvas = FigureCanvasQTAgg(self._figure)
+        self._canvas.setStyleSheet("background-color: transparent;")
         self._canvas.setMinimumHeight(380)
         layout.addWidget(self._canvas)
 
@@ -532,6 +616,7 @@ class _BarChartWidget(QWidget):
         # ── Chart canvas ──
         self._figure = _dark_figure(10, 6)
         self._canvas = FigureCanvasQTAgg(self._figure)
+        self._canvas.setStyleSheet("background-color: transparent;")
         self._canvas.setMinimumHeight(380)
         self._canvas.mpl_connect("button_press_event", self._on_click)
         layout.addWidget(self._canvas)
@@ -709,6 +794,10 @@ class DataExplorerWidget(QWidget):
         self._cache = []
         self._ts_cache = {}
         self._worker = None
+        self._insight_cache = {}       # (factor_key, view_type) → str
+        self._insight_workers = []     # keep QThread refs alive
+        self._insight_panels = {}      # factor_key → _InsightPanel
+        self._factor_view_tabs = {}    # factor_key → QTabWidget (view tabs)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -778,7 +867,14 @@ class DataExplorerWidget(QWidget):
             factor_tab = self._build_factor_tab(factor)
             self._tab_widget.addTab(factor_tab, f"  {factor['emoji']}  {factor['label']}  ")
 
+        # Trigger insight when factor tab changes
+        self._tab_widget.currentChanged.connect(self._on_factor_tab_changed)
+
         self.layout().addWidget(self._tab_widget)
+
+        # Trigger initial insight for the first factor
+        if FACTORS:
+            self._request_insight(FACTORS[0], "map")
 
     def _build_factor_tab(self, factor):
         """Build a single factor tab with 3 nested view tabs."""
@@ -846,6 +942,21 @@ class DataExplorerWidget(QWidget):
         view_tabs.addTab(bar_widget, "  📊  Bar Chart  ")
 
         layout.addWidget(view_tabs)
+
+        # ── Insight Panel ──
+        panel = _InsightPanel(factor["color"])
+        panel.set_loading()
+        layout.addWidget(panel)
+        self._insight_panels[factor["key"]] = panel
+
+        # Store view_tabs reference for insight triggers
+        self._factor_view_tabs[factor["key"]] = view_tabs
+
+        # Wire view tab change → insight update
+        view_tabs.currentChanged.connect(
+            lambda idx, f=factor: self._on_view_tab_changed(f, idx)
+        )
+
         return container
 
     # ── Stylesheet helpers ──
@@ -901,3 +1012,111 @@ class DataExplorerWidget(QWidget):
                 color: #FFFFFF;
             }}
         """
+
+    # ── Insight Engine trigger methods ──
+
+    _VIEW_TYPES = ["map", "line", "bar"]
+
+    def _on_factor_tab_changed(self, index):
+        """Factor tab changed — request insight for the current view."""
+        if index < 0 or index >= len(FACTORS):
+            return
+        factor = FACTORS[index]
+        view_tabs = self._factor_view_tabs.get(factor["key"])
+        view_idx = view_tabs.currentIndex() if view_tabs else 0
+        view_type = self._VIEW_TYPES[view_idx] if view_idx < len(self._VIEW_TYPES) else "map"
+        self._request_insight(factor, view_type)
+
+    def _on_view_tab_changed(self, factor, view_idx):
+        """View tab changed within a factor — request insight."""
+        view_type = self._VIEW_TYPES[view_idx] if view_idx < len(self._VIEW_TYPES) else "map"
+        self._request_insight(factor, view_type)
+
+    def _request_insight(self, factor, view_type):
+        """Check cache; if miss, show loading and spawn worker."""
+        cache_key = (factor["key"], view_type)
+        panel = self._insight_panels.get(factor["key"])
+        if not panel:
+            return
+
+        # Cache hit → show immediately
+        if cache_key in self._insight_cache:
+            panel.set_insight(self._insight_cache[cache_key])
+            return
+
+        # Cache miss → loading + worker
+        panel.set_loading()
+        summary = self._build_data_summary(factor, view_type)
+
+        worker = _InsightWorker(factor, view_type, summary)
+        worker.finished.connect(self._on_insight_ready)
+        self._insight_workers.append(worker)
+        worker.start()
+
+    def _on_insight_ready(self, factor_key, view_type, text):
+        """Callback from insight worker — cache and display."""
+        cache_key = (factor_key, view_type)
+        self._insight_cache[cache_key] = text
+
+        panel = self._insight_panels.get(factor_key)
+        if panel:
+            # Only update if user is still viewing this factor+view
+            current_factor_idx = self._tab_widget.currentIndex() if self._tab_widget else -1
+            if 0 <= current_factor_idx < len(FACTORS) and FACTORS[current_factor_idx]["key"] == factor_key:
+                panel.set_insight(text)
+
+    def _build_data_summary(self, factor, view_type):
+        """Build a compact data dict for the insight generator."""
+        key = factor["key"]
+        values = [r[key] for r in self._cache if r.get(key) is not None]
+
+        if not values:
+            return {"count": 0, "avg": 0, "year": "N/A"}
+
+        avg = sum(values) / len(values)
+        max_val = max(values)
+        min_val = min(values)
+        max_row = next((r for r in self._cache if r.get(key) == max_val), {})
+        min_row = next((r for r in self._cache if r.get(key) == min_val), {})
+        year = self._cache[0].get("year", "") if self._cache else ""
+
+        base = {
+            "count": len(values),
+            "avg": round(avg, 2),
+            "max_val": round(max_val, 2),
+            "min_val": round(min_val, 2),
+            "max_country": max_row.get("country_name", "N/A"),
+            "min_country": min_row.get("country_name", "N/A"),
+            "year": year,
+        }
+
+        if view_type == "line":
+            # Add time-series context from first available country
+            ts_data = self._ts_cache.get(key, {})
+            names = self._ts_cache.get("_names", {})
+            # Pick the first country with data
+            for code, series in ts_data.items():
+                if series and len(series) >= 2:
+                    first_val = series[0][1]
+                    last_val = series[-1][1]
+                    if last_val > first_val * 1.05:
+                        trend = "increasing"
+                    elif last_val < first_val * 0.95:
+                        trend = "decreasing"
+                    else:
+                        trend = "stable"
+                    base.update({
+                        "country": names.get(code, code),
+                        "trend": trend,
+                        "year_from": series[0][0],
+                        "year_to": series[-1][0],
+                        "data_points": len(series),
+                    })
+                    break
+
+        elif view_type == "bar":
+            base["mode"] = "top10"
+            base["sort_order"] = "descending"
+
+        return base
+

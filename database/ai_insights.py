@@ -1,5 +1,6 @@
 """
 AI Insights — Gemini-powered personalized learning insights.
+Uses google.genai SDK with automatic model fallback.
 API key loaded from environment variable.
 """
 
@@ -12,6 +13,15 @@ from app_logger import logger
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"))
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+
+# Models to try in priority order (most capable → lightest)
+_MODEL_PRIORITY = [
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-3-flash",
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-lite",
+]
 
 
 def get_ai_insight(user_stats, progress_data, badges_earned):
@@ -31,10 +41,9 @@ def get_ai_insight(user_stats, progress_data, badges_earned):
         return _get_fallback_insight(user_stats, progress_data)
 
     try:
-        import google.generativeai as genai
+        from google import genai
 
-        genai.configure(api_key=GEMINI_API_KEY)
-        model = genai.GenerativeModel("gemini-2.0-flash")
+        client = genai.Client(api_key=GEMINI_API_KEY)
 
         badge_names = [b["name"] for b in badges_earned] if badges_earned else ["None yet"]
 
@@ -51,9 +60,22 @@ def get_ai_insight(user_stats, progress_data, badges_earned):
 
 Be encouraging, mention specific next steps, and use 1-2 emojis. Keep it under 30 words. Focus on environmental education motivation."""
 
-        response = model.generate_content(prompt)
-        logger.info("AI insight generated successfully")
-        return response.text.strip()
+        # Try each model until one succeeds
+        last_err = None
+        for model_name in _MODEL_PRIORITY:
+            try:
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                )
+                logger.info("AI insight generated successfully (%s)", model_name)
+                return response.text.strip()
+            except Exception as e:
+                last_err = e
+                logger.warning("Model %s failed: %s", model_name, str(e)[:120])
+                continue
+
+        raise last_err or RuntimeError("All Gemini models failed")
 
     except Exception as e:
         logger.error("AI insight generation failed: %s", str(e))

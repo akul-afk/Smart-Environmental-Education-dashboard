@@ -1,7 +1,7 @@
 # Environment & secrets
 .env
 .env.*
-
+logs/
 # Python
 __pycache__/
 *.py[cod]

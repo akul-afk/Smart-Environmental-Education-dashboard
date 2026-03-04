@@ -9,14 +9,12 @@ OUTPUT = os.path.join("assets", "world_geo_min.json")
 with open(INPUT, "r", encoding="utf-8") as f:
     raw = f.read()
 
-# Shorten floats with 4+ decimals to 3 (pure string op, no structural change)
 def shorten(m):
     return str(round(float(m.group()), 3))
 
 shortened = re.sub(r'-?\d+\.\d{4,}', shorten, raw)
 data = json.loads(shortened)
 
-# Fix nesting: ensure every coordinate point is [lng, lat] (len=2 list of numbers)
 def fix_and_validate(feature):
     geom = feature["geometry"]
     gtype = geom["type"]
