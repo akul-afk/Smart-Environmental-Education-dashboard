@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Greenhouse Effect - Interactive Animation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: #050b14;
+            background-image: radial-gradient(circle at 20% 30%, #171e36 0%, #050b14 70%);
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            touch-action: none;
+            width: 100vw;
+            height: 100vh;
+            color: #fff;
+        }
+
+        @keyframes pulse-sun-outer {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.06); opacity: 0.5; }
+        }
+        @keyframes pulse-sun-inner {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.03); opacity: 0.8; }
+        }
+        @keyframes spin-corona { to { transform: rotate(360deg); } }
+        @keyframes spin-corona-rev { to { transform: rotate(0deg); } }
+        @keyframes flow-yellow { to { stroke-dashoffset: -40; } }
+        @keyframes flow-red { to { stroke-dashoffset: -40; } }
+        @keyframes float-molecule {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
+
+        .sun-outer { transform-origin: 150px 220px; animation: pulse-sun-outer 6s ease-in-out infinite; }
+        .sun-inner { transform-origin: 150px 220px; animation: pulse-sun-inner 4s ease-in-out infinite; }
+        .sun-corona-1 { transform-origin: 150px 220px; animation: spin-corona 35s linear infinite; }
+        .sun-corona-2 { transform-origin: 150px 220px; animation: spin-corona-rev 25s linear infinite; }
+
+        .ray-yellow {
+            fill: none; stroke: #fde047; stroke-width: 5;
+            stroke-dasharray: 15 20; stroke-linecap: round;
+            animation: flow-yellow 0.8s linear infinite;
+        }
+        .ray-red {
+            fill: none; stroke: #ef4444; stroke-width: 5;
+            stroke-dasharray: 15 20; stroke-linecap: round; stroke-linejoin: round;
+            animation: flow-red 1s linear infinite;
+        }
+
+        .float { animation: float-molecule 6s ease-in-out infinite; }
+        .float-d1 { animation: float-molecule 7s ease-in-out 2s infinite; }
+        .float-d2 { animation: float-molecule 5s ease-in-out 1s infinite; }
+
+        .continent { fill: #22c55e; opacity: 0.85; }
+
+        /* Labels */
+        .lbl {
+            position: absolute; z-index: 20; pointer-events: auto; cursor: pointer;
+            font-weight: 600; font-size: 15px; letter-spacing: 0.06em;
+            text-shadow: 0 4px 12px rgba(0,0,0,1), 0 0 4px rgba(0,0,0,0.8);
+            transition: color 0.3s, transform 0.3s;
+            white-space: nowrap; text-align: center;
+        }
+        .lbl:hover { color: #fde047; transform: scale(1.08); }
+        .lbl-sub { font-weight: 400; font-size: 12px; color: #93c5fd; display: block; margin-top: 2px; }
+
+        /* Tooltip */
+        .tt {
+            position: fixed; z-index: 50; pointer-events: none; opacity: 0;
+            transition: opacity 0.2s;
+            background: rgba(15,23,42,0.92); backdrop-filter: blur(12px);
+            border: 1px solid #334155; padding: 18px 20px; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7); max-width: 320px;
+        }
+        .tt h3 { font-size: 16px; font-weight: 800; color: #fde047; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.08em; }
+        .tt .bar { height: 3px; width: 40px; background: #3b82f6; border-radius: 2px; margin-bottom: 10px; }
+        .tt p { font-size: 13px; color: #cbd5e1; line-height: 1.6; }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed; top: 0; right: 0; height: 100%; width: 460px;
+            background: rgba(15,23,42,0.96); backdrop-filter: blur(24px);
+            border-left: 1px solid #334155; z-index: 70;
+            transform: translateX(100%); transition: transform 0.5s ease;
+            overflow-y: auto;
+        }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-track { background: rgba(15,23,42,0.5); }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.5); border-radius: 4px; }
+
+        .toggle-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 60;
+            background: rgba(37,99,235,0.8); border: 1px solid rgba(96,165,250,0.3);
+            color: #fff; padding: 10px 18px; border-radius: 24px; cursor: pointer;
+            font-family: 'Inter',sans-serif; font-weight: 600; font-size: 13px;
+            letter-spacing: 0.06em; text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(37,99,235,0.4); transition: background 0.3s;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .toggle-btn:hover { background: rgba(59,130,246,0.9); }
+
+        .card { background: rgba(30,41,59,0.5); border: 1px solid rgba(51,65,85,0.5); border-radius: 10px; padding: 16px; transition: background 0.3s; }
+        .card:hover { background: rgba(30,41,59,0.8); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; flex-shrink: 0; }
+
+        @media (max-width: 640px) {
+            .sidebar { width: 100%; }
+            .lbl { font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div style="position:relative;width:100%;height:100%;">
+
+    <!-- Stars -->
+    <svg id="stars" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></svg>
+
+    <!-- Main Graphics -->
+    <svg viewBox="0 0 1200 800" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" preserveAspectRatio="xMidYMid meet">
+        <defs>
+            <marker id="arrow-yellow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <polygon points="0,0 10,5 0,10" fill="#fde047"/>
+            </marker>
+            <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <polygon points="0,0 10,5 0,10" fill="#ef4444"/>
+            </marker>
+            <filter id="glow-sun" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="25" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="glow-atmos" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="8" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <radialGradient id="sun-grad" cx="40%" cy="40%" r="60%">
+                <stop offset="0%" stop-color="#ffffff"/><stop offset="20%" stop-color="#fef08a"/>
+                <stop offset="60%" stop-color="#eab308"/><stop offset="100%" stop-color="#ea580c"/>
+            </radialGradient>
+            <radialGradient id="earth-water" cx="40%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#60a5fa"/><stop offset="50%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1e3a8a"/>
+            </radialGradient>
+            <radialGradient id="earth-shadow" cx="30%" cy="30%" r="70%">
+                <stop offset="40%" stop-color="transparent"/><stop offset="90%" stop-color="rgba(0,0,0,0.6)"/><stop offset="100%" stop-color="#050b14"/>
+            </radialGradient>
+        </defs>
+
+        <!-- Sun -->
+        <g class="hover-target" data-id="sun" style="pointer-events:auto;cursor:pointer;">
+            <circle cx="150" cy="220" r="190" fill="#ea580c" filter="url(#glow-sun)" class="sun-outer"/>
+            <circle cx="150" cy="220" r="150" fill="none" stroke="#f59e0b" stroke-width="40" stroke-dasharray="20 40" opacity="0.4" filter="url(#glow-sun)" class="sun-corona-1"/>
+            <circle cx="150" cy="220" r="130" fill="none" stroke="#fbbf24" stroke-width="25" stroke-dasharray="15 30" opacity="0.6" filter="url(#glow-sun)" class="sun-corona-2"/>
+            <circle cx="150" cy="220" r="120" fill="#eab308" filter="url(#glow-sun)" class="sun-inner"/>
+            <circle cx="150" cy="220" r="100" fill="url(#sun-grad)"/>
+        </g>
+
+        <!-- Atmosphere -->
+        <circle cx="1050" cy="750" r="620" fill="none" stroke="#38bdf8" stroke-width="40" stroke-opacity="0.1" filter="url(#glow-atmos)"/>
+        <circle cx="1050" cy="750" r="540" fill="none" stroke="#7dd3fc" stroke-width="50" stroke-opacity="0.15"/>
+
+        <!-- Earth -->
+        <g class="hover-target" data-id="trapped" style="pointer-events:auto;cursor:pointer;">
+            <circle cx="1050" cy="750" r="450" fill="url(#earth-water)"/>
+            <path class="continent" d="M 700 480 Q 750 420 850 450 T 950 550 Q 980 600 900 650 T 780 700 T 680 600 Z"/>
+            <path class="continent" d="M 980 350 Q 1050 300 1150 380 T 1200 500 Q 1150 550 1080 500 T 980 350 Z"/>
+            <path class="continent" d="M 850 800 Q 900 750 1000 820 T 1100 950 Q 1000 1000 900 950 T 800 880 Z"/>
+            <path class="continent" d="M 620 850 Q 680 800 750 880 T 700 1000 Q 600 950 620 850 Z"/>
+            <circle cx="1050" cy="750" r="450" fill="none" stroke="#bae6fd" stroke-width="6" opacity="0.5" filter="url(#glow-atmos)"/>
+            <circle cx="1050" cy="750" r="450" fill="url(#earth-shadow)"/>
+        </g>
+
+        <!-- Solar Radiation -->
+        <g stroke="#fef08a" stroke-width="5" stroke-opacity="0.2" fill="none">
+            <path d="M 280 200 L 750 380"/><path d="M 260 250 L 700 480"/>
+            <path d="M 230 300 L 660 560"/><path d="M 190 350 L 610 680"/>
+        </g>
+        <g class="ray-yellow" marker-end="url(#arrow-yellow)">
+            <path d="M 280 200 L 750 380"/><path d="M 260 250 L 700 480"/>
+            <path d="M 230 300 L 660 560"/><path d="M 190 350 L 610 680"/>
+        </g>
+
+        <!-- Escaping Heat -->
+        <g stroke="#fca5a5" stroke-width="5" stroke-opacity="0.2" fill="none">
+            <path d="M 860 380 Q 890 330 840 280 T 870 180 T 820 80 T 850 -20"/>
+            <path d="M 960 320 Q 990 270 940 220 T 970 120 T 920 20 T 950 -80"/>
+        </g>
+        <g class="ray-red" marker-end="url(#arrow-red)">
+            <path d="M 860 380 Q 890 330 840 280 T 870 180 T 820 80 T 850 -20"/>
+            <path d="M 960 320 Q 990 270 940 220 T 970 120 T 920 20 T 950 -80"/>
+        </g>
+
+        <!-- Trapped Heat -->
+        <g stroke="#fca5a5" stroke-width="5" stroke-opacity="0.2" fill="none">
+            <polyline points="760,460 700,380 640,460 580,390"/>
+            <polyline points="660,560 580,480 520,550"/>
+        </g>
+        <g class="ray-red" marker-end="url(#arrow-red)">
+            <polyline points="760,460 700,380 640,460 580,390"/>
+            <polyline points="660,560 580,480 520,550"/>
+        </g>
+
+        <!-- Gas Molecules -->
+        <g class="float hover-target" data-id="gases" style="pointer-events:auto;cursor:pointer;">
+            <circle cx="700" cy="380" r="35" fill="transparent"/>
+            <circle cx="700" cy="380" r="12" fill="#94a3b8"/><circle cx="678" cy="380" r="9" fill="#ef4444"/><circle cx="722" cy="380" r="9" fill="#ef4444"/>
+        </g>
+        <g class="float float-d1 hover-target" data-id="gases" style="pointer-events:auto;cursor:pointer;">
+            <circle cx="580" cy="480" r="35" fill="transparent"/>
+            <circle cx="580" cy="480" r="14" fill="#94a3b8"/>
+            <circle cx="560" cy="466" r="7" fill="#38bdf8"/><circle cx="600" cy="466" r="7" fill="#38bdf8"/>
+            <circle cx="560" cy="494" r="7" fill="#38bdf8"/><circle cx="600" cy="494" r="7" fill="#38bdf8"/>
+        </g>
+        <g class="float float-d2 hover-target" data-id="gases" style="pointer-events:auto;cursor:pointer;">
+            <circle cx="820" cy="240" r="30" fill="transparent"/>
+            <circle cx="820" cy="240" r="11" fill="#3b82f6"/><circle cx="798" cy="240" r="11" fill="#3b82f6"/><circle cx="842" cy="240" r="9" fill="#ef4444"/>
+        </g>
+        <g class="float hover-target" data-id="gases" style="pointer-events:auto;cursor:pointer;">
+            <circle cx="910" cy="470" r="30" fill="transparent"/>
+            <circle cx="910" cy="470" r="12" fill="#94a3b8"/><circle cx="888" cy="470" r="9" fill="#ef4444"/><circle cx="932" cy="470" r="9" fill="#ef4444"/>
+        </g>
+    </svg>
+
+    <!-- Labels -->
+    <div class="lbl hover-target" data-id="sun" style="top:26%;left:9%;">SUN</div>
+    <div class="lbl hover-target" data-id="solar" style="top:54%;left:27%;">SOLAR RADIATION</div>
+    <div class="lbl hover-target" data-id="infrared" style="top:16%;left:44%;">INFRARED<br>RADIATION</div>
+    <div class="lbl hover-target" data-id="escaping" style="top:6%;left:71%;">ESCAPING HEAT</div>
+    <div class="lbl hover-target" data-id="gases" style="top:83%;left:28%;">GREENHOUSE GASES<span class="lbl-sub">(CO₂, CH₄, N₂O)</span></div>
+    <div class="lbl hover-target" data-id="trapped" style="top:73%;left:51%;">TRAPPED<br>HEAT</div>
+</div>
+
+<!-- Tooltip -->
+<div class="tt" id="tooltip">
+    <h3 id="tt-title"></h3><div class="bar"></div><p id="tt-desc"></p>
+</div>
+
+<!-- Toggle Button -->
+<button class="toggle-btn" id="sidebar-toggle">
+    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    Deep Dive
+</button>
+
+<!-- Sidebar -->
+<div class="sidebar" id="info-sidebar">
+    <div style="padding:32px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid #334155;">
+            <h2 style="font-size:22px;font-weight:800;background:linear-gradient(90deg,#60a5fa,#fde047);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:0.06em;">THE SCIENCE</h2>
+            <button id="sidebar-close" style="background:none;border:none;color:#94a3b8;cursor:pointer;padding:8px;border-radius:50%;transition:color 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:28px;color:#cbd5e1;line-height:1.7;">
+            <section>
+                <h3 style="font-size:16px;font-weight:700;color:#fff;margin-bottom:10px;display:flex;align-items:center;"><span class="dot" style="background:#fde047;"></span>The Physics of Warming</h3>
+                <p style="font-size:14px;">The greenhouse effect is driven by the fundamental laws of thermodynamics. The Sun (~5,500°C) emits <strong style="color:#fff;">shortwave radiation</strong> (visible light). Earth's atmosphere is largely transparent to these wavelengths.</p>
+                <p style="font-size:14px;margin-top:8px;">When sunlight strikes Earth, the planet absorbs it and warms up. Because Earth is much cooler, it radiates energy back as <strong style="color:#fff;">longwave infrared radiation</strong>. Certain atmospheric gases trap this specific wavelength — that's the greenhouse effect.</p>
+            </section>
+
+            <section>
+                <h3 style="font-size:16px;font-weight:700;color:#fff;margin-bottom:10px;display:flex;align-items:center;"><span class="dot" style="background:#3b82f6;"></span>Major Greenhouse Gases</h3>
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                    <div class="card">
+                        <strong style="color:#fff;display:block;margin-bottom:4px;">Carbon Dioxide (CO₂)</strong>
+                        <p style="font-size:13px;color:#94a3b8;">The primary driver of modern climate change. Atmospheric levels have surged from 280 ppm (pre-industrial) to over 425 ppm today — a 50% increase. CO₂ persists in the atmosphere for 300–1,000 years.</p>
+                    </div>
+                    <div class="card">
+                        <strong style="color:#fff;display:block;margin-bottom:4px;">Methane (CH₄)</strong>
+                        <p style="font-size:13px;color:#94a3b8;">Over 80× more potent than CO₂ over 20 years. Released by livestock, rice paddies, landfills, and natural gas leaks. Concentrations have more than doubled since pre-industrial times.</p>
+                    </div>
+                    <div class="card">
+                        <strong style="color:#fff;display:block;margin-bottom:4px;">Nitrous Oxide (N₂O) & Water Vapor</strong>
+                        <p style="font-size:13px;color:#94a3b8;">N₂O is linked to synthetic fertilizers and is ~300× more potent than CO₂. Water vapor is the most abundant greenhouse gas, creating a feedback loop — warmer air holds more moisture, amplifying warming.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3 style="font-size:16px;font-weight:700;color:#fff;margin-bottom:10px;display:flex;align-items:center;"><span class="dot" style="background:#22c55e;"></span>Natural vs. Enhanced</h3>
+                <p style="font-size:14px;">The greenhouse effect is essential for life. Without it, Earth's average temperature would be a freezing <strong style="color:#fff;">-18°C</strong> instead of <strong style="color:#fff;">15°C</strong>.</p>
+                <p style="font-size:14px;margin-top:8px;">The crisis is the <em>enhanced</em> effect. By burning fossil fuels and clearing forests, humanity has thickened the atmospheric "blanket," trapping heat that would normally escape into space.</p>
+            </section>
+
+            <section>
+                <h3 style="font-size:16px;font-weight:700;color:#fff;margin-bottom:10px;display:flex;align-items:center;"><span class="dot" style="background:#ef4444;"></span>Global Impacts</h3>
+                <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;color:#94a3b8;">
+                    <p>• <strong style="color:#cbd5e1;">Ocean Acidification:</strong> Oceans absorb ~30% of excess CO₂, lowering pH by 26% since 1850, threatening coral reefs and shellfish.</p>
+                    <p>• <strong style="color:#cbd5e1;">Sea Level Rise:</strong> Ice sheet melt and thermal expansion have raised seas ~20 cm since 1900. Projections: 0.3–1.0m more by 2100.</p>
+                    <p>• <strong style="color:#cbd5e1;">Extreme Weather:</strong> Extra heat energy fuels stronger hurricanes, prolonged droughts, and severe flooding with increasing frequency.</p>
+                </div>
+            </section>
+
+            <section style="background:rgba(37,99,235,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:16px;">
+                <h3 style="font-size:16px;font-weight:700;color:#60a5fa;margin-bottom:10px;display:flex;align-items:center;"><span class="dot" style="background:#60a5fa;"></span>💡 AI Insight</h3>
+                <p style="font-size:14px;color:#93c5fd;">If global CO₂ emissions continue at current rates, atmospheric concentration could reach <strong style="color:#fff;">560 ppm by 2060</strong> — double pre-industrial levels. This is the threshold at which climate models project a <strong style="color:#fde047;">2.5–4.0°C warming</strong>, triggering irreversible tipping points including Amazon dieback, permafrost collapse, and ice sheet disintegration.</p>
+                <p style="font-size:13px;color:#64748b;margin-top:10px;">Based on IPCC AR6, NASA GISS, and NOAA global monitoring data.</p>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+const infoData = {
+    'sun':      { title: 'The Sun', desc: 'Our star radiates energy at 3.8×10²⁶ watts. About 1,361 W/m² reaches Earth — this "solar constant" drives all weather, ocean currents, and life on our planet.' },
+    'solar':    { title: 'Solar Radiation', desc: 'Shortwave sunlight (visible + UV) passes through the clear atmosphere. About 30% is reflected by clouds and ice; the remaining 70% is absorbed by land and oceans, warming the surface.' },
+    'infrared': { title: 'Infrared Radiation', desc: 'The warmed Earth re-emits thermal energy as longwave infrared (heat). This radiation has wavelengths of 4–100 μm — exactly the range that greenhouse gas molecules can absorb.' },
+    'escaping': { title: 'Escaping Heat', desc: 'Some infrared radiation escapes through "atmospheric windows" — wavelength bands where no greenhouse gas absorbs. This natural cooling mechanism balances incoming solar energy.' },
+    'gases':    { title: 'Greenhouse Gases', desc: 'CO₂, CH₄, and N₂O have molecular structures that vibrate at infrared frequencies. When they absorb a photon of heat, they re-emit it in a random direction — half goes back down to Earth.' },
+    'trapped':  { title: 'Trapped Heat', desc: 'Re-radiated heat warms the surface again, creating a feedback loop. More gases → more trapping → more warming → more water vapor → even more trapping. This is the enhanced greenhouse effect.' }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Stars
+    const sg = document.getElementById('stars');
+    for (let i = 0; i < 200; i++) {
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('cx', Math.random()*100+'%');
+        c.setAttribute('cy', Math.random()*100+'%');
+        c.setAttribute('r', Math.random()*1.5+0.5);
+        c.setAttribute('fill', '#fff');
+        c.setAttribute('opacity', Math.random()*0.5+0.1);
+        if (Math.random() > 0.8) c.innerHTML = `<animate attributeName="opacity" values="${(Math.random()*0.2).toFixed(1)};0.8;${(Math.random()*0.2).toFixed(1)}" dur="${(Math.random()*3+2).toFixed(1)}s" repeatCount="indefinite"/>`;
+        sg.appendChild(c);
+    }
+
+    // Tooltip
+    const tt = document.getElementById('tooltip');
+    const ttT = document.getElementById('tt-title');
+    const ttD = document.getElementById('tt-desc');
+    document.addEventListener('mousemove', e => {
+        if (tt.style.opacity === '1') {
+            let l = e.clientX + 20, t = e.clientY + 20;
+            const r = tt.getBoundingClientRect();
+            if (l + r.width > window.innerWidth) l = e.clientX - r.width - 15;
+            if (t + r.height > window.innerHeight) t = e.clientY - r.height - 15;
+            tt.style.left = l+'px'; tt.style.top = t+'px';
+        }
+    });
+    document.querySelectorAll('.hover-target').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            const d = infoData[el.getAttribute('data-id')];
+            if (d) { ttT.textContent = d.title; ttD.textContent = d.desc; tt.style.opacity = '1'; }
+        });
+        el.addEventListener('mouseleave', () => { tt.style.opacity = '0'; });
+    });
+
+    // Sidebar
+    const sb = document.getElementById('info-sidebar');
+    document.getElementById('sidebar-toggle').addEventListener('click', () => sb.classList.toggle('open'));
+    document.getElementById('sidebar-close').addEventListener('click', () => sb.classList.remove('open'));
+});
+</script>
+</body>
+</html>

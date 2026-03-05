@@ -14,7 +14,7 @@ from PySide6.QtGui import QIcon, QFont
 
 from constants import COLORS, WINDOW, GLOBAL_STYLESHEET
 from app_logger import logger
-from views import LandingWidget, LoginWidget, HomeWidget, DataExplorerWidget, LearnWidget, ProgressWidget, QuizCenterWidget, CarbonCycleView
+from views import LandingWidget, LoginWidget, HomeWidget, DataExplorerWidget, LearnWidget, ProgressWidget, QuizCenterWidget, PhenomenaView
 
 
 class MainWindow(QMainWindow):
@@ -69,7 +69,7 @@ class MainWindow(QMainWindow):
 
         # ── Sidebar ──
         sidebar = QWidget()
-        sidebar.setFixedWidth(110)
+        sidebar.setFixedWidth(130)
         sidebar.setStyleSheet(f"background-color: {COLORS['card_bg']};")
         sidebar_layout = QVBoxLayout(sidebar)
         sidebar_layout.setContentsMargins(0, 20, 0, 15)
@@ -88,7 +88,7 @@ class MainWindow(QMainWindow):
         self.nav_buttons = []
         for emoji, label in nav_items:
             btn = QPushButton(f"{emoji}\n{label}")
-            btn.setFixedSize(100, 70)
+            btn.setFixedSize(120, 70)
             btn.setFont(QFont("Segoe UI", 10))
             btn.setStyleSheet(self._nav_btn_style(False))
             btn.setCursor(Qt.PointingHandCursor)
@@ -144,14 +144,14 @@ class MainWindow(QMainWindow):
         self.learn_widget = LearnWidget(user_id=self.user_id)
         self.progress_widget = ProgressWidget(user_id=self.user_id)
         self.quiz_center_widget = QuizCenterWidget(user_id=self.user_id)
-        self.carbon_cycle_widget = CarbonCycleView()
+        self.phenomena_widget = PhenomenaView()
 
         self.content_stack.addWidget(self.home_widget)
         self.content_stack.addWidget(self.explorer_widget)
         self.content_stack.addWidget(self.learn_widget)
         self.content_stack.addWidget(self.progress_widget)
         self.content_stack.addWidget(self.quiz_center_widget)
-        self.content_stack.addWidget(self.carbon_cycle_widget)
+        self.content_stack.addWidget(self.phenomena_widget)
 
         layout.addWidget(self.content_stack)
 

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Process of Ocean Acidification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #0f172a;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            touch-action: none;
+            color: #fff;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        @keyframes float-molecule {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(5deg); }
+        }
+        @keyframes drift-cloud {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(20px); }
+        }
+        @keyframes flow-down {
+            0% { transform: translateY(-20px); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(60px); opacity: 0; }
+        }
+        @keyframes pulse-h-ion {
+            0%, 100% { filter: drop-shadow(0 0 4px rgba(239,68,68,0.8)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 12px rgba(239,68,68,1)); transform: scale(1.1); }
+        }
+        @keyframes flow-arrow { to { stroke-dashoffset: -40; } }
+        @keyframes bubble-rise {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-200px) scale(1.5); opacity: 0; }
+        }
+
+        .float { animation: float-molecule 5s ease-in-out infinite; }
+        .float-d1 { animation: float-molecule 6s ease-in-out 1s infinite; }
+        .float-d2 { animation: float-molecule 4.5s ease-in-out 2s infinite; }
+        .drift { animation: drift-cloud 20s ease-in-out infinite; }
+        .drift-rev { animation: drift-cloud 25s ease-in-out infinite reverse; }
+        .pulse-ion { animation: pulse-h-ion 2s ease-in-out infinite; transform-origin: center; }
+        .flow-co2 { animation: flow-down 3s linear infinite; }
+        .flow-co2-d1 { animation: flow-down 3s linear 1s infinite; }
+        .flow-co2-d2 { animation: flow-down 3s linear 2s infinite; }
+        .animated-arrow { fill: none; stroke-width: 6; stroke-dasharray: 15 15; stroke-linecap: round; animation: flow-arrow 1s linear infinite; }
+
+        .lbl {
+            position: absolute; z-index: 20; pointer-events: auto; cursor: pointer;
+            font-weight: 600; font-size: 15px; letter-spacing: 0.05em;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.8);
+            transition: color 0.3s, transform 0.3s; white-space: nowrap;
+        }
+        .lbl:hover { color: #38bdf8; transform: scale(1.05); }
+
+        .tt {
+            position: fixed; z-index: 50; pointer-events: none; opacity: 0;
+            transition: opacity 0.2s;
+            background: rgba(15,23,42,0.95); backdrop-filter: blur(12px);
+            border: 1px solid #334155; padding: 18px 20px; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7); max-width: 320px;
+        }
+        .tt h3 { font-size: 16px; font-weight: 800; color: #38bdf8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
+        .tt .bar { height: 3px; width: 40px; background: #3b82f6; border-radius: 2px; margin-bottom: 10px; }
+        .tt p { font-size: 13px; color: #cbd5e1; line-height: 1.6; }
+
+        .sidebar {
+            position: fixed; top: 0; right: 0; height: 100%; width: 460px;
+            background: rgba(15,23,42,0.96); backdrop-filter: blur(24px);
+            border-left: 1px solid #334155; z-index: 70;
+            transform: translateX(100%); transition: transform 0.5s ease;
+            overflow-y: auto;
+        }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-track { background: rgba(15,23,42,0.5); }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.5); border-radius: 4px; }
+
+        .toggle-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 60;
+            background: rgba(14,165,233,0.8); border: 1px solid rgba(56,189,248,0.3);
+            color: #fff; padding: 10px 18px; border-radius: 24px; cursor: pointer;
+            font-family: 'Inter',sans-serif; font-weight: 600; font-size: 13px;
+            letter-spacing: 0.06em; text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(14,165,233,0.4); transition: background 0.3s;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .toggle-btn:hover { background: rgba(56,189,248,0.9); }
+
+        .card { background: rgba(30,41,59,0.5); border: 1px solid rgba(51,65,85,0.5); border-radius: 10px; padding: 16px; transition: background 0.3s; }
+        .card:hover { background: rgba(30,41,59,0.8); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; flex-shrink: 0; }
+
+        @media (max-width: 640px) { .sidebar { width: 100%; } .lbl { font-size: 12px; } }
+    </style>
+</head>
+<body>
+
+<div style="position:relative;width:100%;height:100%;background:#bfdbfe;">
+
+    <svg viewBox="0 0 1200 800" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" preserveAspectRatio="xMidYMid meet">
+        <defs>
+            <linearGradient id="sky-grad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#e0f2fe"/></linearGradient>
+            <linearGradient id="ocean-grad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="40%" stop-color="#0284c7"/><stop offset="100%" stop-color="#082f49"/></linearGradient>
+            <linearGradient id="coral-grad-1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#f43f5e"/><stop offset="100%" stop-color="#9f1239"/></linearGradient>
+            <linearGradient id="coral-grad-2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#d97706"/></linearGradient>
+            <linearGradient id="bleached-grad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#f8fafc"/><stop offset="100%" stop-color="#94a3b8"/></linearGradient>
+            <linearGradient id="ph-scale" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="50%" stop-color="#10b981"/><stop offset="80%" stop-color="#facc15"/><stop offset="100%" stop-color="#ef4444"/></linearGradient>
+            <radialGradient id="atom-c" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#94a3b8"/><stop offset="100%" stop-color="#334155"/></radialGradient>
+            <radialGradient id="atom-o" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#fca5a5"/><stop offset="100%" stop-color="#b91c1c"/></radialGradient>
+            <radialGradient id="atom-h" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#bfdbfe"/><stop offset="100%" stop-color="#2563eb"/></radialGradient>
+            <radialGradient id="atom-h-ion" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#fca5a5"/><stop offset="100%" stop-color="#ef4444"/></radialGradient>
+            <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><polygon points="0,0 10,5 0,10" fill="#bae6fd"/></marker>
+            <marker id="arrow-solid" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><polygon points="0,0 10,5 0,10" fill="#94a3b8"/></marker>
+            <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><polygon points="0,0 10,5 0,10" fill="#fca5a5"/></marker>
+            <filter id="shadow"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.4"/></filter>
+        </defs>
+
+        <!-- Sky -->
+        <rect x="0" y="0" width="1200" height="250" fill="url(#sky-grad)"/>
+        <!-- Ocean -->
+        <path fill="url(#ocean-grad)"><animate attributeName="d" values="M 0 250 Q 150 240 300 250 T 600 250 T 900 250 T 1200 250 L 1200 800 L 0 800 Z;M 0 250 Q 150 260 300 250 T 600 250 T 900 250 T 1200 250 L 1200 800 L 0 800 Z;M 0 250 Q 150 240 300 250 T 600 250 T 900 250 T 1200 250 L 1200 800 L 0 800 Z" dur="6s" repeatCount="indefinite"/></path>
+        <path d="M 0 250 Q 150 240 300 250 T 600 250 T 900 250 T 1200 250" fill="none" stroke="#e0f2fe" stroke-width="4" opacity="0.6"/>
+        <!-- Sea Floor -->
+        <path d="M 0 800 L 0 700 Q 100 680 200 720 T 500 750 T 800 720 T 1000 760 T 1200 700 L 1200 800 Z" fill="#0f172a" opacity="0.6"/>
+        <!-- Bubbles -->
+        <g id="bubbles-container"></g>
+
+        <!-- Clouds -->
+        <g class="drift" opacity="0.9">
+            <path d="M 50 100 Q 70 60 120 70 Q 150 30 200 60 Q 250 50 260 90 Q 290 100 250 130 L 70 130 Q 30 120 50 100 Z" fill="#f1f5f9" filter="url(#shadow)"/>
+        </g>
+        <g class="drift-rev" opacity="0.8">
+            <path d="M 850 120 Q 880 70 940 80 Q 980 40 1040 70 Q 1100 60 1110 100 Q 1150 120 1100 150 L 880 150 Q 830 140 850 120 Z" fill="#e2e8f0" filter="url(#shadow)"/>
+        </g>
+
+        <!-- Atmospheric CO2 (Left) -->
+        <g class="hover-target" data-id="atmos-co2" style="pointer-events:auto;cursor:pointer;">
+            <rect x="50" y="20" width="300" height="200" fill="transparent"/>
+            <g class="flow-co2"><circle cx="150" cy="140" r="6" fill="url(#atom-c)"/><circle cx="140" cy="140" r="4" fill="url(#atom-o)"/><circle cx="160" cy="140" r="4" fill="url(#atom-o)"/></g>
+            <g class="flow-co2-d1"><circle cx="200" cy="160" r="6" fill="url(#atom-c)"/><circle cx="190" cy="160" r="4" fill="url(#atom-o)"/><circle cx="210" cy="160" r="4" fill="url(#atom-o)"/></g>
+            <g class="flow-co2-d2"><circle cx="100" cy="150" r="6" fill="url(#atom-c)"/><circle cx="90" cy="150" r="4" fill="url(#atom-o)"/><circle cx="110" cy="150" r="4" fill="url(#atom-o)"/></g>
+            <path d="M 120 160 L 120 220" class="animated-arrow" stroke="#93c5fd" marker-end="url(#arrow-blue)"/>
+            <path d="M 180 170 L 180 230" class="animated-arrow" stroke="#93c5fd" marker-end="url(#arrow-blue)"/>
+            <path d="M 240 150 L 240 210" class="animated-arrow" stroke="#93c5fd" marker-end="url(#arrow-blue)"/>
+            <text x="170" y="45" fill="#0f172a" font-weight="800" font-size="20" text-anchor="middle" style="text-shadow:0 0 10px white;">Atmospheric CO₂</text>
+        </g>
+
+        <!-- Atmospheric CO2 (Right) -->
+        <g class="hover-target" data-id="atmos-co2" style="pointer-events:auto;cursor:pointer;">
+            <rect x="850" y="20" width="300" height="200" fill="transparent"/>
+            <g class="flow-co2-d1"><circle cx="950" cy="160" r="6" fill="url(#atom-c)"/><circle cx="940" cy="160" r="4" fill="url(#atom-o)"/><circle cx="960" cy="160" r="4" fill="url(#atom-o)"/></g>
+            <g class="flow-co2"><circle cx="1050" cy="140" r="6" fill="url(#atom-c)"/><circle cx="1040" cy="140" r="4" fill="url(#atom-o)"/><circle cx="1060" cy="140" r="4" fill="url(#atom-o)"/></g>
+            <path d="M 920 160 L 900 220" class="animated-arrow" stroke="#93c5fd" marker-end="url(#arrow-blue)"/>
+            <path d="M 1000 170 L 1000 230" class="animated-arrow" stroke="#93c5fd" marker-end="url(#arrow-blue)"/>
+            <path d="M 1080 150 L 1080 210" class="animated-arrow" stroke="#93c5fd" marker-end="url(#arrow-blue)"/>
+        </g>
+
+        <!-- CO2 Dissolving -->
+        <g class="hover-target" data-id="dissolving" style="pointer-events:auto;cursor:pointer;">
+            <path d="M 280 260 Q 320 380 430 400" fill="none" stroke="#cbd5e1" stroke-width="25" stroke-linecap="round" opacity="0.3" marker-end="url(#arrow-solid)"/>
+            <path d="M 280 260 Q 320 380 430 400" fill="none" stroke="#f1f5f9" stroke-width="8" stroke-linecap="round" class="animated-arrow" opacity="0.8"/>
+            <g class="float"><circle cx="100" cy="350" r="8" fill="url(#atom-c)"/><circle cx="85" cy="350" r="6" fill="url(#atom-o)"/><circle cx="115" cy="350" r="6" fill="url(#atom-o)"/></g>
+            <g class="float-d1"><circle cx="150" cy="420" r="8" fill="url(#atom-c)"/><circle cx="135" cy="420" r="6" fill="url(#atom-o)"/><circle cx="165" cy="420" r="6" fill="url(#atom-o)"/></g>
+            <g class="float-d2"><circle cx="80" cy="500" r="8" fill="url(#atom-c)"/><circle cx="65" cy="500" r="6" fill="url(#atom-o)"/><circle cx="95" cy="500" r="6" fill="url(#atom-o)"/></g>
+            <text x="350" y="320" fill="#e2e8f0" font-weight="700" font-size="18" text-anchor="middle">CO₂ dissolves</text>
+            <text x="350" y="345" fill="#e2e8f0" font-weight="700" font-size="18" text-anchor="middle">in seawater</text>
+        </g>
+
+        <!-- Chemistry (Middle) -->
+        <g class="hover-target" data-id="chemistry" style="pointer-events:auto;cursor:pointer;">
+            <rect x="420" y="380" width="400" height="150" fill="transparent"/>
+            <g transform="translate(450, 420)">
+                <circle cx="0" cy="0" r="14" fill="url(#atom-c)" filter="url(#shadow)"/><circle cx="-20" cy="0" r="10" fill="url(#atom-o)"/><circle cx="20" cy="0" r="10" fill="url(#atom-o)"/>
+                <text x="0" y="40" fill="white" font-weight="bold" font-size="16" text-anchor="middle">CO<tspan dy="5" font-size="12">2</tspan></text>
+                <text x="50" y="8" fill="white" font-weight="bold" font-size="24" text-anchor="middle">+</text>
+                <circle cx="100" cy="0" r="14" fill="url(#atom-o)" filter="url(#shadow)"/><circle cx="85" cy="12" r="8" fill="url(#atom-h)"/><circle cx="115" cy="12" r="8" fill="url(#atom-h)"/>
+                <text x="100" y="40" fill="white" font-weight="bold" font-size="16" text-anchor="middle">H<tspan dy="5" font-size="12">2</tspan><tspan dy="-5">O</tspan></text>
+                <path d="M 135 0 L 165 0" stroke="#cbd5e1" stroke-width="4" marker-end="url(#arrow-solid)"/>
+                <circle cx="210" cy="0" r="14" fill="url(#atom-c)" filter="url(#shadow)"/><circle cx="190" cy="-10" r="10" fill="url(#atom-o)"/><circle cx="230" cy="-10" r="10" fill="url(#atom-o)"/><circle cx="210" cy="18" r="10" fill="url(#atom-o)"/><circle cx="180" cy="-22" r="6" fill="url(#atom-h)"/><circle cx="240" cy="-22" r="6" fill="url(#atom-h)"/>
+                <text x="210" y="40" fill="white" font-weight="bold" font-size="16" text-anchor="middle">H<tspan dy="5" font-size="12">2</tspan><tspan dy="-5">CO</tspan><tspan dy="5" font-size="12">3</tspan></text>
+                <path d="M 255 0 L 285 0" stroke="#cbd5e1" stroke-width="4" marker-end="url(#arrow-solid)"/>
+                <g class="pulse-ion" transform="translate(320, 0)"><circle cx="0" cy="0" r="12" fill="url(#atom-h-ion)" filter="url(#shadow)"/><text x="0" y="5" fill="white" font-weight="bold" font-size="14" text-anchor="middle">+</text></g>
+                <text x="320" y="40" fill="#fca5a5" font-weight="bold" font-size="16" text-anchor="middle">H<tspan dy="-10" font-size="12">+</tspan></text>
+                <text x="350" y="8" fill="white" font-weight="bold" font-size="24" text-anchor="middle">+</text>
+                <circle cx="400" cy="0" r="14" fill="url(#atom-c)" filter="url(#shadow)"/><circle cx="380" cy="-10" r="10" fill="url(#atom-o)"/><circle cx="420" cy="-10" r="10" fill="url(#atom-o)"/><circle cx="400" cy="18" r="10" fill="url(#atom-o)"/><circle cx="430" cy="-22" r="6" fill="url(#atom-h)"/>
+                <text x="400" y="40" fill="white" font-weight="bold" font-size="16" text-anchor="middle">HCO<tspan dy="5" font-size="12">3</tspan><tspan dy="-10" font-size="12">-</tspan></text>
+            </g>
+        </g>
+
+        <!-- pH Scale -->
+        <g class="hover-target" data-id="ph-scale" style="pointer-events:auto;cursor:pointer;">
+            <g transform="translate(500, 560)">
+                <text x="120" y="-45" fill="white" font-weight="bold" font-size="22" text-anchor="middle">Lower Ocean pH</text>
+                <rect x="20" y="-20" width="200" height="25" fill="url(#ph-scale)" stroke="#1e293b" stroke-width="2"/>
+                <text x="30" y="-2" fill="white" font-weight="bold" font-size="14">8.1</text>
+                <text x="190" y="-2" fill="white" font-weight="bold" font-size="14">7.8</text>
+                <text x="120" y="25" fill="#cbd5e1" font-weight="600" font-size="16" text-anchor="middle">Increased H<tspan dy="-5" font-size="12">+</tspan><tspan dy="5"> ions increase acidity</tspan></text>
+            </g>
+        </g>
+
+        <!-- Stressed Reef (Right) -->
+        <g class="hover-target" data-id="stressed-reef" style="pointer-events:auto;cursor:pointer;">
+            <path d="M 850 350 Q 950 350 900 550" fill="none" stroke="#ef4444" stroke-width="8" class="animated-arrow"/>
+            <path d="M 900 750 Q 880 650 820 600 Q 840 640 860 680 Q 820 680 780 650 Q 840 700 880 750 Z" fill="url(#bleached-grad)" filter="url(#shadow)"/>
+            <path d="M 900 750 Q 920 620 980 580 Q 950 630 920 670 Q 980 660 1020 620 Q 960 690 920 750 Z" fill="url(#bleached-grad)" filter="url(#shadow)"/>
+            <g class="pulse-ion float" transform="translate(800, 580)"><circle cx="0" cy="0" r="10" fill="url(#atom-h-ion)"/><text x="0" y="4" fill="white" font-weight="bold" font-size="12" text-anchor="middle">H<tspan dy="-5" font-size="10">+</tspan></text></g>
+            <g class="pulse-ion float-d1" transform="translate(880, 550)"><circle cx="0" cy="0" r="10" fill="url(#atom-h-ion)"/><text x="0" y="4" fill="white" font-weight="bold" font-size="12" text-anchor="middle">H<tspan dy="-5" font-size="10">+</tspan></text></g>
+            <g class="pulse-ion float-d2" transform="translate(980, 500)"><circle cx="0" cy="0" r="10" fill="url(#atom-h-ion)"/><text x="0" y="4" fill="white" font-weight="bold" font-size="12" text-anchor="middle">H<tspan dy="-5" font-size="10">+</tspan></text></g>
+            <g transform="translate(450, 720)">
+                <text x="120" y="-45" fill="white" font-weight="bold" font-size="22" text-anchor="middle">Coral Reef Stress</text>
+                <text x="120" y="15" fill="#94a3b8" font-size="12" text-anchor="middle">Corals struggle to build skeletons,</text>
+                <text x="120" y="30" fill="#94a3b8" font-size="12" text-anchor="middle">leading to bleaching and weakening.</text>
+            </g>
+        </g>
+
+        <!-- Healthy Reef (Left) -->
+        <g class="hover-target" data-id="healthy-reef" style="pointer-events:auto;cursor:pointer;">
+            <path d="M 200 780 Q 180 650 120 580 Q 150 640 170 680 Q 110 680 60 640 Q 140 700 180 780 Z" fill="url(#coral-grad-1)" filter="url(#shadow)"/>
+            <path d="M 200 780 Q 230 620 300 550 Q 260 620 230 660 Q 320 660 380 600 Q 280 700 220 780 Z" fill="url(#coral-grad-2)" filter="url(#shadow)"/>
+            <path d="M 250 800 Q 250 720 350 720 Q 450 720 450 800 Z" fill="#10b981" filter="url(#shadow)"/>
+            <path d="M 270 760 Q 300 740 320 770 T 370 750 T 420 770" fill="none" stroke="#064e3b" stroke-width="4" stroke-linecap="round"/>
+            <path d="M 80 800 L 70 730 L 90 730 Z M 100 800 L 105 750 L 120 750 Z" fill="#8b5cf6" filter="url(#shadow)"/>
+            <rect x="0" y="550" width="400" height="250" fill="transparent"/>
+        </g>
+    </svg>
+</div>
+
+<!-- Tooltip -->
+<div class="tt" id="tooltip"><h3 id="tt-title"></h3><div class="bar"></div><p id="tt-desc"></p></div>
+
+<!-- Toggle Button -->
+<button class="toggle-btn" id="sidebar-toggle">
+    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    Deep Dive
+</button>
+
+<!-- Sidebar -->
+<div class="sidebar" id="info-sidebar">
+    <div style="padding:32px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid #334155;">
+            <h2 style="font-size:22px;font-weight:800;background:linear-gradient(90deg,#38bdf8,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:0.06em;">OCEAN ACIDIFICATION</h2>
+            <button id="sidebar-close" style="background:none;border:none;color:#94a3b8;cursor:pointer;padding:8px;border-radius:50%;transition:color 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:28px;color:#cbd5e1;line-height:1.7;">
+            <section>
+                <h3 style="font-size:16px;font-weight:700;color:#fff;margin-bottom:10px;display:flex;align-items:center;"><span class="dot" style="background:#38bdf8;"></span>The Ocean Sink</h3>
+                <p style="font-size:14px;">The ocean absorbs about <strong style="color:#fff;">30% of all CO₂</strong> released by human activities. While this slows atmospheric warming, it fundamentally changes seawater chemistry.</p>
+            </section>
+            <section>
+                <h3 style="font-size:16px;font-weight:700;color:#fff;margin-bottom:10px;display:flex;align-items:center;"><span class="dot" style="background:#818cf8;"></span>The Chemical Reaction</h3>
+                <div class="card">
+                    <code style="color:#7dd3fc;font-family:monospace;font-size:14px;display:block;margin-bottom:8px;">CO₂ + H₂O → H₂CO₃ → H⁺ + HCO₃⁻</code>
+                    <p style="font-size:13px;color:#94a3b8;">CO₂ reacts with water to form <strong style="color:#fff;">Carbonic Acid</strong>, which splits into Bicarbonate and free <strong style="color:#fca5a5;">Hydrogen ions (H⁺)</strong>.</p>
+                </div>
+                <p style="font-size:14px;margin-top:10px;">The flood of H⁺ ions lowers ocean pH, making it more acidic.</p>
+            </section>
+            <section>
+                <h3 style="font-size:16px;font-weight:700;color:#fff;margin-bottom:10px;display:flex;align-items:center;"><span class="dot" style="background:#34d399;"></span>The pH Scale</h3>
+                <p style="font-size:14px;">Since the industrial revolution, surface ocean pH dropped from 8.2 to 8.1 — a <strong style="color:#fff;">30% increase in acidity</strong> (logarithmic scale).</p>
+            </section>
+            <section>
+                <h3 style="font-size:16px;font-weight:700;color:#fff;margin-bottom:10px;display:flex;align-items:center;"><span class="dot" style="background:#f87171;"></span>Impact on Marine Life</h3>
+                <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;color:#94a3b8;">
+                    <p>• <strong style="color:#cbd5e1;">Stolen Building Blocks:</strong> H⁺ ions bond with carbonate that corals, oysters, and shelled plankton need to build shells.</p>
+                    <p>• <strong style="color:#cbd5e1;">Coral Bleaching:</strong> Stressed corals expel symbiotic algae, turning bone white. Over 50% of the Great Barrier Reef has bleached since 2016.</p>
+                    <p>• <strong style="color:#cbd5e1;">Food Web Collapse:</strong> Tiny shelled organisms at the base of the food chain dissolve in acidic water, impacting fish, whales, and billions of humans.</p>
+                </div>
+            </section>
+            <section style="background:rgba(14,165,233,0.1);border:1px solid rgba(56,189,248,0.3);border-radius:10px;padding:16px;">
+                <h3 style="font-size:16px;font-weight:700;color:#38bdf8;margin-bottom:10px;display:flex;align-items:center;"><span class="dot" style="background:#38bdf8;"></span>💡 AI Insight</h3>
+                <p style="font-size:14px;color:#7dd3fc;">At current emission rates, ocean pH could drop to <strong style="color:#fff;">7.8 by 2100</strong> — a 150% acidity increase from pre-industrial levels. This would make 90% of coral reefs unviable and dissolve the shells of pteropods, collapsing marine food chains that feed <strong style="color:#fde047;">3 billion people</strong>.</p>
+                <p style="font-size:13px;color:#64748b;margin-top:10px;">Based on IPCC AR6, NOAA Ocean Acidification Program.</p>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+const infoData = {
+    'atmos-co2': { title: 'Atmospheric CO₂', desc: 'Excess CO₂ from burning fossil fuels gathers in the atmosphere. The ocean absorbs about 30% of these emissions, acting as a massive carbon sponge.' },
+    'dissolving': { title: 'CO₂ Dissolving', desc: 'As CO₂ meets the ocean surface, it physically dissolves into seawater, initiating a chain of chemical reactions that increase acidity.' },
+    'chemistry': { title: 'Chemical Breakdown', desc: 'CO₂ reacts with water (H₂O) to form Carbonic Acid (H₂CO₃), which instantly splits into Bicarbonate and highly reactive Hydrogen ions (H⁺).' },
+    'ph-scale': { title: 'Increasing Acidity', desc: 'The flood of H⁺ ions drives pH down. A 0.1 drop represents a 30% increase in acidity due to the logarithmic pH scale.' },
+    'healthy-reef': { title: 'Healthy Coral Reef', desc: 'In normal pH, corals easily extract carbonate to build strong, colorful limestone skeletons that house 25% of all marine species.' },
+    'stressed-reef': { title: 'Coral Reef Stress', desc: 'H⁺ ions bond with the carbonate corals need. Starved of building materials, corals weaken, stop growing, bleach, and eventually die.' }
+};
+document.addEventListener('DOMContentLoaded', () => {
+    const bg = document.getElementById('bubbles-container');
+    for (let i = 0; i < 40; i++) {
+        const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        c.setAttribute('cx', Math.random()*1200);
+        c.setAttribute('cy', 600+Math.random()*200);
+        c.setAttribute('r', Math.random()*4+2);
+        c.setAttribute('fill','none');
+        c.setAttribute('stroke','#bae6fd');
+        c.setAttribute('stroke-width','2');
+        c.style.animation = `bubble-rise ${Math.random()*6+4}s ease-in infinite`;
+        c.style.animationDelay = `${Math.random()*5}s`;
+        bg.appendChild(c);
+    }
+    const tt = document.getElementById('tooltip'), tT = document.getElementById('tt-title'), tD = document.getElementById('tt-desc');
+    document.addEventListener('mousemove', e => {
+        if (tt.style.opacity==='1') {
+            let l=e.clientX+20,t=e.clientY+20; const r=tt.getBoundingClientRect();
+            if(l+r.width>innerWidth)l=e.clientX-r.width-15;if(t+r.height>innerHeight)t=e.clientY-r.height-15;
+            tt.style.left=l+'px';tt.style.top=t+'px';
+        }
+    });
+    document.querySelectorAll('.hover-target').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            const d = infoData[el.getAttribute('data-id')];
+            if(d){tT.textContent=d.title;tD.textContent=d.desc;tt.style.opacity='1';}
+        });
+        el.addEventListener('mouseleave', () => { tt.style.opacity='0'; });
+    });
+    const sb = document.getElementById('info-sidebar');
+    document.getElementById('sidebar-toggle').addEventListener('click', () => sb.classList.toggle('open'));
+    document.getElementById('sidebar-close').addEventListener('click', () => sb.classList.remove('open'));
+});
+</script>
+</body>
+</html>

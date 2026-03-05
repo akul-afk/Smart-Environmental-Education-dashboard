@@ -9,7 +9,7 @@ from .data_explorer import DataExplorerWidget
 from .learn import LearnWidget
 from .progress import ProgressWidget
 from .quiz_center import QuizCenterWidget
-from .carbon_cycle_view import CarbonCycleView
+from .phenomena_view import PhenomenaView
 
 __all__ = [
     "LandingWidget",
@@ -19,5 +19,5 @@ __all__ = [
     "LearnWidget",
     "ProgressWidget",
     "QuizCenterWidget",
-    "CarbonCycleView",
+    "PhenomenaView",
 ]

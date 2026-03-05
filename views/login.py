@@ -158,6 +158,8 @@ class LoginWidget(QWidget):
             QPushButton:pressed {{ background-color: #178a3f; }}
         """)
         self.login_btn.clicked.connect(self._do_login)
+        self.login_email.returnPressed.connect(self._do_login)
+        self.login_password.returnPressed.connect(self._do_login)
         login_layout.addWidget(self.login_btn)
 
         login_layout.addSpacerItem(QSpacerItem(0, 10, QSizePolicy.Minimum, QSizePolicy.Fixed))

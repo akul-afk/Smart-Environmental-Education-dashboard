@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Borealis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Inter', sans-serif; color: #fff; }
+
+        #bg-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+
+        @keyframes ping { 0% { transform: scale(1); opacity: 0.7; } 75%, 100% { transform: scale(3); opacity: 0; } }
+        .dot-ping { position: absolute; border-radius: 50%; animation: ping 2.5s cubic-bezier(0,0,0.2,1) infinite; }
+
+        /* Invisible interactive zones — NO background/border/box-shadow on hover */
+        .zone { position: absolute; z-index: 10; cursor: pointer; }
+        .zone:hover .indicator { opacity: 0; }
+        .indicator { position: absolute; width: 14px; height: 14px; border-radius: 50%; opacity: 0.8; transition: opacity 0.3s; }
+
+        /* Tooltip */
+        #tooltip {
+            position: fixed; z-index: 90; pointer-events: none; opacity: 0; transition: opacity 0.2s;
+            background: rgba(15,23,42,0.94); backdrop-filter: blur(14px); border: 1px solid #334155;
+            padding: 16px 18px; border-radius: 12px; box-shadow: 0 12px 36px rgba(0,0,0,0.75); max-width: 320px;
+        }
+        #tooltip h3 { font-size: 16px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+        #tooltip .bar { height: 3px; width: 40px; border-radius: 2px; margin-bottom: 8px; }
+        #tooltip p { font-size: 13px; color: #cbd5e1; line-height: 1.55; }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed; top: 0; right: 0; height: 100%; width: 460px; z-index: 80;
+            background: rgba(15,23,42,0.96); backdrop-filter: blur(24px); border-left: 1px solid #334155;
+            transform: translateX(100%); transition: transform 0.45s cubic-bezier(0.4,0,0.2,1); overflow-y: auto;
+        }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar::-webkit-scrollbar { width: 5px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(167,139,250,0.4); border-radius: 3px; }
+
+        .toggle-btn {
+            position: fixed; top: 16px; right: 16px; z-index: 60;
+            background: rgba(99,102,241,0.85); border: 1px solid rgba(129,140,248,0.3); color: #fff;
+            padding: 9px 18px; border-radius: 22px; cursor: pointer; font-weight: 700; font-size: 12px;
+            text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 0 18px rgba(99,102,241,0.5);
+            transition: all 0.3s; display: flex; align-items: center; gap: 7px;
+        }
+        .toggle-btn:hover { background: rgba(129,140,248,1); transform: scale(1.05); }
+
+        .card { background: rgba(30,41,59,0.5); border: 1px solid rgba(51,65,85,0.5); border-radius: 8px; padding: 14px; margin-top: 8px; }
+        .sdot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .ccard { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 7px; margin-bottom: 6px; }
+    </style>
+</head>
+<body>
+
+<video id="bg-video" autoplay loop muted playsinline>
+    <source src="Flow_delpmaspu_.webm" type="video/webm">
+    <source src="Flow_delpmaspu_.mp4" type="video/mp4">
+</video>
+
+<!--
+  Hitbox zones mapped to the video frame (16:9 aspect ratio).
+  The video shows: Sun top-left, solar wind arrows top-center, Earth/magnetosphere top-right,
+  charged particles spiraling right, atmosphere arc across middle, collision zone center,
+  oxygen glow bottom-left, nitrogen glow bottom-right, "Aurora Borealis" title bottom-center.
+-->
+
+<!-- 1. The Sun — large area top-left -->
+<div class="zone" data-id="sun" style="top:22px;left:19px;width:200px;height:200px;">
+    <div class="indicator" style="top:10px;left:20px;background:#facc15;box-shadow:0 0 14px #facc15;">
+        <div class="dot-ping" style="inset:0;position:absolute;background:#facc15;"></div>
+    </div>
+</div>
+
+<!-- 2. Solar Wind — arrows flowing from sun to earth, top band -->
+<div class="zone" data-id="solar-wind" style="top:108px;left:422px;width:538px;height:108px;">
+    <div class="indicator" style="top:5px;left:70px;background:#f87171;box-shadow:0 0 10px #f87171;">
+        <div class="dot-ping" style="inset:0;position:absolute;background:#f87171;"></div>
+    </div>
+</div>
+
+<!-- 3. Earth / Magnetosphere — top-right -->
+<div class="zone" data-id="magnetosphere" style="top:35px;left:800px;width:730px;height:324px;">
+    <div class="indicator" style="top:130px;left:200px;background:#818cf8;box-shadow:0 0 10px #818cf8;">
+        <div class="dot-ping" style="inset:0;position:absolute;background:#818cf8;"></div>
+    </div>
+</div>
+
+<!-- 4. Charged Particles — spiraling down right side -->
+<div class="zone" data-id="charged-particles" style="top:220px;left:230px;width:499px;height:194px;">
+    <div class="indicator" style="top:78px;left:150px;background:#22d3ee;box-shadow:0 0 10px #22d3ee;">
+        <div class="dot-ping" style="inset:0;position:absolute;background:#22d3ee;"></div>
+    </div>
+</div>
+
+<!-- 5. Upper Atmosphere — arc across middle -->
+<div class="zone" data-id="upper-atmosphere" style="top:400px;left:650px;width:650px;height:86px;">
+    <div class="indicator" style="top:17px;left:850px;background:#60a5fa;box-shadow:0 0 10px #60a5fa;">
+        <div class="dot-ping" style="inset:0;position:absolute;background:#60a5fa;"></div>
+    </div>
+</div>
+
+<!-- 6. General Collision — center area below atmosphere -->
+<div class="zone" data-id="collision" style="top:450px;left:950px;width:576px;height:108px;">
+    <div class="indicator" style="top:32px;left:490px;background:#fff;box-shadow:0 0 10px #fff;">
+        <div class="dot-ping" style="inset:0;position:absolute;background:#fff;"></div>
+    </div>
+</div>
+
+<!-- 7. Oxygen Collision — bottom-left glow area -->
+<div class="zone" data-id="oxygen" style="top:600px;left:288px;width:480px;height:151px;">
+    <div class="indicator" style="top:45px;left:288px;background:#4ade80;box-shadow:0 0 10px #4ade80;">
+        <div class="dot-ping" style="inset:0;position:absolute;background:#4ade80;"></div>
+    </div>
+</div>
+
+<!-- 8. Nitrogen Collision — bottom-right glow area -->
+<div class="zone" data-id="nitrogen" style="top:600px;left:1152px;width:480px;height:151px;">
+    <div class="indicator" style="top:45px;left:192px;background:#c084fc;box-shadow:0 0 10px #c084fc;">
+        <div class="dot-ping" style="inset:0;position:absolute;background:#c084fc;"></div>
+    </div>
+</div>
+
+<!-- 9. Aurora Borealis Title — bottom center -->
+<div class="zone" data-id="aurora" style="top:600px;left:50px;width:70px;height:130px;">
+    <div class="indicator" style="top:39px;left:55px;background:#34d399;box-shadow:0 0 10px #34d399;">
+        <div class="dot-ping" style="inset:0;position:absolute;background:#34d399;"></div>
+    </div>
+</div>
+
+<!-- Tooltip -->
+<div id="tooltip"><h3 id="tt-t"></h3><div class="bar" id="tt-b"></div><p id="tt-d"></p></div>
+
+<!-- Deep Dive Toggle -->
+<button class="toggle-btn" id="sidebar-toggle">
+    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    Deep Dive
+</button>
+
+<!-- Educational Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div style="padding:28px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid #334155;">
+            <h2 style="font-size:20px;font-weight:900;background:linear-gradient(90deg,#4ade80,#818cf8,#c084fc);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">AURORA BOREALIS</h2>
+            <button id="sidebar-close" style="background:none;border:none;color:#94a3b8;cursor:pointer;padding:6px;border-radius:50%;" onmouseover="this.style.background='rgba(51,65,85,0.6)'" onmouseout="this.style.background='none'">
+                <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:22px;color:#cbd5e1;line-height:1.6;">
+            <section>
+                <h3 style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#facc15;box-shadow:0 0 8px #facc15;"></span>The Solar Wind</h3>
+                <p style="font-size:13px;">The Sun releases charged particles — electrons and protons — known as the <strong style="color:#facc15;">Solar Wind</strong>. During solar flares, this intensifies dramatically.</p>
+            </section>
+            <section>
+                <h3 style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#818cf8;box-shadow:0 0 8px #818cf8;"></span>Earth's Magnetic Shield</h3>
+                <p style="font-size:13px;">The <strong style="color:#818cf8;">Magnetosphere</strong> deflects solar wind, but at the poles it funnels particles into the upper atmosphere.</p>
+            </section>
+            <section>
+                <h3 style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#4ade80;box-shadow:0 0 8px #4ade80;"></span>Atomic Collisions</h3>
+                <p style="font-size:13px;">Solar particles smash into Oxygen and Nitrogen (100–300 km up). Excited atoms release energy as <strong style="color:#4ade80;">photons</strong>.</p>
+            </section>
+            <section>
+                <h3 style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#c084fc;box-shadow:0 0 8px #c084fc;"></span>Aurora Colors</h3>
+                <div class="ccard" style="background:rgba(22,101,52,0.2);border:1px solid rgba(74,222,128,0.3);">
+                    <div style="width:14px;height:14px;border-radius:50%;background:#4ade80;flex-shrink:0;"></div>
+                    <p style="font-size:12px;"><strong style="color:#4ade80;">Oxygen ≤250km:</strong> Green/yellow</p>
+                </div>
+                <div class="ccard" style="background:rgba(127,29,29,0.2);border:1px solid rgba(239,68,68,0.3);">
+                    <div style="width:14px;height:14px;border-radius:50%;background:#ef4444;flex-shrink:0;"></div>
+                    <p style="font-size:12px;"><strong style="color:#ef4444;">Oxygen >250km:</strong> Deep red</p>
+                </div>
+                <div class="ccard" style="background:rgba(88,28,135,0.2);border:1px solid rgba(192,132,252,0.3);">
+                    <div style="width:14px;height:14px;border-radius:50%;background:#c084fc;flex-shrink:0;"></div>
+                    <p style="font-size:12px;"><strong style="color:#c084fc;">Nitrogen:</strong> Blue/purple/pink</p>
+                </div>
+            </section>
+            <section style="background:rgba(99,102,241,0.12);border:1px solid rgba(129,140,248,0.3);border-radius:8px;padding:14px;">
+                <h3 style="font-size:15px;font-weight:800;color:#818cf8;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#818cf8;"></span>💡 AI Insight</h3>
+                <p style="font-size:13px;color:#e0e7ff;">Auroras occur on other planets! <strong style="color:#fff;">Jupiter</strong> has the most powerful in the solar system. <strong style="color:#facc15;">Saturn</strong> and <strong style="color:#22d3ee;">Uranus</strong> also have their own light shows.</p>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+var data = {
+    'sun':              { t:'The Sun',          d:'A raging ball of plasma. Violent eruptions blast charged particles into the solar system.', c:'#facc15' },
+    'solar-wind':       { t:'Solar Wind',       d:'Electrons and protons traveling at over 1 million mph through space toward Earth.', c:'#f87171' },
+    'magnetosphere':    { t:'Magnetosphere',    d:'Generated by Earth\'s liquid iron core. Shields us from radiation but funnels particles at the poles.', c:'#818cf8' },
+    'charged-particles':{ t:'Charged Particles',d:'Solar particles trapped by Earth\'s magnetic field, spiraling along field lines toward the poles.', c:'#22d3ee' },
+    'upper-atmosphere': { t:'Upper Atmosphere', d:'The thermosphere — where solar particles crash into atmospheric gases, triggering the aurora.', c:'#60a5fa' },
+    'collision':        { t:'Atomic Collision', d:'Particles smash into atoms, transferring energy. When atoms release it, they emit photons (light).', c:'#ffffff' },
+    'oxygen':           { t:'Oxygen Collision', d:'Oxygen produces bright green/yellow and rare red auroral colors depending on altitude.', c:'#4ade80' },
+    'nitrogen':         { t:'Nitrogen Collision',d:'Nitrogen produces striking blues, purples, and pinks at lower altitudes.', c:'#c084fc' },
+    'aurora':           { t:'Aurora Borealis',  d:'Millions of atomic collisions light up the sky, creating dancing, glowing ribbons over the poles.', c:'#34d399' }
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Force video playback
+    var v = document.getElementById('bg-video');
+    function play() { if (v) { v.muted = true; var p = v.play(); if (p && p.catch) p.catch(function(){}); } }
+    play();
+    var i = 0, iv = setInterval(function() { if (!v || !v.paused) { clearInterval(iv); return; } play(); if (++i > 10) clearInterval(iv); }, 400);
+    document.addEventListener('click', function() { if (v && v.paused) play(); }, { once: true });
+
+    // Tooltip
+    var tt = document.getElementById('tooltip'), tT = document.getElementById('tt-t'), tD = document.getElementById('tt-d'), tB = document.getElementById('tt-b');
+    document.addEventListener('mousemove', function(e) {
+        if (tt.style.opacity === '1') {
+            var l = e.clientX + 18, t = e.clientY + 18, r = tt.getBoundingClientRect();
+            if (l + r.width > innerWidth) l = e.clientX - r.width - 12;
+            if (t + r.height > innerHeight) t = e.clientY - r.height - 12;
+            tt.style.left = l + 'px'; tt.style.top = t + 'px';
+        }
+    });
+    document.querySelectorAll('.zone').forEach(function(el) {
+        el.addEventListener('mouseenter', function() {
+            var d = data[el.getAttribute('data-id')];
+            if (d) { tT.textContent = d.t; tD.textContent = d.d; tT.style.color = d.c; tB.style.background = d.c; tB.style.boxShadow = '0 0 8px ' + d.c; tt.style.opacity = '1'; }
+        });
+        el.addEventListener('mouseleave', function() { tt.style.opacity = '0'; });
+    });
+
+    // Sidebar
+    var sb = document.getElementById('sidebar');
+    document.getElementById('sidebar-toggle').addEventListener('click', function() { sb.classList.toggle('open'); });
+    document.getElementById('sidebar-close').addEventListener('click', function() { sb.classList.remove('open'); });
+});
+</script>
+</body>
+</html>
