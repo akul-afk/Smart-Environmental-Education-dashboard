@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Inter', sans-serif; color: #fff; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Inter', sans-serif; color: #fff; zoom: 0.85; }
 
         #bg-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
 
@@ -149,36 +149,110 @@
             </button>
         </div>
         <div style="display:flex;flex-direction:column;gap:22px;color:#cbd5e1;line-height:1.6;">
+            <!-- 1. The Solar Origin -->
             <section>
-                <h3 style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#facc15;box-shadow:0 0 8px #facc15;"></span>The Solar Wind</h3>
-                <p style="font-size:13px;">The Sun releases charged particles — electrons and protons — known as the <strong style="color:#facc15;">Solar Wind</strong>. During solar flares, this intensifies dramatically.</p>
+                <h3 style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#facc15;box-shadow:0 0 8px #facc15;"></span>The Solar Origin</h3>
+                <p style="font-size:13px;margin-bottom:8px;">Everything begins at the Sun's surface. The Sun is not a calm star — its outer atmosphere (the <strong style="color:#facc15;">corona</strong>) churns at temperatures exceeding <strong style="color:#fff;">1 million °C</strong>, constantly ejecting particles into space.</p>
+                <p style="font-size:13px;margin-bottom:10px;">This continuous stream of charged particles is called the <strong style="color:#facc15;">Solar Wind</strong>, traveling at <strong style="color:#fff;">400–800 km/s</strong> (up to 1.8 million mph). It carries a weak magnetic field called the <strong style="color:#facc15;">Interplanetary Magnetic Field (IMF)</strong>.</p>
+                <div class="card">
+                    <p style="font-size:12px;color:#94a3b8;margin-bottom:6px;"><strong style="color:#facc15;">Solar Flares</strong> — Sudden, intense bursts of electromagnetic radiation from the Sun's surface. They travel at the speed of light and reach Earth in ~8 minutes.</p>
+                    <p style="font-size:12px;color:#94a3b8;"><strong style="color:#f87171;">Coronal Mass Ejections (CMEs)</strong> — Massive clouds of magnetized plasma violently hurled from the Sun. These take 1–3 days to reach Earth but carry billions of tons of material, triggering the most spectacular aurora storms.</p>
+                </div>
             </section>
+
+            <!-- 2. Earth's Magnetic Shield -->
             <section>
                 <h3 style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#818cf8;box-shadow:0 0 8px #818cf8;"></span>Earth's Magnetic Shield</h3>
-                <p style="font-size:13px;">The <strong style="color:#818cf8;">Magnetosphere</strong> deflects solar wind, but at the poles it funnels particles into the upper atmosphere.</p>
+                <p style="font-size:13px;margin-bottom:8px;">Deep inside Earth, a churning ocean of liquid iron generates a powerful magnetic field — the <strong style="color:#818cf8;">Magnetosphere</strong>. This invisible shield extends tens of thousands of kilometers into space, deflecting the lethal solar wind around the planet like water flowing around a rock.</p>
+                <p style="font-size:13px;margin-bottom:10px;">Without the magnetosphere, solar radiation would strip away our atmosphere over time, much like what happened to <strong style="color:#f87171;">Mars</strong>, which lost its magnetic field ~4 billion years ago.</p>
+                <div class="card">
+                    <p style="font-size:12px;color:#94a3b8;"><strong style="color:#818cf8;">Magnetic Reconnection:</strong> When the solar wind's magnetic field points opposite to Earth's, field lines can "snap" and reconnect. This explosive process accelerates particles to enormous speeds and funnels them directly into the polar regions — the key trigger for major aurora displays.</p>
+                </div>
             </section>
+
+            <!-- 3. Atomic Collisions -->
             <section>
-                <h3 style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#4ade80;box-shadow:0 0 8px #4ade80;"></span>Atomic Collisions</h3>
-                <p style="font-size:13px;">Solar particles smash into Oxygen and Nitrogen (100–300 km up). Excited atoms release energy as <strong style="color:#4ade80;">photons</strong>.</p>
+                <h3 style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#4ade80;box-shadow:0 0 8px #4ade80;"></span>Atomic Collisions & Excitation</h3>
+                <p style="font-size:13px;margin-bottom:8px;">Funneled particles rain into the <strong style="color:#60a5fa;">Thermosphere</strong> at altitudes of <strong style="color:#fff;">100 to 300 km</strong>. At these extreme speeds, they violently collide with atmospheric gases — primarily Oxygen (O₂) and Nitrogen (N₂).</p>
+                <p style="font-size:13px;margin-bottom:6px;">Each collision follows a precise quantum process:</p>
+                <div style="font-size:12px;color:#94a3b8;padding-left:8px;border-left:2px solid #334155;margin-bottom:8px;">
+                    <p style="margin-bottom:6px;"><strong style="color:#fff;">1. Impact:</strong> A high-energy solar electron slams into an atmospheric atom.</p>
+                    <p style="margin-bottom:6px;"><strong style="color:#fff;">2. Excitation:</strong> The collision transfers energy, pushing the atom's electrons to a higher orbital ("excited state").</p>
+                    <p style="margin-bottom:6px;"><strong style="color:#fff;">3. Relaxation:</strong> The excited electron is unstable. Within nanoseconds to seconds, it drops back to its ground state.</p>
+                    <p><strong style="color:#4ade80;">4. Photon Emission:</strong> The energy difference is released as a single photon of light — with a wavelength (color) determined by the specific energy gap.</p>
+                </div>
+                <p style="font-size:12px;color:#94a3b8;">Billions of these collisions happening simultaneously across the sky produce the shimmering curtains of light we see as an aurora.</p>
             </section>
+
+            <!-- 4. The Colors -->
             <section>
-                <h3 style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#c084fc;box-shadow:0 0 8px #c084fc;"></span>Aurora Colors</h3>
+                <h3 style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#c084fc;box-shadow:0 0 8px #c084fc;"></span>The Colors of the Aurora</h3>
+                <p style="font-size:13px;margin-bottom:12px;">Each color tells a scientific story — it reveals <em>which gas</em> was hit and at <em>what altitude</em>:</p>
                 <div class="ccard" style="background:rgba(22,101,52,0.2);border:1px solid rgba(74,222,128,0.3);">
                     <div style="width:14px;height:14px;border-radius:50%;background:#4ade80;flex-shrink:0;"></div>
-                    <p style="font-size:12px;"><strong style="color:#4ade80;">Oxygen ≤250km:</strong> Green/yellow</p>
+                    <div><p style="font-size:12px;"><strong style="color:#4ade80;">Green (557.7 nm):</strong> Oxygen at 100–250 km. The most common aurora color. Oxygen atoms take ~0.7 seconds to emit this photon after excitation.</p></div>
                 </div>
                 <div class="ccard" style="background:rgba(127,29,29,0.2);border:1px solid rgba(239,68,68,0.3);">
                     <div style="width:14px;height:14px;border-radius:50%;background:#ef4444;flex-shrink:0;"></div>
-                    <p style="font-size:12px;"><strong style="color:#ef4444;">Oxygen >250km:</strong> Deep red</p>
+                    <div><p style="font-size:12px;"><strong style="color:#ef4444;">Red (630.0 nm):</strong> Oxygen above 250 km. Rare and faint — atoms take ~2 minutes to emit, so this light is only visible during intense geomagnetic storms.</p></div>
                 </div>
                 <div class="ccard" style="background:rgba(88,28,135,0.2);border:1px solid rgba(192,132,252,0.3);">
                     <div style="width:14px;height:14px;border-radius:50%;background:#c084fc;flex-shrink:0;"></div>
-                    <p style="font-size:12px;"><strong style="color:#c084fc;">Nitrogen:</strong> Blue/purple/pink</p>
+                    <div><p style="font-size:12px;"><strong style="color:#c084fc;">Blue/Purple (391–470 nm):</strong> Nitrogen molecules at lower altitudes. They emit blue when ionized and pink/purple when returning to ground state.</p></div>
+                </div>
+                <div class="ccard" style="background:rgba(30,41,59,0.5);border:1px solid rgba(51,65,85,0.5);">
+                    <div style="width:14px;height:14px;border-radius:50%;background:#fde047;flex-shrink:0;"></div>
+                    <div><p style="font-size:12px;"><strong style="color:#fde047;">Yellow/Pink:</strong> A blend of green Oxygen and red/blue Nitrogen emissions overlapping, seen at the lower fringes of the aurora curtain.</p></div>
                 </div>
             </section>
+
+            <!-- 5. Aurora Shapes -->
+            <section>
+                <h3 style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#34d399;box-shadow:0 0 8px #34d399;"></span>Aurora Shapes & Movements</h3>
+                <p style="font-size:13px;margin-bottom:8px;">Auroras are not static — they dance. Scientists classify their forms:</p>
+                <div style="font-size:12px;color:#94a3b8;padding-left:8px;border-left:2px solid #334155;">
+                    <p style="margin-bottom:5px;"><strong style="color:#fff;">Arcs:</strong> Smooth, quiet bands stretching east-west across the sky.</p>
+                    <p style="margin-bottom:5px;"><strong style="color:#fff;">Curtains/Draperies:</strong> Tall, folded sheets of light with rapid rippling motion.</p>
+                    <p style="margin-bottom:5px;"><strong style="color:#fff;">Corona:</strong> When directly overhead, rays appear to radiate from a single point — like standing under a chandelier.</p>
+                    <p><strong style="color:#fff;">Pulsating Patches:</strong> Irregular blobs that blink on and off every few seconds, typically seen after midnight.</p>
+                </div>
+            </section>
+
+            <!-- 6. Measuring Auroral Activity -->
+            <section>
+                <h3 style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#60a5fa;box-shadow:0 0 8px #60a5fa;"></span>The Kp Index</h3>
+                <p style="font-size:13px;margin-bottom:8px;">Scientists measure geomagnetic activity using the <strong style="color:#60a5fa;">Kp Index</strong> (0–9). Higher values mean stronger storms and auroras visible at lower latitudes:</p>
+                <div style="font-size:12px;color:#94a3b8;display:flex;flex-direction:column;gap:4px;">
+                    <p><strong style="color:#4ade80;">Kp 0–2:</strong> Quiet — aurora visible only near the Arctic Circle</p>
+                    <p><strong style="color:#facc15;">Kp 3–5:</strong> Moderate — visible in northern Scotland, Scandinavia, Canada</p>
+                    <p><strong style="color:#f87171;">Kp 6–7:</strong> Strong storm — visible in northern US, UK, Germany</p>
+                    <p><strong style="color:#ef4444;">Kp 8–9:</strong> Extreme — visible as far south as Florida, Mediterranean — extremely rare</p>
+                </div>
+            </section>
+
+            <!-- 7. Aurora Australis -->
+            <section>
+                <h3 style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#38bdf8;box-shadow:0 0 8px #38bdf8;"></span>Aurora Australis (Southern Lights)</h3>
+                <p style="font-size:13px;">The same process occurs at the South Pole, creating the <strong style="color:#38bdf8;">Aurora Australis</strong>. Northern and Southern auroras are often mirror images of each other, though slight asymmetries occur due to the complex geometry of Earth's magnetic field. Best viewing spots include Tasmania, New Zealand's South Island, and Antarctica.</p>
+            </section>
+
+            <!-- 8. Historical Events -->
+            <section>
+                <h3 style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#f87171;box-shadow:0 0 8px #f87171;"></span>The Carrington Event (1859)</h3>
+                <p style="font-size:13px;">The most powerful geomagnetic storm in recorded history. A massive CME struck Earth's magnetosphere, creating auroras visible as far south as <strong style="color:#fff;">Colombia and Cuba</strong>. Telegraph systems worldwide sparked and caught fire. If such an event occurred today, it could cause <strong style="color:#f87171;">trillions of dollars</strong> in damage to power grids, satellites, and electronics worldwide.</p>
+            </section>
+
+            <!-- AI Insight 1 -->
             <section style="background:rgba(99,102,241,0.12);border:1px solid rgba(129,140,248,0.3);border-radius:8px;padding:14px;">
-                <h3 style="font-size:15px;font-weight:800;color:#818cf8;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#818cf8;"></span>💡 AI Insight</h3>
-                <p style="font-size:13px;color:#e0e7ff;">Auroras occur on other planets! <strong style="color:#fff;">Jupiter</strong> has the most powerful in the solar system. <strong style="color:#facc15;">Saturn</strong> and <strong style="color:#22d3ee;">Uranus</strong> also have their own light shows.</p>
+                <h3 style="font-size:15px;font-weight:800;color:#818cf8;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#818cf8;"></span>💡 Auroras on Other Worlds</h3>
+                <p style="font-size:13px;color:#e0e7ff;margin-bottom:8px;"><strong style="color:#fff;">Jupiter</strong> has auroras hundreds of times more powerful than Earth's, driven not by the solar wind but by volcanic particles from its moon <strong style="color:#facc15;">Io</strong>. They glow primarily in ultraviolet light.</p>
+                <p style="font-size:13px;color:#e0e7ff;"><strong style="color:#facc15;">Saturn</strong>'s auroras pulse in rhythm with its 10.7-hour rotation. <strong style="color:#22d3ee;">Uranus</strong> has bizarre, twisting auroras because its magnetic axis is tilted 59° from its spin axis. Even <strong style="color:#f87171;">Mars</strong> displays faint, patchy auroras over regions with remnant crustal magnetism.</p>
+            </section>
+
+            <!-- AI Insight 2 -->
+            <section style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:8px;padding:14px;">
+                <h3 style="font-size:15px;font-weight:800;color:#34d399;margin-bottom:8px;display:flex;align-items:center;"><span class="sdot" style="background:#34d399;"></span>🔭 Best Viewing Tips</h3>
+                <p style="font-size:13px;color:#d1fae5;">The best time to see auroras is during the <strong style="color:#fff;">equinoxes</strong> (March & September), when Earth's magnetic field alignment with the solar wind is optimal. Look north from a dark location away from city light pollution, ideally between <strong style="color:#fff;">10 PM and 2 AM</strong>. Monitor the <strong style="color:#60a5fa;">Kp Index</strong> and NOAA's Space Weather Prediction Center for real-time forecasts.</p>
             </section>
         </div>
     </div>

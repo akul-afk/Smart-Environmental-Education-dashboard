@@ -11,7 +11,7 @@ import os
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTabWidget,
     QSizePolicy, QSpacerItem, QFrame, QComboBox, QSpinBox,
-    QLineEdit, QPushButton, QGraphicsOpacityEffect,
+    QLineEdit, QPushButton, QGraphicsOpacityEffect, QScrollArea,
 )
 from PySide6.QtCore import Qt, QThread, Signal, QUrl, QPropertyAnimation, QEasingCurve
 from PySide6.QtGui import QFont
@@ -160,7 +160,8 @@ class _InsightPanel(QFrame):
     def __init__(self, accent_color: str, parent=None):
         super().__init__(parent)
         self._accent = accent_color
-        self.setFixedHeight(72)
+        self.setMinimumHeight(80)
+        self.setMaximumHeight(160)
         self.setStyleSheet(f"""
             _InsightPanel {{
                 background-color: {COLORS['card_bg']};
@@ -195,8 +196,13 @@ class _InsightPanel(QFrame):
         self._text.setStyleSheet(f"color: {COLORS['text_secondary']}; border: none; background: transparent; font-style: italic;")
 
     def set_insight(self, text: str):
-        """Update insight text with a subtle fade-in."""
-        self._text.setText(text)
+        """Update insight text with a subtle fade-in. Supports **bold** markers."""
+        # Convert **bold** markers to HTML <b> tags for rich text display
+        import re
+        html = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', text)
+        html = html.replace('\n', '<br>')
+        self._text.setTextFormat(Qt.RichText)
+        self._text.setText(html)
         self._text.setStyleSheet(f"color: #E2E8F0; border: none; background: transparent;")
         # Fade-in animation
         self._opacity.setOpacity(0.0)
@@ -208,6 +214,201 @@ class _InsightPanel(QFrame):
         anim.start()
         # Store reference so it isn't garbage-collected
         self._fade_anim = anim
+
+class _DeepDiveSidebar(QFrame):
+    """Right-side overlay sidebar with educational content and slide animation."""
+
+    SIDEBAR_WIDTH = 420
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._open = False
+        self.setFixedWidth(self.SIDEBAR_WIDTH)
+        self.setStyleSheet(f"""
+            _DeepDiveSidebar {{
+                background-color: rgba(15, 23, 42, 0.97);
+                border-left: 1px solid {COLORS['border']};
+            }}
+        """)
+
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
+
+        # ── Header bar with title + close button ──
+        header = QFrame()
+        header.setFixedHeight(56)
+        header.setStyleSheet(f"""
+            QFrame {{
+                background-color: {COLORS['card_bg']};
+                border-bottom: 1px solid {COLORS['border']};
+                border: none;
+            }}
+        """)
+        hdr_layout = QHBoxLayout(header)
+        hdr_layout.setContentsMargins(20, 0, 12, 0)
+
+        hdr_title = QLabel("📘  Deep Dive")
+        hdr_title.setFont(QFont("Segoe UI", 14, QFont.Bold))
+        hdr_title.setStyleSheet("color: #FFFFFF; border: none;")
+        hdr_layout.addWidget(hdr_title)
+        hdr_layout.addStretch()
+
+        from PySide6.QtGui import QIcon, QPixmap
+        from PySide6.QtCore import QSize
+        _close_icon_path = os.path.join(_ASSETS_DIR, "close_nature.png")
+        close_btn = QPushButton()
+        close_btn.setIcon(QIcon(QPixmap(_close_icon_path)))
+        close_btn.setIconSize(QSize(28, 28))
+        close_btn.setFixedSize(36, 36)
+        close_btn.setCursor(Qt.PointingHandCursor)
+        close_btn.setStyleSheet(f"""
+            QPushButton {{
+                background: transparent;
+                border: none;
+                border-radius: 18px;
+            }}
+            QPushButton:hover {{
+                background: rgba(51, 65, 85, 0.6);
+            }}
+        """)
+        close_btn.clicked.connect(self.close_sidebar)
+        hdr_layout.addWidget(close_btn)
+        main_layout.addWidget(header)
+
+        # ── Scrollable content ──
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setStyleSheet("""
+            QScrollArea { border: none; background: transparent; }
+            QScrollBar:vertical {
+                background: #1E293B; width: 8px; border-radius: 4px;
+            }
+            QScrollBar::handle:vertical {
+                background: #475569; border-radius: 4px; min-height: 30px;
+            }
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
+        """)
+
+        content = QWidget()
+        content.setStyleSheet("background: transparent;")
+        self._clayout = QVBoxLayout(content)
+        self._clayout.setContentsMargins(24, 20, 24, 24)
+        self._clayout.setSpacing(14)
+
+        # Title + subtitle
+        self._title = QLabel()
+        self._title.setFont(QFont("Segoe UI", 15, QFont.Bold))
+        self._title.setStyleSheet("color: #FFFFFF; border: none;")
+        self._title.setWordWrap(True)
+        self._clayout.addWidget(self._title)
+
+        self._subtitle = QLabel()
+        self._subtitle.setFont(QFont("Segoe UI", 10))
+        self._subtitle.setStyleSheet(f"color: {COLORS['text_secondary']}; border: none;")
+        self._subtitle.setWordWrap(True)
+        self._clayout.addWidget(self._subtitle)
+
+        # Divider
+        div = QFrame()
+        div.setFixedHeight(1)
+        div.setStyleSheet(f"background-color: {COLORS['border']};")
+        self._clayout.addWidget(div)
+
+        # Sections
+        self._sections = {}
+        section_defs = [
+            ("what",        "📊  What This Data Represents"),
+            ("factors",     "🔍  Key Factors"),
+            ("impact",      "🌍  Environmental Impact"),
+            ("solutions",   "💡  Solutions & Best Practices"),
+            ("did_you_know", "✨  Did You Know?"),
+        ]
+        for key, heading in section_defs:
+            h = QLabel(heading)
+            h.setFont(QFont("Segoe UI", 11, QFont.Bold))
+            h.setStyleSheet("color: #E2E8F0; border: none; margin-top: 4px;")
+            self._clayout.addWidget(h)
+
+            body = QLabel()
+            body.setFont(QFont("Segoe UI", 10))
+            body.setWordWrap(True)
+            body.setTextFormat(Qt.RichText)
+            body.setStyleSheet(f"color: {COLORS['text_secondary']}; border: none; padding-left: 2px;")
+            self._clayout.addWidget(body)
+            self._sections[key] = body
+
+        self._clayout.addStretch()
+        scroll.setWidget(content)
+        main_layout.addWidget(scroll)
+
+    def set_factor(self, factor_key: str, accent_color: str):
+        """Update content for the given factor."""
+        from services.metric_explanations import METRIC_EXPLANATIONS
+        info = METRIC_EXPLANATIONS.get(factor_key, {})
+        if not info:
+            return
+        self._title.setText(info.get("title", ""))
+        self._title.setStyleSheet(f"color: {accent_color}; border: none;")
+        self._subtitle.setText(info.get("subtitle", ""))
+        for key, label in self._sections.items():
+            label.setText(info.get(key, ""))
+
+    def open_sidebar(self):
+        """Slide in from the right."""
+        if self._open:
+            return
+        self._open = True
+        self.show()
+        self.raise_()
+        parent = self.parentWidget()
+        if not parent:
+            return
+        h = parent.height()
+        self.setFixedHeight(h)
+        start_x = parent.width()
+        end_x = parent.width() - self.SIDEBAR_WIDTH
+        self.move(start_x, 0)
+
+        anim = QPropertyAnimation(self, b"pos", self)
+        anim.setDuration(350)
+        from PySide6.QtCore import QPoint
+        anim.setStartValue(QPoint(start_x, 0))
+        anim.setEndValue(QPoint(end_x, 0))
+        anim.setEasingCurve(QEasingCurve.Type.OutCubic)
+        anim.start()
+        self._anim = anim
+
+    def close_sidebar(self):
+        """Slide out to the right."""
+        if not self._open:
+            return
+        self._open = False
+        parent = self.parentWidget()
+        if not parent:
+            self.hide()
+            return
+        end_x = parent.width()
+
+        anim = QPropertyAnimation(self, b"pos", self)
+        anim.setDuration(300)
+        from PySide6.QtCore import QPoint
+        anim.setStartValue(self.pos())
+        anim.setEndValue(QPoint(end_x, 0))
+        anim.setEasingCurve(QEasingCurve.Type.InCubic)
+        anim.finished.connect(self.hide)
+        anim.start()
+        self._anim = anim
+
+    def toggle(self):
+        if self._open:
+            self.close_sidebar()
+        else:
+            self.open_sidebar()
+
+    @property
+    def is_open(self):
+        return self._open
 
 
 # ══════════════════════════════════════════════════════════
@@ -289,6 +490,7 @@ def _build_map_view(data, factor):
 
 class _TimeSeriesWidget(QWidget):
     """Interactive line chart with country dropdown + year range."""
+    insight_context_changed = Signal(dict, dict)  # (factor, summary)
 
     def __init__(self, ts_data: dict, factor: dict, parent=None):
         super().__init__(parent)
@@ -500,6 +702,29 @@ class _TimeSeriesWidget(QWidget):
 
         self._figure.subplots_adjust(left=0.10, right=0.96, top=0.90, bottom=0.14)
         self._canvas.draw_idle()
+
+        # Emit context for insight refresh
+        first_val = values[0] if values else None
+        last_val = values[-1] if values else None
+        if last_val is not None and first_val is not None and first_val != 0:
+            if last_val > first_val * 1.05:
+                ts_trend = "increasing"
+            elif last_val < first_val * 0.95:
+                ts_trend = "decreasing"
+            else:
+                ts_trend = "stable"
+        else:
+            ts_trend = "stable"
+        self.insight_context_changed.emit(self._factor, {
+            "country_code": code,
+            "country": name,
+            "trend": ts_trend,
+            "year_from": year_from,
+            "year_to": year_to,
+            "data_points": len(filtered),
+            "first_val": round(first_val, 2) if first_val is not None else None,
+            "last_val": round(last_val, 2) if last_val is not None else None,
+        })
 
     def _spin_style(self):
         return f"""
@@ -798,6 +1023,7 @@ class DataExplorerWidget(QWidget):
         self._insight_workers = []     # keep QThread refs alive
         self._insight_panels = {}      # factor_key → _InsightPanel
         self._factor_view_tabs = {}    # factor_key → QTabWidget (view tabs)
+        self._deep_dive_sidebar = None  # created lazily
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -917,7 +1143,33 @@ class DataExplorerWidget(QWidget):
             stats_layout.addWidget(pill)
 
         stats_layout.addStretch()
+
+        # 📘 Deep Dive button
+        exp_btn = QPushButton("📘  Deep Dive")
+        exp_btn.setFont(QFont("Segoe UI", 10, QFont.Bold))
+        exp_btn.setCursor(Qt.PointingHandCursor)
+        exp_btn.setFixedHeight(34)
+        exp_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {factor['color']}18;
+                color: {factor['color']};
+                border: 1px solid {factor['color']}44;
+                border-radius: 8px;
+                padding: 4px 16px;
+            }}
+            QPushButton:hover {{
+                background-color: {factor['color']}30;
+                border: 1px solid {factor['color']}88;
+            }}
+        """)
+        stats_layout.addWidget(exp_btn)
+
         layout.addWidget(stats_bar)
+
+        # Wire Deep Dive button to sidebar
+        exp_btn.clicked.connect(
+            lambda checked=False, f=factor: self._toggle_deep_dive(f)
+        )
 
         # ── View Tabs (Map / Line / Bar) ──
         view_tabs = QTabWidget()
@@ -936,6 +1188,15 @@ class DataExplorerWidget(QWidget):
         ts_widget._populate_combo()   # re-populate with names now available
         ts_widget._redraw()
         view_tabs.addTab(ts_widget, "  📈  Line Chart  ")
+
+        # Store ref so we can read its current context later
+        self._ts_widgets = getattr(self, '_ts_widgets', {})
+        self._ts_widgets[factor['key']] = ts_widget
+
+        # Wire line chart country/year changes → insight refresh
+        ts_widget.insight_context_changed.connect(
+            lambda f, s: self._on_line_context_changed(f, s)
+        )
 
         # Bar Chart (interactive)
         bar_widget = _BarChartWidget(self._cache, factor)
@@ -958,6 +1219,14 @@ class DataExplorerWidget(QWidget):
         )
 
         return container
+
+    def _toggle_deep_dive(self, factor):
+        """Open/close the deep dive sidebar for the given factor."""
+        if self._deep_dive_sidebar is None:
+            self._deep_dive_sidebar = _DeepDiveSidebar(self)
+            self._deep_dive_sidebar.hide()
+        self._deep_dive_sidebar.set_factor(factor["key"], factor["color"])
+        self._deep_dive_sidebar.toggle()
 
     # ── Stylesheet helpers ──
 
@@ -1032,10 +1301,33 @@ class DataExplorerWidget(QWidget):
         view_type = self._VIEW_TYPES[view_idx] if view_idx < len(self._VIEW_TYPES) else "map"
         self._request_insight(factor, view_type)
 
+    def _on_line_context_changed(self, factor, line_summary):
+        """Line chart country/year changed — refresh insight with new context."""
+        # Store the latest line context for _build_data_summary
+        self._line_contexts = getattr(self, '_line_contexts', {})
+        self._line_contexts[factor['key']] = line_summary
+        # Only refresh if user is viewing this factor's line chart
+        current_factor_idx = self._tab_widget.currentIndex() if self._tab_widget else -1
+        if 0 <= current_factor_idx < len(FACTORS) and FACTORS[current_factor_idx]['key'] == factor['key']:
+            view_tabs = self._factor_view_tabs.get(factor['key'])
+            if view_tabs and view_tabs.currentIndex() == 1:  # line chart tab
+                self._request_insight(factor, 'line')
+
     def _request_insight(self, factor, view_type):
         """Check cache; if miss, show loading and spawn worker."""
-        cache_key = (factor["key"], view_type)
-        panel = self._insight_panels.get(factor["key"])
+        # Build context-aware cache key
+        line_ctx = getattr(self, '_line_contexts', {}).get(factor['key'], {})
+        if view_type == 'line' and line_ctx:
+            cache_key = (
+                factor['key'], view_type,
+                line_ctx.get('country_code', ''),
+                line_ctx.get('year_from', ''),
+                line_ctx.get('year_to', ''),
+            )
+        else:
+            cache_key = (factor['key'], view_type)
+
+        panel = self._insight_panels.get(factor['key'])
         if not panel:
             return
 
@@ -1049,21 +1341,27 @@ class DataExplorerWidget(QWidget):
         summary = self._build_data_summary(factor, view_type)
 
         worker = _InsightWorker(factor, view_type, summary)
-        worker.finished.connect(self._on_insight_ready)
+        worker.finished.connect(
+            lambda fk, vt, txt, ck=cache_key: self._on_insight_ready_keyed(ck, fk, txt)
+        )
         self._insight_workers.append(worker)
         worker.start()
 
-    def _on_insight_ready(self, factor_key, view_type, text):
+    def _on_insight_ready_keyed(self, cache_key, factor_key, text):
         """Callback from insight worker — cache and display."""
-        cache_key = (factor_key, view_type)
         self._insight_cache[cache_key] = text
 
         panel = self._insight_panels.get(factor_key)
         if panel:
-            # Only update if user is still viewing this factor+view
+            # Only update if user is still viewing this factor
             current_factor_idx = self._tab_widget.currentIndex() if self._tab_widget else -1
             if 0 <= current_factor_idx < len(FACTORS) and FACTORS[current_factor_idx]["key"] == factor_key:
                 panel.set_insight(text)
+
+    # Keep backward compat for the old signal signature
+    def _on_insight_ready(self, factor_key, view_type, text):
+        cache_key = (factor_key, view_type)
+        self._on_insight_ready_keyed(cache_key, factor_key, text)
 
     def _build_data_summary(self, factor, view_type):
         """Build a compact data dict for the insight generator."""
@@ -1091,32 +1389,46 @@ class DataExplorerWidget(QWidget):
         }
 
         if view_type == "line":
-            # Add time-series context from first available country
-            ts_data = self._ts_cache.get(key, {})
-            names = self._ts_cache.get("_names", {})
-            # Pick the first country with data
-            for code, series in ts_data.items():
-                if series and len(series) >= 2:
-                    first_val = series[0][1]
-                    last_val = series[-1][1]
-                    if last_val > first_val * 1.05:
-                        trend = "increasing"
-                    elif last_val < first_val * 0.95:
-                        trend = "decreasing"
-                    else:
-                        trend = "stable"
-                    base.update({
-                        "country": names.get(code, code),
-                        "trend": trend,
-                        "year_from": series[0][0],
-                        "year_to": series[-1][0],
-                        "data_points": len(series),
-                    })
-                    break
+            # Use live context from the currently active line chart
+            line_ctx = getattr(self, '_line_contexts', {}).get(key, {})
+            if line_ctx:
+                base.update({
+                    "country": line_ctx.get("country", "Selected country"),
+                    "country_code": line_ctx.get("country_code", ""),
+                    "trend": line_ctx.get("trend", "stable"),
+                    "year_from": line_ctx.get("year_from", ""),
+                    "year_to": line_ctx.get("year_to", ""),
+                    "data_points": line_ctx.get("data_points", 0),
+                    "first_val": line_ctx.get("first_val"),
+                    "last_val": line_ctx.get("last_val"),
+                })
+            else:
+                # Fallback: pick first country from ts_cache
+                ts_data = self._ts_cache.get(key, {})
+                names = self._ts_cache.get("_names", {})
+                for code, series in ts_data.items():
+                    if series and len(series) >= 2:
+                        first_val = series[0][1]
+                        last_val = series[-1][1]
+                        if last_val > first_val * 1.05:
+                            trend = "increasing"
+                        elif last_val < first_val * 0.95:
+                            trend = "decreasing"
+                        else:
+                            trend = "stable"
+                        base.update({
+                            "country": names.get(code, code),
+                            "trend": trend,
+                            "year_from": series[0][0],
+                            "year_to": series[-1][0],
+                            "data_points": len(series),
+                            "first_val": round(first_val, 2),
+                            "last_val": round(last_val, 2),
+                        })
+                        break
 
         elif view_type == "bar":
             base["mode"] = "top10"
             base["sort_order"] = "descending"
 
         return base
-
