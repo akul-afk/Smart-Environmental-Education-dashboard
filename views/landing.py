@@ -18,7 +18,14 @@ class LandingWidget(QWidget):
     def __init__(self, on_enter=None, parent=None):
         super().__init__(parent)
         self.on_enter = on_enter
-        self.setStyleSheet(f"background-color: {COLORS['background']};")
+        self.setStyleSheet(f"""
+            LandingWidget {{
+                background-color: {COLORS['background']};
+            }}
+            LandingWidget > QLabel {{
+                background-color: transparent;
+            }}
+        """)
         self._build_ui()
 
     def _build_ui(self):

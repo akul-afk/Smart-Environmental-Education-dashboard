@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
         # ── Sidebar ──
         sidebar = QWidget()
         sidebar.setFixedWidth(130)
-        sidebar.setStyleSheet(f"background-color: {COLORS['card_bg']};")
+        sidebar.setStyleSheet(f"background-color: rgba(15, 23, 42, 0.88);")
         sidebar_layout = QVBoxLayout(sidebar)
         sidebar_layout.setContentsMargins(0, 20, 0, 15)
         sidebar_layout.setSpacing(5)
@@ -136,7 +136,7 @@ class MainWindow(QMainWindow):
 
         # ── Content Area ──
         self.content_stack = QStackedWidget()
-        self.content_stack.setStyleSheet(f"background-color: {COLORS['background']};")
+        self.content_stack.setStyleSheet("background-color: transparent;")
 
         # Create content widgets
         self.home_widget = HomeWidget(user_id=self.user_id, on_navigate=self._navigate_to)

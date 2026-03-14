@@ -63,16 +63,22 @@ def qcolor(hex_str: str) -> QColor:
 
 # Global stylesheet for the dark theme
 GLOBAL_STYLESHEET = f"""
-    QMainWindow, QWidget {{
-        background-color: {COLORS['background']};
+    QMainWindow {{
+        border-image: url(assets/textures/background_cybernature.png) 0 0 0 0 stretch stretch;
+        color: #FFFFFF;
+        font-family: 'Segoe UI', 'Roboto', sans-serif;
+    }}
+    QWidget {{
+        background-color: transparent;
         color: #FFFFFF;
         font-family: 'Segoe UI', 'Roboto', sans-serif;
     }}
     QLabel {{
         color: #FFFFFF;
+        background-color: transparent;
     }}
     QLineEdit {{
-        background-color: {COLORS['background']};
+        background-color: rgba(15, 23, 42, 0.85);
         color: #FFFFFF;
         border: 1px solid {COLORS['border']};
         border-radius: 8px;
@@ -83,7 +89,7 @@ GLOBAL_STYLESHEET = f"""
         border: 1.5px solid {COLORS['primary']};
     }}
     QPushButton {{
-        background-color: {COLORS['card_bg']};
+        background-color: rgba(30, 41, 59, 0.9);
         color: #FFFFFF;
         border: 1px solid {COLORS['border']};
         border-radius: 10px;
@@ -93,10 +99,10 @@ GLOBAL_STYLESHEET = f"""
     }}
     QPushButton:hover {{
         border: 1px solid {COLORS['primary']};
-        background-color: #253349;
+        background-color: rgba(37, 51, 73, 0.95);
     }}
     QPushButton:pressed {{
-        background-color: #1a2a3f;
+        background-color: rgba(26, 42, 63, 0.95);
     }}
     QProgressBar {{
         background-color: {COLORS['xp_bar_bg']};
@@ -114,7 +120,7 @@ GLOBAL_STYLESHEET = f"""
         background-color: transparent;
     }}
     QScrollBar:vertical {{
-        background-color: {COLORS['background']};
+        background-color: rgba(15, 23, 42, 0.5);
         width: 8px;
         border-radius: 4px;
     }}
@@ -127,3 +133,4 @@ GLOBAL_STYLESHEET = f"""
         height: 0px;
     }}
 """
+

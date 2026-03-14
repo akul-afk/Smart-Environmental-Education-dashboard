@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
     QPushButton, QStackedWidget, QSizePolicy, QSpacerItem, QFrame,
 )
 from PySide6.QtCore import Qt, QThread, Signal
-from PySide6.QtGui import QFont
+from PySide6.QtGui import QFont, QPalette, QColor
 
 from constants import COLORS
 from app_logger import logger
@@ -44,7 +44,12 @@ class LoginWidget(QWidget):
         self.on_login_success = on_login_success
         self.mode = "login"  # "login" or "signup"
         self._auth_worker = None
-        self.setStyleSheet(f"background-color: {COLORS['background']};")
+        # Use QPalette to force a solid opaque background — prevents the
+        # QMainWindow border-image texture from showing through.
+        palette = self.palette()
+        palette.setColor(QPalette.Window, QColor(COLORS['background']))
+        self.setPalette(palette)
+        self.setAutoFillBackground(True)
         self._build_ui()
 
     def _build_ui(self):
