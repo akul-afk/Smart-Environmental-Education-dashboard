@@ -105,7 +105,7 @@ class HomeWidget(QWidget):
         if stats:
             xp_frame = QFrame()
             xp_frame.setStyleSheet(f"""
-                QFrame {{ background-color: {COLORS['card_bg']}; border-radius: 15px; }}
+                QFrame {{ border-image: url('assets/textures/hero.png') 0 0 0 0 stretch stretch; border-radius: 15px; }}
             """)
             xp_layout = QVBoxLayout(xp_frame)
             xp_layout.setContentsMargins(20, 20, 20, 20)
@@ -199,7 +199,7 @@ class HomeWidget(QWidget):
 
     def _progress_card(self, icon, label, pct, color, detail):
         frame = QFrame()
-        frame.setStyleSheet(f"QFrame {{ background-color: {COLORS['card_bg']}; border-radius: 12px; }}")
+        frame.setStyleSheet(f"QFrame {{ border-image: url('assets/textures/progress.png') 0 0 0 0 stretch stretch; border-radius: 12px; }}")
         col = QVBoxLayout(frame)
         col.setContentsMargins(15, 15, 15, 15)
         col.setSpacing(6)
@@ -239,7 +239,7 @@ class HomeWidget(QWidget):
     def _badge_preview(self, nb):
         frame = QFrame()
         frame.setStyleSheet(f"""
-            QFrame {{ background-color: {COLORS['card_bg']}; border-radius: 10px; }}
+            QFrame {{ border-image: url('assets/textures/badge.png') 0 0 0 0 stretch stretch; border-radius: 10px; }}
         """)
         col = QVBoxLayout(frame)
         col.setContentsMargins(12, 12, 12, 12)
@@ -272,7 +272,7 @@ class HomeWidget(QWidget):
         frame = QFrame()
         frame.setFixedHeight(120)
         frame.setStyleSheet(f"""
-            QFrame {{ background-color: {COLORS['card_bg']}; border-radius: 12px; }}
+            QFrame {{ border-image: url('assets/textures/quick actions.png') 0 0 0 0 stretch stretch; border-radius: 12px; }}
         """)
         col = QVBoxLayout(frame)
         col.setContentsMargins(15, 15, 15, 15)
