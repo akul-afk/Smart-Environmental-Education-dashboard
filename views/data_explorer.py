@@ -28,8 +28,8 @@ from app_logger import logger
 
 # ── Paths ──
 _ASSETS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets")
-_MAP_HTML_PATH = os.path.join(_ASSETS_DIR, "choropleth_map.html")
-_GEOJSON_PATH = os.path.join(_ASSETS_DIR, "world_geo_min.json")
+_MAP_HTML_PATH = os.path.join(_ASSETS_DIR, "maps", "choropleth_map.html")
+_GEOJSON_PATH = os.path.join(_ASSETS_DIR, "maps", "world_geo_min.json")
 
 # ── Cached HTML template + GeoJSON (loaded once) ──
 _map_html_template = None
@@ -256,7 +256,7 @@ class _DeepDiveSidebar(QFrame):
 
         from PySide6.QtGui import QIcon, QPixmap
         from PySide6.QtCore import QSize
-        _close_icon_path = os.path.join(_ASSETS_DIR, "close_nature.png")
+        _close_icon_path = os.path.join(_ASSETS_DIR, "icons", "ui", "close_nature.png")
         close_btn = QPushButton()
         close_btn.setIcon(QIcon(QPixmap(_close_icon_path)))
         close_btn.setIconSize(QSize(28, 28))
@@ -470,7 +470,7 @@ def _build_map_view(data, factor):
         html = html.replace("__COLOR_SCALE__", color_scale)
         html = html.replace("__DATA_YEAR__", year)
 
-        factor_html_path = os.path.join(_ASSETS_DIR, f"map_{factor['key']}.html")
+        factor_html_path = os.path.join(_ASSETS_DIR, "maps", f"map_{factor['key']}.html")
         with open(factor_html_path, "w", encoding="utf-8") as f:
             f.write(html)
 

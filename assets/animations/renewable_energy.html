@@ -3,622 +3,863 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Renewable Energy Generation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <title>Renewable Energy Sources Infographic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            /* Color Palette */
+            --bg-base: #F8FAFC;
+            --text-dark: #0F172A;
+            --text-light: #475569;
+            --border-color: #1E293B;
+            
+            --solar-main: #FBBF24;
+            --solar-light: #FEF3C7;
+            --wind-main: #38BDF8;
+            --wind-light: #E0F2FE;
+            --hydro-main: #34D399;
+            --hydro-light: #D1FAE5;
+            
+            /* Claymorphism Shadows */
+            --clay-inner: inset 4px 4px 8px rgba(255, 255, 255, 0.9), inset -4px -4px 8px rgba(0, 0, 0, 0.08);
+            --clay-shadow: 8px 8px 20px rgba(0, 0, 0, 0.1);
+            --clay-shadow-hover: 12px 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background-color: #0f172a; overflow: hidden; font-family: 'Inter', sans-serif;
-            touch-action: none; color: #fff; width: 100vw; height: 100vh;
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-dark);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* SVG Animations */
-        @keyframes spin-blades { to { transform: rotate(360deg); } }
-        @keyframes spin-generator { to { transform: rotate(360deg); } }
-        @keyframes flow-water { 
-            0% { stroke-dashoffset: 200; opacity: 0; }
-            20% { opacity: 0.9; }
-            80% { opacity: 0.9; }
-            100% { stroke-dashoffset: 0; opacity: 0; } 
+        /* --- UI Components --- */
+        .clay-box {
+            background: white;
+            border: 3px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: var(--clay-shadow), var(--clay-inner);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        @keyframes sun-pulse {
-            0%, 100% { transform: scale(1); opacity: 0.9; filter: drop-shadow(0 0 30px rgba(253,224,71,0.4)); }
-            50% { transform: scale(1.03); opacity: 1; filter: drop-shadow(0 0 60px rgba(253,224,71,0.8)); }
+
+        .clay-btn {
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--text-dark);
+            padding: 12px 24px;
+            outline: none;
         }
-        @keyframes flow-electrons { from { stroke-dashoffset: 40; } to { stroke-dashoffset: 0; } }
-        @keyframes flow-rays { from { stroke-dashoffset: 30; } to { stroke-dashoffset: 0; } }
-        @keyframes float-inset { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        @keyframes city-lights { 0%, 10% { opacity: 0.2; } 50%, 90% { opacity: 0.9; filter:drop-shadow(0 0 8px #fde047); } 100% { opacity: 0.2; } }
 
-        .blades-group { transform-origin: 180px 280px; animation: spin-blades 4s linear infinite; }
-        .generator-rotor { transform-origin: 205px 275px; animation: spin-generator 1.2s linear infinite; }
-        .hydro-rotor { transform-origin: 645px 630px; animation: spin-generator 0.8s linear infinite; }
-        
-        .sun-core { transform-origin: 1000px 150px; animation: sun-pulse 4s ease-in-out infinite; }
-        .sun-ray { fill: none; stroke: rgba(253,224,71,0.8); stroke-width: 4; stroke-dasharray: 15 15; stroke-linecap: round; animation: flow-rays 1s linear infinite; }
-        
-        .water-flow { fill: none; stroke: #38bdf8; stroke-width: 12; stroke-linecap: round; stroke-dasharray: 60 140; animation: flow-water 2s linear infinite; }
-        .water-flow.d1 { animation-delay: 0.6s; }
-        .water-flow.d2 { animation-delay: 1.2s; }
-        
-        /* Electric Flows */
-        .e-flow-wind { fill: none; stroke: #38bdf8; stroke-width: 6; stroke-dasharray: 10 30; stroke-linecap: round; filter: drop-shadow(0 0 6px #38bdf8); animation: flow-electrons 0.8s linear infinite reverse; }
-        .e-flow-solar { fill: none; stroke: #ef4444; stroke-width: 6; stroke-dasharray: 10 30; stroke-linecap: round; filter: drop-shadow(0 0 6px #ef4444); animation: flow-electrons 0.8s linear infinite reverse; }
-        .e-flow-hydro { fill: none; stroke: #34d399; stroke-width: 6; stroke-dasharray: 10 30; stroke-linecap: round; filter: drop-shadow(0 0 6px #34d399); animation: flow-electrons 0.8s linear infinite reverse; }
-        .e-flow-grid { fill: none; stroke: #facc15; stroke-width: 8; stroke-dasharray: 15 25; stroke-linecap: round; filter: drop-shadow(0 0 8px #facc15); animation: flow-electrons 0.5s linear infinite reverse; }
-
-        .float { animation: float-inset 5s ease-in-out infinite; }
-        .city-light { animation: city-lights 4s infinite ease-in-out; }
-
-        .hover-target { cursor: pointer; }
-        .hover-target:hover .interactive-outline { stroke: #fde047; stroke-width: 4; filter: drop-shadow(0 0 15px rgba(253,224,71,0.8)); }
-        
-        /* Floating Labels */
-        .lbl { font-weight: 800; text-shadow: 0 4px 12px rgba(0,0,0,0.9), 0 0 5px rgba(0,0,0,0.8); transition: all 0.3s ease; }
-        .hover-target:hover .lbl { color: #fde047; transform: scale(1.05); text-shadow: 0 0 15px rgba(253,224,71,0.8), 0 4px 12px rgba(0,0,0,1); }
-
-        /* Tooltip & Sidebar */
-        .tt {
-            position: fixed; z-index: 50; pointer-events: none; opacity: 0; transition: opacity 0.2s;
-            background: rgba(4, 9, 20, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(52, 211, 153, 0.4);
-            padding: 18px 20px; border-radius: 14px; box-shadow: 0 15px 40px rgba(0,0,0,0.9), inset 0 0 20px rgba(52, 211, 153, 0.05); max-width: 340px;
+        .clay-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--clay-shadow-hover), var(--clay-inner);
         }
-        .tt h3 { font-size: 17px; font-weight: 800; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
-        .tt .bar { height: 4px; width: 48px; border-radius: 2px; margin-bottom: 10px; background: linear-gradient(90deg, #34d399, #38bdf8); box-shadow: 0 0 8px rgba(52, 211, 153, 0.6); }
-        .tt p { font-size: 13px; color: #94a3b8; line-height: 1.6; }
 
-        .sidebar {
-            position: fixed; top: 0; right: 0; height: 100%; width: 480px;
-            background: linear-gradient(135deg, rgba(2, 6, 23, 0.95), rgba(15, 23, 42, 0.98)); 
-            backdrop-filter: blur(24px); border-left: 1px solid rgba(56, 189, 248, 0.3); z-index: 70;
-            box-shadow: -10px 0 40px rgba(0,0,0,0.8), inset 2px 0 20px rgba(56, 189, 248, 0.05);
-            transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto;
+        .clay-btn:active {
+            transform: translateY(2px);
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1), var(--clay-inner);
         }
-        .sidebar.open { transform: translateX(0); }
-        .sidebar::-webkit-scrollbar { width: 6px; } .sidebar::-webkit-scrollbar-track { background: transparent; }
-        .sidebar::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.5); border-radius: 4px; }
 
-        .toggle-btn {
-            position: fixed; top: 20px; right: 20px; z-index: 60;
-            background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.6); color: #fff;
-            backdrop-filter: blur(8px);
-            padding: 10px 20px; border-radius: 24px; cursor: pointer; font-weight: 700; font-size: 13px;
-            text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
-            transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;
+        /* --- Header & Nav --- */
+        header {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding: 15px 30px;
+            z-index: 10;
+            position: relative;
+            gap: 16px;
         }
-        .toggle-btn:hover { background: rgba(56, 189, 248, 0.15); transform: scale(1.05); border-color: #38bdf8; box-shadow: 0 0 30px rgba(56, 189, 248, 0.6); }
 
-        .card { background: rgba(30,41,59,0.5); border: 1px solid rgba(51,65,85,0.5); border-radius: 10px; padding: 16px; margin-top: 10px; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; flex-shrink: 0; }
-        
-        /* Navigation Tabs */
-        .nav-tabs {
-            position: absolute; top: 0; left: 0; width: 100%; z-index: 40;
-            display: flex; justify-content: center; background: rgba(2, 6, 23, 0.8);
-            border-bottom: 1px solid rgba(56, 189, 248, 0.2); backdrop-filter: blur(16px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        .tabs {
+            display: flex;
+            gap: 16px;
+            grid-column: 2;
+            justify-content: center;
         }
+
         .tab-btn {
-            background: transparent; border: none; color: #64748b; font-family: 'Inter', sans-serif;
-            font-size: 14px; font-weight: 800; padding: 18px 36px; cursor: pointer;
-            letter-spacing: 0.1em; transition: all 0.3s ease; position: relative;
-            display: flex; align-items: center; gap: 10px; text-transform: uppercase;
+            background: #fff;
+            opacity: 0.7;
+            transform: scale(0.95);
         }
-        .tab-btn:hover { color: #f1f5f9; background: rgba(255,255,255,0.03); }
-        .tab-btn.active { color: #fde047; background: rgba(253, 224, 71, 0.05); text-shadow: 0 0 12px rgba(253, 224, 71, 0.4); }
-        .tab-btn.active::after {
-            content: ''; position: absolute; bottom: 0; left: 0; width: 100%;
-            height: 3px; background: #fde047; border-radius: 3px 3px 0 0;
-            box-shadow: 0 -2px 15px rgba(253, 224, 71, 0.8), 0 0 5px #fff;
+
+        .tab-btn.active {
+            opacity: 1;
+            transform: scale(1);
         }
-        
-        .tab-pane {
-            position: absolute; inset: 0; width: 100%; height: 100%;
-            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+
+        .tab-btn[data-target="solar"].active { background: var(--solar-light); border-color: #D97706; }
+        .tab-btn[data-target="wind"].active { background: var(--wind-light); border-color: #0284C7; }
+        .tab-btn[data-target="hydro"].active { background: var(--hydro-light); border-color: #059669; }
+
+        .deep-dive-btn {
+            grid-column: 3;
+            justify-self: end;
+            background-color: #2563EB;
+            color: #FFFFFF;
+            font-family: inherit;
+            font-weight: 800;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            padding: 10px 24px;
+            border-radius: 9999px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transition: all 0.2s ease;
         }
-        .tab-pane.active { opacity: 1; pointer-events: auto; }
+
+        .deep-dive-btn:hover {
+            background-color: #1D4ED8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+
+        /* --- Main Content Area --- */
+        main {
+            flex: 1;
+            position: relative;
+            margin: 0 30px 30px 30px;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 4px solid var(--border-color);
+            box-shadow: var(--clay-shadow), inset 6px 6px 12px rgba(255,255,255,0.6), inset -6px -6px 12px rgba(0,0,0,0.1);
+            background: white;
+        }
+
+        .pane {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .pane.active { opacity: 1; pointer-events: auto; }
+
+        svg.infographic { width: 100%; height: 100%; display: block; }
+
+        /* --- SVG Animations & Interactivity --- */
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes dash { to { stroke-dashoffset: -20; } }
+
+        .interactive-element { cursor: pointer; transition: filter 0.3s ease; }
+        .interactive-element:hover { filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.4)) brightness(1.15); }
+
+        .energy-line {
+            stroke: #FFF; stroke-width: 4; stroke-dasharray: 10 10;
+            animation: dash 1s linear infinite; filter: drop-shadow(0 0 5px rgba(255,255,255,0.8));
+        }
+
+        /* --- Floating Tooltip --- */
+        #tooltip {
+            position: absolute; top: 0; left: 0; width: 280px;
+            background: white; padding: 16px; border: 3px solid var(--border-color);
+            border-radius: 16px; box-shadow: var(--clay-shadow), var(--clay-inner);
+            pointer-events: none; opacity: 0; z-index: 100;
+            transition: opacity 0.2s ease; transform: translate(15px, 15px);
+        }
+
+        #tooltip h3 { margin-bottom: 6px; font-size: 1.1rem; font-weight: 800; }
+        #tooltip p { font-size: 0.9rem; color: var(--text-light); line-height: 1.4; }
+        .tooltip-badge {
+            display: inline-block; padding: 4px 8px; border-radius: 8px;
+            font-size: 0.75rem; font-weight: 900; margin-bottom: 8px;
+            border: 2px solid var(--border-color);
+        }
+
+        /* --- Sidebar (Deep Dive) --- */
+        #sidebar {
+            position: fixed; top: 0; right: -450px; width: 420px; height: 100%;
+            background: #fff; border-left: 4px solid var(--border-color);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.1); z-index: 200;
+            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex; flex-direction: column;
+        }
+
+        #sidebar.open { right: 0; }
+
+        .sidebar-header {
+            padding: 24px; border-bottom: 3px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center; background: var(--bg-base);
+        }
+
+        .sidebar-close {
+            background: #FF6B6B; color: white; border: 3px solid var(--border-color);
+            border-radius: 50%; width: 36px; height: 36px;
+            font-weight: 900; cursor: pointer; box-shadow: inset 2px 2px 4px rgba(255,255,255,0.4);
+        }
+
+        .sidebar-content { padding: 24px; overflow-y: auto; flex: 1; }
+        .info-card { padding: 20px; margin-bottom: 24px; background: white; }
+        .info-card h4 { display: flex; align-items: center; gap: 10px; font-size: 1.2rem; margin-bottom: 12px; }
+        .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--border-color); }
+        .dot-solar { background: var(--solar-main); }
+        .dot-wind { background: var(--wind-main); }
+        .dot-hydro { background: var(--hydro-main); }
+        .dot-ai { background: #8B5CF6; }
+
+        /* AI Insight styling */
+        .ai-insight {
+            background: #EDE9FE; border-color: #8B5CF6;
+        }
+        .ai-insight h4 { color: #6D28D9; }
+
     </style>
 </head>
 <body>
 
-<nav class="nav-tabs">
-    <button class="tab-btn active" data-tab="tab-solar">
-        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" stroke="currentColor"></path></svg>
-        SOLAR POWER
-    </button>
-    <button class="tab-btn" data-tab="tab-wind">
-        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.058 3.442C13.243 4.6 13 6 13 6s-1.879-1.226-2.5-1.5c-1.614-.712-3.882-.256-4.5 1.5-.618 1.756.288 3.886 1.5 4.5.621.274 2.5 1.5 2.5 1.5s-.621-1.226-2.5-1.5c-1.878-.274-3.757.744-4.5 2.5-.743 1.756-.256 3.882 1.5 4.5.621.274 2.5 1.5 2.5 1.5s-1.243-.6-1.5-2.5c-.257-1.9.743-3.756 2.5-4.5 1.757-.744 3.886-.256 4.5 1.5.6 1.743.256 3.882-1.5 4.5-.621.274-2.5 1.5-2.5 1.5s1.243-.6 2.5-1.5c1.878-1.256 3.757-.744 4.5-2.5.743-1.756.257-3.882-1.5-4.5z" stroke="currentColor"></path></svg>
-        WIND POWER
-    </button>
-    <button class="tab-btn" data-tab="tab-hydro">
-        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" stroke="currentColor"></path></svg>
-        HYDROELECTRIC POWER
-    </button>
-</nav>
-
-<div style="position:relative;width:100%;height:100%;overflow:hidden;background:#030712;padding-top:54px;">
-
-<!-- ======================= SOLAR TAB ======================= -->
-<div id="tab-solar" class="tab-pane active">
-    <svg viewBox="0 0 1200 800" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" preserveAspectRatio="xMidYMid slice">
-        <defs>
-            <!-- Solar Theme Gradients (Cyber-Nature Twilight) -->
-            <linearGradient id="sky-grad-solar" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#020617"/>
-                <stop offset="50%" stop-color="#1e1b4b"/>
-                <stop offset="100%" stop-color="#115e59"/>
-            </linearGradient>
-            <linearGradient id="panel-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#083344"/>
-                <stop offset="100%" stop-color="#020617"/>
-            </linearGradient>
-            <radialGradient id="sun-inner" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#ffffff"/>
-                <stop offset="30%" stop-color="#fef08a"/>
-                <stop offset="70%" stop-color="#f59e0b"/>
-                <stop offset="100%" stop-color="#c2410c"/>
-            </radialGradient>
-            <radialGradient id="sun-outer" cx="50%" cy="50%" r="50%">
-                <stop offset="30%" stop-color="#9a3412" stop-opacity="0.8"/>
-                <stop offset="100%" stop-color="#4c0519" stop-opacity="0"/>
-            </radialGradient>
-            <linearGradient id="hills-back-solar" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#064e3b"/><stop offset="100%" stop-color="#022c22"/>
-            </linearGradient>
-            <linearGradient id="hills-front-solar" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#065f46"/><stop offset="100%" stop-color="#022c22"/>
-            </linearGradient>
-            <filter id="shadow-lg-solar"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000" flood-opacity="0.6"/></filter>
-            <filter id="glow-heavy-solar"><feGaussianBlur stdDeviation="8" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-        </defs>
-
-        <!-- Sky & Sun -->
-        <rect x="0" y="0" width="1200" height="800" fill="url(#sky-grad-solar)"/>
-        
-        <!-- Large Center Sun -->
-        <g class="hover-target" data-id="sun" style="pointer-events:auto;" transform="translate(-460, -40)">
-            <circle cx="1060" cy="140" r="280" fill="url(#sun-outer)" class="sun-core" filter="url(#glow-heavy-solar)"/>
-            <circle cx="1060" cy="140" r="100" fill="url(#sun-inner)" filter="url(#shadow-lg-solar)"/>
-            <g opacity="0.9" filter="url(#glow-heavy-solar)">
-                <path d="M 920 250 L 800 340" class="sun-ray" stroke="#fcd34d" stroke-width="4"/><path d="M 940 300 L 840 400" class="sun-ray" stroke="#fcd34d" stroke-width="4" style="animation-delay:0.3s;"/>
-                <path d="M 980 340 L 900 480" class="sun-ray" stroke="#fcd34d" stroke-width="4" style="animation-delay:0.6s;"/><path d="M 1060 360 L 1020 500" class="sun-ray" stroke="#fcd34d" stroke-width="4" style="animation-delay:0.9s;"/>
-                <path d="M 1140 340 L 1220 480" class="sun-ray" stroke="#fcd34d" stroke-width="4" style="animation-delay:0.4s;"/><path d="M 1200 280 L 1320 380" class="sun-ray" stroke="#fcd34d" stroke-width="4" style="animation-delay:0.7s;"/>
-            </g>
-            <circle cx="1060" cy="140" r="220" fill="transparent" class="interactive-outline"/>
-        </g>
-
-        <!-- Scenic Hills Background -->
-        <path d="M 0 550 Q 300 420 700 500 T 1200 450 L 1200 800 L 0 800 Z" fill="url(#hills-back-solar)" opacity="0.8"/>
-        <path d="M 0 650 Q 400 550 800 650 T 1200 580 L 1200 800 L 0 800 Z" fill="url(#hills-front-solar)" filter="url(#shadow-lg-solar)"/>
-
-        <!-- Massive Solar Field (Center Left) -->
-        <g class="hover-target" data-id="panels" style="pointer-events:auto;" transform="translate(-650, 60)">
-            <!-- Front Row -->
-            <path d="M 760 680 L 760 740 M 960 680 L 960 740 M 1160 680 L 1160 740 M 1360 680 L 1360 740 M 1560 680 L 1560 740" stroke="#1e293b" stroke-width="12" stroke-linecap="square"/>
-            <path d="M 780 520 L 1620 520 L 1580 680 L 740 680 Z" fill="url(#panel-grad)" stroke="#0ea5e9" stroke-width="3" filter="url(#shadow-lg-solar)"/>
-            <!-- Grid Lines -->
-            <path d="M 750 640 L 1600 640 M 760 600 L 1610 600 M 770 560 L 1610 560" stroke="#38bdf8" stroke-width="2" opacity="0.8" filter="url(#glow-heavy-solar)"/>
-            <g stroke="#38bdf8" stroke-width="2" opacity="0.8" filter="url(#glow-heavy-solar)">
-                <path d="M 830 520 L 790 680"/><path d="M 910 520 L 870 680"/><path d="M 990 520 L 950 680"/><path d="M 1070 520 L 1030 680"/>
-                <path d="M 1150 520 L 1110 680"/><path d="M 1230 520 L 1190 680"/><path d="M 1310 520 L 1270 680"/><path d="M 1390 520 L 1350 680"/>
-                <path d="M 1470 520 L 1430 680"/><path d="M 1550 520 L 1510 680"/>
-            </g>
-            <path d="M 900 520 L 1200 520 L 1160 680 L 860 680 Z" fill="#ffffff" opacity="0.05" />
-            
-            <rect x="740" y="520" width="840" height="160" fill="transparent" class="interactive-outline" rx="6"/>
-        </g>
-        
-        <!-- Background Row 1 -->
-        <g transform="translate(-500, -20) scale(0.8)">
-            <path d="M 780 520 L 1620 520 L 1580 680 L 740 680 Z" fill="url(#panel-grad)" stroke="#0ea5e9" stroke-width="3" filter="url(#shadow-lg-solar)"/>
-            <path d="M 900 520 L 1200 520 L 1160 680 L 860 680 Z" fill="#ffffff" opacity="0.05" />
-            <path d="M 760 680 L 760 740 M 960 680 L 960 740 M 1160 680 L 1160 740" stroke="#1e293b" stroke-width="12" stroke-linecap="square"/>
-        </g>
-        
-        <!-- Background Row 2 -->
-        <g transform="translate(-300, -80) scale(0.6)">
-            <path d="M 780 520 L 1620 520 L 1580 680 L 740 680 Z" fill="url(#panel-grad)" stroke="#0ea5e9" stroke-width="3" filter="url(#shadow-lg-solar)"/>
-            <path d="M 900 520 L 1200 520 L 1160 680 L 860 680 Z" fill="#ffffff" opacity="0.05" />
-            <path d="M 760 680 L 760 740 M 960 680 L 960 740" stroke="#1e293b" stroke-width="12" stroke-linecap="square"/>
-        </g>
-
-        <!-- Right Side: Inverter & Grid Box -->
-        <g transform="translate(1000, 600)" class="hover-target" data-id="inverter" style="pointer-events:auto;">
-            <rect x="-80" y="0" width="160" height="140" rx="8" fill="#0f172a" stroke="#0ea5e9" stroke-width="3" filter="url(#shadow-lg-solar)"/>
-            <rect x="-60" y="30" width="120" height="80" fill="#020617" rx="4" stroke="#1e293b" stroke-width="2"/>
-            <rect x="-40" y="50" width="80" height="40" fill="#facc15" filter="url(#glow-heavy-solar)" class="float"/>
-            <!-- Venting -->
-            <path d="M -70 120 L -20 120 M -70 128 L -20 128 M -70 136 L -20 136" stroke="#1e293b" stroke-width="4" stroke-linecap="round"/>
-            <path d="M 20 120 L 70 120 M 20 128 L 70 128 M 20 136 L 70 136" stroke="#1e293b" stroke-width="4" stroke-linecap="round"/>
-            
-            <rect x="-90" y="-10" width="180" height="160" fill="transparent" class="interactive-outline" rx="10"/>
-        <!-- DC to AC flow lines -->
-            <path d="M -200 100 L -80 100" fill="none" class="e-flow-solar"/>
-            <path d="M 80 100 L 250 100" fill="none" class="e-flow-grid"/>
-        </g>
-
-        <!-- Floating PV Cell Schematic (Moved left side) -->
-        <g class="float hover-target" data-id="pv-cells" style="pointer-events:auto;" transform="translate(200, 300)">
-            <circle cx="60" cy="60" r="100" fill="#0f172a" class="interactive-outline" stroke="#38bdf8" stroke-width="4" filter="url(#shadow-lg-solar)"/>
-            <g transform="translate(60, 45) scale(1.3)">
-                <path d="M -45 0 L 0 -25 L 45 0 L 0 25 Z" fill="#bae6fd" stroke="#0ea5e9" stroke-width="1" opacity="0.4"/>
-                <path d="M -45 15 L 0 -10 L 45 15 L 0 40 Z" fill="#0ea5e9" stroke="#0369a1" stroke-width="1"/>
-                <text x="-35" y="10" fill="white" font-weight="900" font-size="14">-</text>
-                <path d="M -45 30 L 0 5 L 45 30 L 0 55 Z" fill="#1e293b" stroke="#0284c7" stroke-width="1"/>
-                <text x="-35" y="25" fill="white" font-weight="900" font-size="14">+</text>
-                <path d="M 25 10 L 45 -10 L 55 20 L 35 40" fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="2 4"/>
-                <circle cx="45" cy="-10" r="4" fill="#facc15" filter="url(#glow-heavy-solar)"/>
-            </g>
-            <text x="60" y="195" fill="#f8fafc" font-size="16" font-weight="800" text-anchor="middle">PV Cell Layers</text>
-        </g>
-
-    </svg>
-</div>
-
-<!-- ======================= WIND & HYDRO TAB (Temporarily coupled, will split next) ======================= -->
-<div id="tab-wind" class="tab-pane">
-    <svg viewBox="0 0 1200 800" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" preserveAspectRatio="xMidYMid slice">
-        <defs>
-            <!-- Wind Theme Gradients (Cyber-Nature High Altitude) -->
-            <linearGradient id="sky-grad-wind" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#020617"/>
-                <stop offset="30%" stop-color="#0f172a"/>
-                <stop offset="100%" stop-color="#082f49"/>
-            </linearGradient>
-            <linearGradient id="hills-back-wind" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#064e3b"/><stop offset="100%" stop-color="#022c22"/>
-            </linearGradient>
-            <linearGradient id="hills-front-wind" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#065f46"/><stop offset="100%" stop-color="#022c22"/>
-            </linearGradient>
-            <linearGradient id="water-grad-wind" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#075985"/><stop offset="100%" stop-color="#082f49"/>
-            </linearGradient>
-            <linearGradient id="metal-grad-wind" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#0f172a"/><stop offset="50%" stop-color="#334155"/><stop offset="100%" stop-color="#020617"/>
-            </linearGradient>
-            <filter id="shadow-lg-wind"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000" flood-opacity="0.8"/></filter>
-            <filter id="glow-heavy-wind"><feGaussianBlur stdDeviation="8" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            
-            <g id="aero-blade-wind">
-                <path d="M 197 280 C 175 160, 190 30, 205 0 C 220 30, 213 160, 210 280 Z" fill="url(#metal-grad-wind)"/>
-                <path d="M 203 280 C 195 160, 200 30, 205 0 C 210 30, 208 160, 205 280 Z" fill="#38bdf8" opacity="0.3"/>
-            </g>
-        </defs>
-
-        <!-- Dynamic Sky Background -->
-        <rect x="0" y="0" width="1200" height="800" fill="url(#sky-grad-wind)"/>
-
-        <!-- ================= WIND POWER SCENE ================= -->
-        <!-- Coastal Hills Background -->
-        <path d="M 0 540 Q 300 480 700 550 T 1200 520 L 1200 800 L 0 800 Z" fill="url(#hills-back-wind)"/>
-        <!-- Ocean / Water on the left -->
-        <path d="M 0 580 Q 150 560 300 620 C 350 640 400 750 450 800 L 0 800 Z" fill="url(#water-grad-wind)"/>
-        <path d="M 280 620 L 1200 620 L 1200 800 L 450 800 C 400 750 350 640 280 620 Z" fill="url(#hills-front-wind)" filter="url(#shadow-lg-wind)"/>
-
-        <!-- Distant Wind Turbines -->
-        <g transform="translate(60, 260) scale(0.4)" filter="url(#shadow-lg-wind)" opacity="0.7">
-            <path d="M 205 750 L 235 750 L 225 280 L 215 280 Z" fill="url(#metal-grad-wind)"/>
-            <path d="M 220 280 L 220 750" stroke="#0ea5e9" stroke-width="2" opacity="0.5" filter="url(#glow-heavy-wind)"/> <!-- Neon Stripe -->
-            <path d="M 180 250 L 290 250 C 310 250 310 310 290 310 L 180 310 Z" fill="url(#metal-grad-wind)"/>
-            <g class="blades-group"><circle cx="205" cy="280" r="140" fill="none" stroke="#0ea5e9" stroke-width="4" opacity="0.2" filter="url(#glow-heavy-wind)"/><use href="#aero-blade-wind"/><use href="#aero-blade-wind" transform="rotate(120, 180, 280)"/><use href="#aero-blade-wind" transform="rotate(240, 180, 280)"/></g>
-        </g>
-        <g transform="translate(360, 220) scale(0.5)" filter="url(#shadow-lg-wind)">
-            <path d="M 205 750 L 235 750 L 225 280 L 215 280 Z" fill="url(#metal-grad-wind)"/>
-            <path d="M 220 280 L 220 750" stroke="#0ea5e9" stroke-width="2" opacity="0.5" filter="url(#glow-heavy-wind)"/>
-            <path d="M 180 250 L 290 250 C 310 250 310 310 290 310 L 180 310 Z" fill="url(#metal-grad-wind)"/>
-            <g class="blades-group" style="animation-delay: -1s;"><circle cx="205" cy="280" r="140" fill="none" stroke="#0ea5e9" stroke-width="4" opacity="0.2" filter="url(#glow-heavy-wind)"/><use href="#aero-blade-wind"/><use href="#aero-blade-wind" transform="rotate(120, 180, 280)"/><use href="#aero-blade-wind" transform="rotate(240, 180, 280)"/></g>
-        </g>
-        <g transform="translate(760, 280) scale(0.45)" filter="url(#shadow-lg-wind)">
-            <path d="M 205 750 L 235 750 L 225 280 L 215 280 Z" fill="url(#metal-grad-wind)"/>
-            <path d="M 220 280 L 220 750" stroke="#0ea5e9" stroke-width="2" opacity="0.5" filter="url(#glow-heavy-wind)"/>
-            <path d="M 180 250 L 290 250 C 310 250 310 310 290 310 L 180 310 Z" fill="url(#metal-grad-wind)"/>
-            <g class="blades-group" style="animation-delay: -2.5s;"><circle cx="205" cy="280" r="140" fill="none" stroke="#0ea5e9" stroke-width="4" opacity="0.2" filter="url(#glow-heavy-wind)"/><use href="#aero-blade-wind"/><use href="#aero-blade-wind" transform="rotate(120, 180, 280)"/><use href="#aero-blade-wind" transform="rotate(240, 180, 280)"/></g>
-        </g>
-
-        <!-- Main Focal Wind Turbine (Detailed) -->
-        <g class="hover-target" data-id="wind" style="pointer-events:auto;" transform="translate(260, 40) scale(1.1)">
-            <!-- Tower -->
-            <path d="M 205 750 L 235 750 L 225 280 L 215 280 Z" fill="url(#metal-grad-wind)" filter="url(#shadow-lg-wind)"/>
-            <!-- Neon Central Accent Light -->
-            <path d="M 220 280 L 220 750" stroke="#38bdf8" stroke-width="3" opacity="0.8" filter="url(#glow-heavy-wind)"/>
-            
-            <!-- Nacelle -->
-            <path d="M 180 250 L 290 250 C 310 250 310 310 290 310 L 180 310 Z" fill="url(#metal-grad-wind)" stroke="#1e293b" stroke-width="2" filter="url(#shadow-lg-wind)"/>
-            
-            <!-- Cutaway: Wind Generator -->
-            <ellipse cx="240" cy="280" rx="40" ry="22" fill="#020617" stroke="#38bdf8" stroke-width="2" filter="url(#glow-heavy-wind)"/>
-            <!-- Glowing Copper / Cyan Coils -->
-            <g fill="#f59e0b"> 
-                <rect x="210" y="262" width="15" height="8" rx="2"/><rect x="230" y="262" width="15" height="8" rx="2"/><rect x="250" y="262" width="15" height="8" rx="2"/>
-                <rect x="210" y="290" width="15" height="8" rx="2"/><rect x="230" y="290" width="15" height="8" rx="2"/><rect x="250" y="290" width="15" height="8" rx="2"/>
-            </g>
-            <g class="generator-rotor"> <!-- Spinning Core -->
-                <rect x="205" y="275" width="55" height="10" fill="#cbd5e1"/><circle cx="240" cy="280" r="10" fill="#38bdf8" filter="url(#glow-heavy-wind)"/>
-            </g>
-
-            <!-- Rotor Hub & Blades -->
-            <g class="blades-group" filter="url(#shadow-lg-wind)">
-                <!-- Motion Blur Arc -->
-                <path d="M 160 50 A 230 230 0 0 1 320 120" stroke="url(#metal-grad-wind)" stroke-width="15" fill="none" opacity="0.3"/>
-                <use href="#aero-blade-wind"/><use href="#aero-blade-wind" transform="rotate(120, 180, 280)"/><use href="#aero-blade-wind" transform="rotate(240, 180, 280)"/>
-                <path d="M 188 260 C 140 260, 140 300, 188 300 Z" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/><ellipse cx="165" cy="280" rx="6" ry="10" fill="#38bdf8" opacity="0.6"/>
-            </g>
-            <rect x="130" y="150" width="200" height="600" fill="transparent" class="interactive-outline" rx="10"/>
-        </g>
-
-        <!-- ================= MAIN POWER GRID & SUBSTATION (Wind Tab) ================= -->
-        <g class="hover-target" data-id="grid" style="pointer-events:auto;" transform="translate(460, -20)">
-            <!-- Substation Base -->
-            <rect x="360" y="650" width="100" height="70" fill="#0f172a" stroke="#0ea5e9" stroke-width="3" filter="url(#shadow-lg-wind)"/>
-            <rect x="370" y="670" width="80" height="50" fill="#020617"/>
-            <!-- Coils -->
-            <rect x="380" y="610" width="12" height="40" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/><path d="M 378 620 L 394 620 M 378 630 L 394 630" stroke="#38bdf8" stroke-width="2"/>
-            <rect x="405" y="610" width="12" height="40" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/><path d="M 403 620 L 419 620 M 403 630 L 419 630" stroke="#38bdf8" stroke-width="2"/>
-            <rect x="430" y="610" width="12" height="40" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/><path d="M 428 620 L 444 620 M 428 630 L 444 630" stroke="#38bdf8" stroke-width="2"/>
-
-            <!-- High Voltage Transmission Tower (Cyber-Pylon) -->
-            <path d="M 500 660 L 530 400 L 560 660" fill="none" stroke="#0ea5e9" stroke-width="8" filter="url(#glow-heavy-wind)"/>
-            <path d="M 500 660 L 530 400 L 560 660" fill="none" stroke="#020617" stroke-width="4"/>
-            <path d="M 505 610 L 555 610 M 510 560 L 550 560 M 515 510 L 545 510 M 520 460 L 540 460" stroke="#0f172a" stroke-width="5"/>
-            <path d="M 505 610 L 550 560 M 555 610 L 510 560 M 510 560 L 545 510 M 550 560 L 515 510 M 515 510 L 540 460 M 545 510 L 520 460" stroke="#0ea5e9" stroke-width="2"/>
-            <!-- Cross arms -->
-            <path d="M 460 470 L 600 470 M 470 440 L 590 440 M 490 410 L 570 410" stroke="#020617" stroke-width="6" stroke-linecap="round"/>
-            <path d="M 460 470 L 600 470 M 470 440 L 590 440 M 490 410 L 570 410" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
-            <circle cx="460" cy="470" r="4" fill="#38bdf8" filter="url(#glow-heavy-wind)"/><circle cx="600" cy="470" r="4" fill="#38bdf8" filter="url(#glow-heavy-wind)"/>
-            <circle cx="470" cy="440" r="4" fill="#38bdf8" filter="url(#glow-heavy-wind)"/><circle cx="590" cy="440" r="4" fill="#38bdf8" filter="url(#glow-heavy-wind)"/>
-            
-            <rect x="350" y="380" width="280" height="350" fill="transparent" class="interactive-outline" rx="10"/>
-        </g>
-
-        <!-- Wind to Substation Power Line -->
-        <g>
-            <path d="M 505 350 L 505 630 L 820 630" fill="none" stroke="#020617" stroke-width="12" stroke-linejoin="round"/>
-            <path d="M 505 350 L 505 630 L 820 630" class="e-flow-wind"/>
-            <text x="630" y="610" fill="#38bdf8" font-size="14" font-weight="800" class="lbl">AC Power</text>
-        </g>
-
-        <!-- Substation to Grid High Voltage Line -->
-        <g>
-            <path d="M 820 630 Q 880 490 920 450 M 845 630 Q 890 460 930 420 M 870 630 Q 910 430 950 390" fill="none" stroke="#facc15" stroke-width="6" opacity="0.5" filter="url(#glow-heavy-wind)"/>
-            <path d="M 820 630 Q 880 490 920 450 M 845 630 Q 890 460 930 420 M 870 630 Q 910 430 950 390" class="e-flow-grid"/>
-            <path d="M 1060 450 L 1220 450 M 1050 420 L 1220 420 M 1040 390 L 1220 390" fill="none" stroke="#facc15" stroke-width="6" opacity="0.5" filter="url(#glow-heavy-wind)"/>
-            <path d="M 1060 450 L 1220 450 M 1050 420 L 1220 420 M 1040 390 L 1220 390" class="e-flow-grid"/>
-            <text x="1000" y="480" fill="#facc15" font-size="16" transform="rotate(-5, 1000, 480)" class="lbl" filter="url(#glow-heavy-wind)">High Voltage Grid</text>
-        </g>
-    </svg>
-</div>
-
-<!-- ======================= HYDRO TAB ======================= -->
-<div id="tab-hydro" class="tab-pane">
-    <svg viewBox="0 0 1200 800" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" preserveAspectRatio="xMidYMid slice">
-        <defs>
-            <!-- Hydro Theme Gradients (Cyber-Nature High Altitude/Dam) -->
-            <linearGradient id="sky-grad-hydro" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#020617"/>
-                <stop offset="30%" stop-color="#082f49"/>
-                <stop offset="100%" stop-color="#164e63"/>
-            </linearGradient>
-            <linearGradient id="hills-back-hydro" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#064e3b"/><stop offset="100%" stop-color="#022c22"/>
-            </linearGradient>
-            <linearGradient id="hills-front-hydro" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#065f46"/><stop offset="100%" stop-color="#022c22"/>
-            </linearGradient>
-            <linearGradient id="water-grad-hydro" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#0891b2"/>
-            </linearGradient>
-            <linearGradient id="metal-grad-hydro" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#0f172a"/><stop offset="50%" stop-color="#1e293b"/><stop offset="100%" stop-color="#020617"/>
-            </linearGradient>
-            <filter id="shadow-lg-hydro"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.8"/></filter>
-            <filter id="glow-heavy-hydro"><feGaussianBlur stdDeviation="8" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            <filter id="glow-water"><feGaussianBlur stdDeviation="12" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-        </defs>
-
-        <!-- Dynamic Sky Background -->
-        <rect x="0" y="0" width="1200" height="800" fill="url(#sky-grad-hydro)"/>
-
-        <!-- Distant Hills & Lake -->
-        <path d="M 0 580 Q 300 450 750 580 T 1200 520 L 1200 800 L 0 800 Z" fill="url(#hills-back-hydro)"/>
-        <!-- River/Lake behind dam (Darker Teal) -->
-        <path d="M 0 580 L 1200 580 L 1200 800 L 0 800 Z" fill="#083344" opacity="0.8"/>
-        <!-- Glowing Lake Horizon -->
-        <path d="M 0 580 L 1200 580" stroke="#06b6d4" stroke-width="2" opacity="0.4" filter="url(#glow-heavy-hydro)"/>
-
-        <!-- ================= CENTER: HYDROELECTRIC DAM ================= -->
-        <g class="hover-target" data-id="hydro" style="pointer-events:auto;" transform="translate(-150, 0) scale(1.1)">
-            <!-- Central Dam Structure (Cyber Monolith) -->
-            <path d="M 500 600 Q 640 560 780 600 L 760 800 L 520 800 Z" fill="#0f172a" stroke="#1e293b" stroke-width="6" filter="url(#shadow-lg-hydro)"/>
-            <path d="M 520 600 L 760 600 L 760 620 L 520 620 Z" fill="#020617"/> <!-- Walkway Base -->
-            <path d="M 520 600 L 760 600" stroke="#0ea5e9" stroke-width="3" opacity="0.6" filter="url(#glow-heavy-hydro)"/> <!-- Walkway Edge Glow -->
-            
-            <!-- Spillway with Flowing Water (Neon Cyber-Fluid) -->
-            <!-- Base Water flow -->
-            <path d="M 580 620 Q 640 700 590 800 L 690 800 Q 640 700 700 620 Z" fill="url(#water-grad-hydro)" opacity="0.8"/>
-            <path d="M 580 620 Q 640 700 590 800 L 690 800 Q 640 700 700 620 Z" fill="none" stroke="#22d3ee" stroke-width="4" filter="url(#glow-water)"/>
-            <path d="M 610 620 Q 640 680 620 800" stroke="#67e8f9" stroke-width="6" class="water-flow" filter="url(#glow-water)"/>
-            <path d="M 640 620 Q 660 680 650 800" stroke="#cffafe" stroke-width="8" class="water-flow d1" filter="url(#glow-water)"/>
-            <path d="M 670 620 Q 630 680 680 800" stroke="#22d3ee" stroke-width="6" class="water-flow d2" filter="url(#glow-water)"/>
-            
-            <!-- Cutaway: Water Turbine inside Dam -->
-            <ellipse cx="710" cy="670" rx="40" ry="25" fill="#020617" stroke="#38bdf8" stroke-width="3" filter="url(#glow-heavy-hydro)"/>
-            <g class="hydro-rotor" transform="translate(65, 40)">
-                <!-- Turbine blades (Francis style - Cyber Core) -->
-                <circle cx="645" cy="630" r="15" fill="#14b8a6"/>
-                <path d="M 645 615 L 655 595 L 635 595 Z" fill="#a7f3d0"/>
-                <path d="M 660 630 L 680 640 L 680 620 Z" fill="#a7f3d0"/>
-                <path d="M 645 645 L 635 665 L 655 665 Z" fill="#a7f3d0"/>
-                <path d="M 630 630 L 610 620 L 610 640 Z" fill="#a7f3d0"/>
-            </g>
-            <path d="M 710 620 L 710 670" stroke="#38bdf8" stroke-width="6"/> <!-- Shaft to generator -->
-            <rect x="690" y="590" width="40" height="30" rx="3" fill="#0f172a" stroke="#0ea5e9" stroke-width="2"/> <!-- Generator -->
-            <rect x="695" y="595" width="6" height="20" fill="#facc15" filter="url(#glow-heavy-hydro)"/> <!-- Generator Coils -->
-            <rect x="705" y="595" width="6" height="20" fill="#facc15" filter="url(#glow-heavy-hydro)"/> <!-- Generator Coils -->
-            <rect x="715" y="595" width="6" height="20" fill="#facc15" filter="url(#glow-heavy-hydro)"/> <!-- Generator Coils -->
-            
-            <rect x="500" y="550" width="280" height="250" fill="transparent" class="interactive-outline" rx="10"/>
-        </g>
-
-        <!-- Lower Hills framing the dam -->
-        <path d="M 0 650 Q 200 600 420 660 L 420 800 L 0 800 Z" fill="url(#hills-front-hydro)" filter="url(#shadow-lg-hydro)"/>
-        <path d="M 680 660 Q 950 600 1200 680 L 1200 800 L 680 800 Z" fill="url(#hills-front-hydro)" filter="url(#shadow-lg-hydro)"/>
-
-        <!-- ================= MAIN POWER GRID & SUBSTATION (Hydro Tab) ================= -->
-        <g class="hover-target" data-id="grid" style="pointer-events:auto;" transform="translate(760, -20)">
-            <!-- Substation Base -->
-            <rect x="160" y="650" width="100" height="70" fill="#0f172a" stroke="#0ea5e9" stroke-width="3" filter="url(#shadow-lg-hydro)"/>
-            <rect x="170" y="670" width="80" height="50" fill="#020617"/>
-            <!-- Coils -->
-            <rect x="180" y="610" width="12" height="40" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/><path d="M 178 620 L 194 620 M 178 630 L 194 630" stroke="#38bdf8" stroke-width="2"/>
-            <rect x="205" y="610" width="12" height="40" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/><path d="M 203 620 L 219 620 M 203 630 L 219 630" stroke="#38bdf8" stroke-width="2"/>
-            <rect x="230" y="610" width="12" height="40" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/><path d="M 228 620 L 244 620 M 228 630 L 244 630" stroke="#38bdf8" stroke-width="2"/>
-
-            <!-- High Voltage Transmission Tower (Cyber-Pylon) -->
-            <path d="M 300 660 L 330 400 L 360 660" fill="none" stroke="#0ea5e9" stroke-width="8" filter="url(#glow-heavy-hydro)"/>
-            <path d="M 300 660 L 330 400 L 360 660" fill="none" stroke="#020617" stroke-width="4"/>
-            <path d="M 305 610 L 355 610 M 310 560 L 350 560 M 315 510 L 345 510 M 320 460 L 340 460" stroke="#0f172a" stroke-width="5"/>
-            <path d="M 305 610 L 350 560 M 355 610 L 310 560 M 310 560 L 345 510 M 350 560 L 315 510 M 315 510 L 340 460 M 345 510 L 320 460" stroke="#0ea5e9" stroke-width="2"/>
-            <!-- Cross arms -->
-            <path d="M 260 470 L 400 470 M 270 440 L 390 440 M 290 410 L 370 410" stroke="#020617" stroke-width="6" stroke-linecap="round"/>
-            <path d="M 260 470 L 400 470 M 270 440 L 390 440 M 290 410 L 370 410" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
-            <circle cx="260" cy="470" r="4" fill="#38bdf8" filter="url(#glow-heavy-hydro)"/><circle cx="400" cy="470" r="4" fill="#38bdf8" filter="url(#glow-heavy-hydro)"/>
-            <circle cx="270" cy="440" r="4" fill="#38bdf8" filter="url(#glow-heavy-hydro)"/><circle cx="390" cy="440" r="4" fill="#38bdf8" filter="url(#glow-heavy-hydro)"/>
-            
-            <rect x="150" y="380" width="280" height="350" fill="transparent" class="interactive-outline" rx="10"/>
-        </g>
-
-        <!-- Hydro to Substation Energy Flow -->
-        <g>
-            <path d="M 640 590 L 640 540 L 960 540 L 960 600" fill="none" stroke="#020617" stroke-width="12" stroke-linejoin="round"/>
-            <path d="M 640 590 L 640 540 L 960 540 L 960 600" class="e-flow-hydro"/>
-            <text x="760" y="525" fill="#38bdf8" font-size="14" font-weight="800" class="lbl">AC Power</text>
-        </g>
-
-        <!-- Substation to Grid High Voltage Line -->
-        <g>
-            <path d="M 980 630 Q 1020 490 1060 450 M 1005 630 Q 1030 460 1070 420 M 1030 630 Q 1050 430 1090 390" fill="none" stroke="#facc15" stroke-width="6" opacity="0.5" filter="url(#glow-heavy-hydro)"/>
-            <path d="M 980 630 Q 1020 490 1060 450 M 1005 630 Q 1030 460 1070 420 M 1030 630 Q 1050 430 1090 390" class="e-flow-grid"/>
-            <path d="M 1060 450 L 1220 420 M 1070 420 L 1220 390 M 1090 390 L 1220 360" fill="none" stroke="#facc15" stroke-width="6" opacity="0.5" filter="url(#glow-heavy-hydro)"/>
-            <path d="M 1060 450 L 1220 420 M 1070 420 L 1220 390 M 1090 390 L 1220 360" class="e-flow-grid"/>
-            <text x="1100" y="440" fill="#facc15" font-size="16" transform="rotate(-15, 1100, 440)" class="lbl" filter="url(#glow-heavy-hydro)">High Voltage Grid</text>
-        </g>
-    </svg>
-</div>
-
-</div> <!-- End Main Container -->
-
-<!-- Dynamic Hover Tooltip -->
-<div class="tt" id="tooltip"><h3 id="tt-title"></h3><div class="bar" id="tt-bar"></div><p id="tt-desc"></p></div>
-
-<!-- Toggle Button -->
-<button class="toggle-btn" id="sidebar-toggle">
-    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-    Deep Dive
-</button>
-
-<!-- Educational Sidebar -->
-<div class="sidebar" id="info-sidebar">
-    <div style="padding:32px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid #334155;">
-            <h2 style="font-size:20px;font-weight:900;color:#fff;letter-spacing:0.08em;text-shadow:0 0 10px rgba(56,189,248,0.5);">CLEAN POWER LAB</h2>
-            <button id="sidebar-close" style="background:none;border:none;color:#94a3b8;cursor:pointer;padding:8px;border-radius:50%;transition:background 0.3s;" onmouseover="this.style.background='rgba(51,65,85,0.6)'" onmouseout="this.style.background='none'">
-                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+    <header>
+        <div></div>
+        <div class="tabs">
+            <button class="clay-box clay-btn tab-btn active" data-target="solar">☀️ Solar Array</button>
+            <button class="clay-box clay-btn tab-btn" data-target="wind">🌬️ Wind Energy</button>
+            <button class="clay-box clay-btn tab-btn" data-target="hydro">🌊 Hydro Dam</button>
         </div>
-        
-        <div style="display:flex;flex-direction:column;gap:24px;color:#cbd5e1;line-height:1.6;">
-            <!-- Wind -->
-            <section>
-                <h3 style="font-size:16px;font-weight:800;color:#fff;margin-bottom:10px;display:flex;align-items:center;"><span class="dot" style="background:#38bdf8;box-shadow:0 0 8px #38bdf8;"></span>Wind Energy</h3>
-                <div class="card">
-                    <p style="font-size:13px;color:#94a3b8;"><strong style="color:#fff;">Kinetic to Electric:</strong> Aerodynamic blades catch wind, spinning a rotor connected to a massive generator in the nacelle. Spinning magnets induce a flow of electrons in copper coils.</p>
-                </div>
-            </section>
-            
-            <!-- Hydro -->
-            <section>
-                <h3 style="font-size:16px;font-weight:800;color:#fff;margin-bottom:10px;display:flex;align-items:center;"><span class="dot" style="background:#34d399;box-shadow:0 0 8px #34d399;"></span>Hydroelectric Power</h3>
-                <div class="card">
-                    <p style="font-size:13px;color:#94a3b8;"><strong style="color:#fff;">Gravity & Water:</strong> A dam holds back water, creating a reservoir. Gravity forces water down through a penstock, driving a heavy water turbine (like a Francis turbine) linked to a generator.</p>
-                </div>
-            </section>
+        <button id="open-sidebar" class="deep-dive-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg> DEEP DIVE
+        </button>
+    </header>
 
-            <!-- Solar -->
-            <section>
-                <h3 style="font-size:16px;font-weight:800;color:#fff;margin-bottom:10px;display:flex;align-items:center;"><span class="dot" style="background:#fde047;box-shadow:0 0 8px #fde047;"></span>Solar PV Systems</h3>
-                <div class="card">
-                    <p style="font-size:13px;color:#94a3b8;"><strong style="color:#fff;">The Photovoltaic Effect:</strong> Sunlight (photons) strikes silicon layers, knocking electrons loose. An electric field forces them into a circuit, creating Direct Current (DC). An <strong style="color:#f87171;">inverter</strong> then converts it to grid-ready Alternating Current (AC).</p>
-                </div>
-            </section>
-            
-            <!-- Infrastructure -->
-            <section>
-                <h3 style="font-size:16px;font-weight:800;color:#fff;margin-bottom:10px;display:flex;align-items:center;"><span class="dot" style="background:#a78bfa;box-shadow:0 0 8px #a78bfa;"></span>The Smart Grid</h3>
-                <p style="font-size:13px;margin-bottom:10px;">Generated power goes to a <strong style="color:#fff;">Substation Transformer</strong> which drastically increases the voltage. High voltage is pushed through <strong style="color:#fff;">Transmission Lines</strong> over vast distances with minimal energy loss before being stepped down for city consumption.</p>
-            </section>
+    <main>
+        <!-- SOLAR PANE -->
+        <div id="solar" class="pane active" style="background: linear-gradient(180deg, #BAE6FD 0%, #E0F2FE 100%);">
+            <svg class="infographic" viewBox="-60 -40 1320 880" preserveAspectRatio="xMidYMid slice">
+                
+                <!-- Sky Background Elements -->
+                <path d="M 200 150 Q 230 120 270 150 Q 310 130 330 160 Q 370 180 330 200 L 210 200 Q 170 180 200 150 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M 800 100 Q 830 70 870 100 Q 910 80 930 110 Q 970 130 930 150 L 810 150 Q 770 130 800 100 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
 
-            <section style="background:rgba(14,165,233,0.15);border:1px solid rgba(56,189,248,0.4);border-radius:10px;padding:16px;box-shadow:inset 0 0 20px rgba(14,165,233,0.1);">
-                <h3 style="font-size:16px;font-weight:800;color:#38bdf8;margin-bottom:10px;display:flex;align-items:center;"><span class="dot" style="background:#38bdf8;"></span>💡 AI Insight</h3>
-                <p style="font-size:14px;color:#e0f2fe;">Hydropower currently accounts for over <strong style="color:#fde047;">50% of global renewable generation</strong>. As wind and solar expand, hydro dams will act as massive 'water batteries,' modifying flow rates to fill gaps when the sun isn't shining or wind isn't blowing.</p>
-            </section>
+                <!-- The Sun -->
+                <g class="interactive-element" data-title="The Sun" data-desc="The ultimate power source. Emits photons that travel to Earth, providing inexhaustible energy for photovoltaic conversion." data-color="var(--solar-main)" transform="translate(180, 150)">
+                    <circle cx="0" cy="0" r="70" fill="#FBBF24" stroke="#1E293B" stroke-width="4"/>
+                    <g style="animation: spin 15s linear infinite; transform-origin: 0 0;">
+                        <path d="M0 -90 L0 -110 M0 90 L0 110 M-90 0 L-110 0 M90 0 L110 0 M-65 -65 L-80 -80 M65 65 L80 80 M-65 65 L-80 80 M65 -65 L80 -80" stroke="#FBBF24" stroke-width="6" stroke-linecap="round"/>
+                    </g>
+                </g>
+
+                <!-- Rolling Hills -->
+                <path d="M -50 550 Q 300 450 600 600 T 1300 500 L 1300 800 L -50 800 Z" fill="#86EFAC" stroke="#1E293B" stroke-width="4"/>
+                <path d="M -50 600 Q 400 500 800 650 T 1300 600 L 1300 800 L -50 800 Z" fill="#4ADE80" stroke="#1E293B" stroke-width="4"/>
+                <path d="M -50 650 Q 600 550 1200 750 L 1300 800 L -50 800 Z" fill="#22C55E" stroke="#1E293B" stroke-width="4"/>
+
+                <!-- Background Trees -->
+                <g transform="translate(100, 520) scale(0.8)">
+                    <rect x="-4" y="20" width="8" height="20" fill="#78350F" stroke="#1E293B" stroke-width="3"/>
+                    <circle cx="0" cy="0" r="25" fill="#15803D" stroke="#1E293B" stroke-width="3"/>
+                </g>
+                <g transform="translate(1100, 620) scale(0.9)">
+                    <rect x="-4" y="20" width="8" height="20" fill="#78350F" stroke="#1E293B" stroke-width="3"/>
+                    <circle cx="0" cy="0" r="25" fill="#16A34A" stroke="#1E293B" stroke-width="3"/>
+                </g>
+
+                <!-- Grid Pole -->
+                <g class="interactive-element" data-title="Power Grid" data-desc="Excess energy is exported back to the grid. High-voltage lines transport AC electricity to other homes." data-color="#EF4444">
+                    <rect x="1000" y="400" width="16" height="350" fill="#78350F" stroke="#1E293B" stroke-width="4"/>
+                    <rect x="950" y="440" width="116" height="12" fill="#78350F" stroke="#1E293B" stroke-width="4"/>
+                    <!-- Wires extending out -->
+                    <path d="M 950 446 Q 880 470 800 450" fill="none" stroke="#1E293B" stroke-width="3"/>
+                    <path d="M 1060 446 Q 1150 480 1250 440" fill="none" stroke="#1E293B" stroke-width="3"/>
+                    <path d="M 1008 400 Q 1150 420 1250 380" fill="none" stroke="#1E293B" stroke-width="3"/>
+                    
+                    <!-- Transformer -->
+                    <rect x="970" y="500" width="40" height="60" rx="4" fill="#94A3B8" stroke="#1E293B" stroke-width="4"/>
+                    <path d="M 990 452 L 990 500" fill="none" stroke="#1E293B" stroke-width="3"/>
+                    <line x1="970" y1="515" x2="1010" y2="515" stroke="#1E293B" stroke-width="3"/>
+                    <line x1="970" y1="530" x2="1010" y2="530" stroke="#1E293B" stroke-width="3"/>
+                    <line x1="970" y1="545" x2="1010" y2="545" stroke="#1E293B" stroke-width="3"/>
+                </g>
+
+                <!-- Main House Structure -->
+                <rect x="300" y="450" width="500" height="300" fill="#F8FAFC" stroke="#1E293B" stroke-width="5"/>
+                
+                <!-- Roof Back Layer -->
+                <polygon points="250,450 350,280 750,280 850,450" fill="#1E40AF" stroke="#1E293B" stroke-width="5" stroke-linejoin="round"/>
+                
+                <!-- Roof Front Lip -->
+                <polygon points="230,450 870,450 850,480 250,480" fill="#2563EB" stroke="#1E293B" stroke-width="5" stroke-linejoin="round"/>
+
+                <!-- Solar Panels -->
+                <g class="interactive-element" data-title="Photovoltaic (PV) Array" data-desc="Silicon cells absorb photons, knocking electrons loose. This creates a direct current (DC) electrical circuit." data-color="#3B82F6">
+                    <polygon points="370,310 730,310 800,430 300,430" fill="#0F172A" stroke="#1E293B" stroke-width="4" stroke-linejoin="round"/>
+                    <!-- Grid Lines -->
+                    <line x1="345" y1="350" x2="755" y2="350" stroke="#38BDF8" stroke-width="3"/>
+                    <line x1="325" y1="390" x2="775" y2="390" stroke="#38BDF8" stroke-width="3"/>
+                    <line x1="430" y1="310" x2="400" y2="430" stroke="#38BDF8" stroke-width="3"/>
+                    <line x1="490" y1="310" x2="480" y2="430" stroke="#38BDF8" stroke-width="3"/>
+                    <line x1="550" y1="310" x2="550" y2="430" stroke="#38BDF8" stroke-width="3"/>
+                    <line x1="610" y1="310" x2="620" y2="430" stroke="#38BDF8" stroke-width="3"/>
+                    <line x1="670" y1="310" x2="700" y2="430" stroke="#38BDF8" stroke-width="3"/>
+                </g>
+
+                <!-- House Features (Window & Door) -->
+                <rect x="330" y="520" width="80" height="70" rx="4" fill="#BAE6FD" stroke="#1E293B" stroke-width="4"/>
+                <line x1="370" y1="520" x2="370" y2="590" stroke="#1E293B" stroke-width="4"/>
+                <line x1="330" y1="555" x2="410" y2="555" stroke="#1E293B" stroke-width="4"/>
+                
+                <rect x="440" y="550" width="70" height="200" fill="#334155" stroke="#1E293B" stroke-width="4"/>
+                <circle cx="495" cy="650" r="5" fill="#F8FAFC"/>
+
+                <!-- Home Power Cutaway Room -->
+                <g class="interactive-element" data-title="Home Power" data-desc="Clean electricity flows directly into the home's electrical panel, powering lights, appliances, and devices." data-color="#10B981">
+                    <rect x="540" y="520" width="230" height="230" fill="#E2E8F0" stroke="#1E293B" stroke-width="4"/>
+                    <!-- Desk & PC -->
+                    <rect x="580" y="700" width="120" height="15" rx="2" fill="#94A3B8" stroke="#1E293B" stroke-width="3"/>
+                    <rect x="630" y="650" width="60" height="40" rx="4" fill="#0F172A" stroke="#1E293B" stroke-width="3"/>
+                    <rect x="655" y="690" width="10" height="10" fill="#64748B" stroke="#1E293B" stroke-width="3"/>
+                    
+                    <!-- Hanging Lightbulb -->
+                    <!-- Wire from ceiling -->
+                    <line x1="600" y1="520" x2="600" y2="550" stroke="#1E293B" stroke-width="3"/>
+                    <!-- Glowing Aura -->
+                    <circle cx="600" cy="595" r="45" fill="#FEF08A" opacity="0.6" style="animation: pulse 2s infinite;"/>
+                    <!-- Bulb Glass -->
+                    <path d="M 595 562 L 605 562 C 605 575 620 580 620 595 C 620 615 580 615 580 595 C 580 580 595 575 595 562 Z" fill="#FDE047" stroke="#1E293B" stroke-width="3"/>
+                    <!-- Bulb Base -->
+                    <rect x="592" y="550" width="16" height="12" fill="#94A3B8" stroke="#1E293B" stroke-width="3"/>
+                    <line x1="592" y1="554" x2="608" y2="554" stroke="#1E293B" stroke-width="2"/>
+                    <line x1="592" y1="558" x2="608" y2="558" stroke="#1E293B" stroke-width="2"/>
+                </g>
+
+                <!-- Power Inverter -->
+                <g class="interactive-element" data-title="Power Inverter" data-desc="Converts the variable Direct Current (DC) output of the solar panels into utility frequency Alternating Current (AC)." data-color="#8B5CF6">
+                    <!-- Blue conduit wire -->
+                    <path d="M 730 460 L 730 520 L 830 520 L 830 580" fill="none" stroke="#3B82F6" stroke-width="10"/>
+                    <!-- Animated flow in conduit -->
+                    <path d="M 730 460 L 730 520 L 830 520 L 830 580" stroke="#FFFFFF" stroke-width="4" stroke-dasharray="10 10" style="animation: dash 1s linear infinite;" fill="none"/>
+                    
+                    <rect x="800" y="580" width="60" height="90" rx="8" fill="#475569" stroke="#1E293B" stroke-width="4"/>
+                    <rect x="815" y="600" width="30" height="25" rx="3" fill="#38BDF8" stroke="#1E293B" stroke-width="3"/>
+                    <!-- Bolt symbol -->
+                    <path d="M 830 605 L 820 615 L 830 615 L 825 622 L 835 610 L 825 610 Z" fill="#FEF08A"/>
+                </g>
+
+                <!-- Animated Energy Flow Arrows -->
+                <!-- Sun to Roof -->
+                <path d="M 230 230 L 350 350" class="energy-line" stroke="#F59E0B" stroke-width="8" fill="none"/>
+                <path d="M 300 180 L 450 320" class="energy-line" stroke="#F59E0B" stroke-width="8" fill="none"/>
+                <path d="M 350 140 L 550 300" class="energy-line" stroke="#F59E0B" stroke-width="8" fill="none"/>
+                
+                <!-- Inverter to House -->
+                <path d="M 800 660 L 750 660 L 750 720 L 680 720" class="energy-line" stroke="#FDE047" stroke-width="6" fill="none"/>
+                
+                <!-- Inverter to Grid -->
+                <path d="M 860 660 L 920 660 L 920 540 L 970 540" class="energy-line" stroke="#FDE047" stroke-width="6" fill="none"/>
+                
+                <!-- Grid out to World -->
+                <path d="M 1010 440 Q 1100 480 1200 440" class="energy-line" stroke="#FDE047" stroke-width="6" fill="none"/>
+
+            </svg>
         </div>
+
+        <!-- WIND PANE (Onshore) -->
+        <div id="wind" class="pane" style="background: linear-gradient(180deg, #7DD3FC 0%, #BAE6FD 100%);">
+            <svg class="infographic" viewBox="-60 -40 1320 880" preserveAspectRatio="xMidYMid slice">
+                <!-- Sun -->
+                <g class="interactive-element" data-title="The Sun" data-desc="Solar energy unevenly heats the Earth's surface, creating atmospheric pressure differences that drive the wind." data-color="#FBBF24" transform="translate(1000, 150)">
+                    <circle cx="0" cy="0" r="60" fill="#FBBF24" stroke="#1E293B" stroke-width="4"/>
+                    <!-- face -->
+                    <circle cx="-15" cy="-5" r="5" fill="#1E293B"/>
+                    <circle cx="15" cy="-5" r="5" fill="#1E293B"/>
+                    <path d="M -15 15 Q 0 30 15 15" fill="none" stroke="#1E293B" stroke-width="4" stroke-linecap="round"/>
+                    <g style="animation: spin 20s linear infinite; transform-origin: 0 0;">
+                        <path d="M0 -75 L0 -95 M0 75 L0 95 M-75 0 L-95 0 M75 0 L95 0 M-55 -55 L-70 -70 M55 55 L70 70 M-55 55 L-70 70 M55 -55 L70 -70" stroke="#FBBF24" stroke-width="5" stroke-linecap="round"/>
+                    </g>
+                </g>
+
+                <!-- Clouds & Wind Swirls -->
+                <path d="M 150 150 Q 180 120 220 150 Q 260 130 280 160 Q 320 180 280 200 L 160 200 Q 120 180 150 150" fill="#FFFFFF" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M 650 120 Q 680 90 720 120 Q 760 100 780 130 Q 820 150 780 170 L 660 170 Q 620 150 650 120" fill="#FFFFFF" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                
+                <path d="M 50 300 Q 200 250 350 300 Q 400 320 380 350 Q 350 350 350 320" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" opacity="0.8"/>
+                <path d="M -50 200 Q 150 220 300 180 Q 400 150 450 200 Q 480 250 450 270 Q 420 270 420 240" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
+                <path d="M 550 300 Q 700 280 850 320 Q 900 350 880 380 Q 850 380 850 350" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" opacity="0.8"/>
+
+                <!-- Mountains Background -->
+                <path d="M -50 500 L 100 300 L 250 500 Z" fill="#9CA3AF" stroke="#1E293B" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M 100 300 L 130 340 L 110 350 L 100 330 L 80 350 L 70 340 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+
+                <path d="M 850 550 L 1000 350 L 1150 550 Z" fill="#9CA3AF" stroke="#1E293B" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M 1000 350 L 1030 390 L 1010 400 L 1000 380 L 980 400 L 970 390 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+
+                <path d="M 200 550 L 350 350 L 500 550 Z" fill="#64748B" stroke="#1E293B" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M 350 350 L 380 390 L 360 400 L 350 380 L 330 400 L 320 390 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+
+                <!-- Rolling Hills -->
+                <path d="M -50 500 Q 200 450 450 550 T 900 500 T 1300 550 L 1300 800 L -50 800 Z" fill="#4ADE80" stroke="#1E293B" stroke-width="4"/>
+                <path d="M -50 580 Q 250 500 600 620 T 1300 580 L 1300 800 L -50 800 Z" fill="#22C55E" stroke="#1E293B" stroke-width="4"/>
+                
+                <!-- Dirt Path -->
+                <path d="M 750 600 Q 800 650 700 700 T 800 800 L 900 800 T 850 700 Q 950 650 850 600 Z" fill="#D4A373" stroke="#1E293B" stroke-width="4"/>
+
+                <!-- Background Pine Trees -->
+                <g transform="translate(600, 520) scale(0.6)">
+                    <rect x="-4" y="20" width="8" height="15" fill="#78350F" stroke="#1E293B" stroke-width="3"/>
+                    <path d="M 0 -10 L 20 25 L -20 25 Z" fill="#15803D" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                </g>
+                <g transform="translate(850, 530) scale(0.7)">
+                    <rect x="-4" y="20" width="8" height="15" fill="#78350F" stroke="#1E293B" stroke-width="3"/>
+                    <path d="M 0 -10 L 20 25 L -20 25 Z" fill="#16A34A" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                </g>
+                <g transform="translate(880, 520) scale(0.5)">
+                    <rect x="-4" y="20" width="8" height="15" fill="#78350F" stroke="#1E293B" stroke-width="3"/>
+                    <path d="M 0 -10 L 20 25 L -20 25 Z" fill="#15803D" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                </g>
+
+                <!-- Turbines -->
+                <!-- Turbine 1 (Small Left) -->
+                <g class="interactive-element" data-title="Wind Turbine" data-desc="Captures kinetic energy from the wind using aerodynamically designed blades." data-color="#38BDF8" transform="translate(150, 480) scale(0.6)">
+                    <!-- Tower -->
+                    <path d="M -15 200 L 15 200 L 5 -150 L -5 -150 Z" fill="#F8FAFC" stroke="#1E293B" stroke-width="4"/>
+                    <!-- Rotor -->
+                    <g style="animation: spin 3s linear infinite; transform-origin: 0 -150px;">
+                        <path d="M 0 -150 L -10 -280 C -15 -300 15 -300 10 -280 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="4"/>
+                        <path d="M 0 -150 L 115 -75 C 130 -65 115 -40 100 -50 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="4"/>
+                        <path d="M 0 -150 L -115 -75 C -130 -65 -115 -40 -100 -50 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="4"/>
+                        <circle cx="0" cy="-150" r="15" fill="#FDE047" stroke="#1E293B" stroke-width="4"/>
+                    </g>
+                </g>
+
+                <!-- Turbine 2 (Medium Left) -->
+                <g class="interactive-element" data-title="Wind Turbine" data-desc="Converts the mechanical rotation of the blades into electricity via a generator in the nacelle." data-color="#38BDF8" transform="translate(350, 520) scale(0.8)">
+                    <!-- Tower -->
+                    <path d="M -15 200 L 15 200 L 5 -150 L -5 -150 Z" fill="#F8FAFC" stroke="#1E293B" stroke-width="4"/>
+                    <!-- Rotor -->
+                    <g style="animation: spin 3.5s linear infinite; transform-origin: 0 -150px;">
+                        <path d="M 0 -150 L -10 -280 C -15 -300 15 -300 10 -280 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="4"/>
+                        <path d="M 0 -150 L 115 -75 C 130 -65 115 -40 100 -50 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="4"/>
+                        <path d="M 0 -150 L -115 -75 C -130 -65 -115 -40 -100 -50 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="4"/>
+                        <circle cx="0" cy="-150" r="15" fill="#FDE047" stroke="#1E293B" stroke-width="4"/>
+                    </g>
+                </g>
+
+                <!-- Turbine 3 (Large Center) -->
+                <g class="interactive-element" data-title="Primary Wind Turbine" data-desc="Utility-scale turbines can be over 100 meters tall to catch stronger, more consistent winds higher in the atmosphere." data-color="#38BDF8" transform="translate(600, 600) scale(1.2)">
+                    <!-- Tower -->
+                    <path d="M -15 100 L 15 100 L 5 -200 L -5 -200 Z" fill="#F8FAFC" stroke="#1E293B" stroke-width="4"/>
+                    <!-- Rotor -->
+                    <g style="animation: spin 4s linear infinite; transform-origin: 0 -200px;">
+                        <!-- Blades -->
+                        <path d="M 0 -200 L -15 -350 C -25 -380 25 -380 15 -350 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="4"/>
+                        <path d="M 0 -200 L 130 -125 C 155 -110 140 -70 115 -85 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="4"/>
+                        <path d="M 0 -200 L -130 -125 C -155 -110 -140 -70 -115 -85 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="4"/>
+                        <!-- Hub -->
+                        <circle cx="0" cy="-200" r="18" fill="#FDE047" stroke="#1E293B" stroke-width="4"/>
+                    </g>
+                </g>
+
+                <!-- Foreground Round Trees -->
+                <g transform="translate(450, 520) scale(0.8)">
+                    <rect x="-6" y="20" width="12" height="20" fill="#78350F" stroke="#1E293B" stroke-width="3"/>
+                    <circle cx="-10" cy="0" r="20" fill="#15803D" stroke="#1E293B" stroke-width="3"/>
+                    <circle cx="10" cy="-10" r="20" fill="#16A34A" stroke="#1E293B" stroke-width="3"/>
+                    <circle cx="15" cy="15" r="15" fill="#22C55E" stroke="#1E293B" stroke-width="3"/>
+                </g>
+                <g transform="translate(500, 540) scale(0.6)">
+                    <rect x="-6" y="20" width="12" height="20" fill="#78350F" stroke="#1E293B" stroke-width="3"/>
+                    <circle cx="-10" cy="0" r="20" fill="#15803D" stroke="#1E293B" stroke-width="3"/>
+                    <circle cx="10" cy="-10" r="20" fill="#16A34A" stroke="#1E293B" stroke-width="3"/>
+                    <circle cx="15" cy="15" r="15" fill="#22C55E" stroke="#1E293B" stroke-width="3"/>
+                </g>
+
+                <!-- Foreground Pine Trees -->
+                <g transform="translate(50, 680) scale(1.5)">
+                    <rect x="-4" y="20" width="8" height="15" fill="#78350F" stroke="#1E293B" stroke-width="3"/>
+                    <path d="M 0 -15 L 25 30 L -25 30 Z" fill="#16A34A" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                </g>
+                <g transform="translate(120, 720) scale(1.2)">
+                    <rect x="-4" y="20" width="8" height="15" fill="#78350F" stroke="#1E293B" stroke-width="3"/>
+                    <path d="M 0 -15 L 25 30 L -25 30 Z" fill="#15803D" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                </g>
+
+                <!-- Power Transmission Network -->
+                <g class="interactive-element" data-title="Grid Transmission" data-desc="Transports generated electricity across the landscape from the wind farm to local communities." data-color="#FDE047">
+                    <!-- Black Wires -->
+                    <path d="M 150 600 Q 200 650 250 550 T 400 700 T 550 750 T 750 780 T 950 720 T 1100 680" fill="none" stroke="#1E293B" stroke-width="3"/>
+                    
+                    <!-- Glowing Energy Flow -->
+                    <path d="M 150 600 Q 200 650 250 550 T 400 700 T 550 750 T 750 780 T 950 720 T 1100 680" stroke="#FEF08A" stroke-width="8" stroke-dasharray="25 25" style="animation: dash 1s linear infinite;" fill="none"/>
+                    
+                    <!-- Poles -->
+                    <!-- Pole 1 -->
+                    <g transform="translate(250, 520)">
+                        <rect x="-4" y="0" width="8" height="80" fill="#92400E" stroke="#1E293B" stroke-width="3"/>
+                        <rect x="-20" y="10" width="40" height="6" fill="#92400E" stroke="#1E293B" stroke-width="3"/>
+                    </g>
+                    <!-- Pole 2 -->
+                    <g transform="translate(400, 660)">
+                        <rect x="-4" y="0" width="8" height="80" fill="#92400E" stroke="#1E293B" stroke-width="3"/>
+                        <rect x="-20" y="10" width="40" height="6" fill="#92400E" stroke="#1E293B" stroke-width="3"/>
+                    </g>
+                    <!-- Pole 3 -->
+                    <g transform="translate(550, 720)">
+                        <rect x="-4" y="0" width="8" height="60" fill="#92400E" stroke="#1E293B" stroke-width="3"/>
+                        <rect x="-20" y="10" width="40" height="6" fill="#92400E" stroke="#1E293B" stroke-width="3"/>
+                    </g>
+                    <!-- Pole 4 -->
+                    <g transform="translate(750, 750)">
+                        <rect x="-4" y="0" width="8" height="60" fill="#92400E" stroke="#1E293B" stroke-width="3"/>
+                        <rect x="-20" y="10" width="40" height="6" fill="#92400E" stroke="#1E293B" stroke-width="3"/>
+                    </g>
+                    <!-- Pole 5 -->
+                    <g transform="translate(950, 680)">
+                        <rect x="-4" y="0" width="8" height="60" fill="#92400E" stroke="#1E293B" stroke-width="3"/>
+                        <rect x="-20" y="10" width="40" height="6" fill="#92400E" stroke="#1E293B" stroke-width="3"/>
+                    </g>
+                </g>
+
+                <!-- Town Community -->
+                <g class="interactive-element" data-title="Local Community" data-desc="Homes powered cleanly and sustainably by local onshore wind farms, reducing carbon emissions." data-color="#10B981" transform="translate(900, 550)">
+                    
+                    <!-- House 1 (Back Right) -->
+                    <g transform="translate(150, -50)">
+                        <rect x="0" y="30" width="50" height="40" fill="#FCA5A5" stroke="#1E293B" stroke-width="3"/>
+                        <path d="M -10 30 L 25 -10 L 60 30 Z" fill="#EF4444" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                        <rect x="15" y="45" width="10" height="15" fill="#78350F" stroke="#1E293B" stroke-width="2"/>
+                        <circle cx="40" cy="50" r="5" fill="#FEF08A" stroke="#1E293B" stroke-width="2"/>
+                        <rect x="35" y="0" width="10" height="20" fill="#9CA3AF" stroke="#1E293B" stroke-width="3"/>
+                        <!-- Smoke -->
+                        <path d="M 40 -10 Q 30 -20 40 -30 T 40 -50" fill="none" stroke="#D1D5DB" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+                    </g>
+
+                    <!-- House 2 (Back Left) -->
+                    <g transform="translate(60, 20)">
+                        <rect x="0" y="30" width="60" height="50" fill="#FDE047" stroke="#1E293B" stroke-width="3"/>
+                        <path d="M -10 30 L 30 -10 L 70 30 Z" fill="#F97316" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                        <rect x="25" y="50" width="15" height="30" fill="#78350F" stroke="#1E293B" stroke-width="2"/>
+                        <circle cx="12" cy="55" r="6" fill="#FEF08A" stroke="#1E293B" stroke-width="2"/>
+                        <circle cx="48" cy="55" r="6" fill="#FEF08A" stroke="#1E293B" stroke-width="2"/>
+                        <rect x="45" y="-5" width="10" height="20" fill="#9CA3AF" stroke="#1E293B" stroke-width="3"/>
+                        <!-- Smoke -->
+                        <path d="M 50 -15 Q 40 -25 50 -35 T 50 -55" fill="none" stroke="#D1D5DB" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+                    </g>
+
+                    <!-- House 3 (Front Right) -->
+                    <g transform="translate(180, 50)">
+                        <rect x="0" y="30" width="60" height="40" fill="#FDE047" stroke="#1E293B" stroke-width="3"/>
+                        <path d="M -10 30 L 30 -5 L 70 30 Z" fill="#EF4444" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                        <rect x="10" y="45" width="15" height="25" fill="#78350F" stroke="#1E293B" stroke-width="2"/>
+                        <circle cx="45" cy="50" r="6" fill="#FEF08A" stroke="#1E293B" stroke-width="2"/>
+                    </g>
+
+                    <!-- House 4 (Front Left - Connecting House) -->
+                    <g transform="translate(0, 100)">
+                        <rect x="0" y="30" width="70" height="50" fill="#93C5FD" stroke="#1E293B" stroke-width="3"/>
+                        <path d="M -10 30 L 35 -10 L 80 30 Z" fill="#EF4444" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                        <!-- Energy Lightning icon on house -->
+                        <path d="M 35 45 L 25 60 L 35 60 L 30 75 L 45 55 L 35 55 Z" fill="#FEF08A" stroke="#1E293B" stroke-width="2"/>
+                    </g>
+                </g>
+
+                <!-- Flowers bottom left -->
+                <g transform="translate(180, 750)">
+                    <circle cx="0" cy="0" r="4" fill="#FDE047"/>
+                    <circle cx="-6" cy="-6" r="4" fill="#FFFFFF"/>
+                    <circle cx="6" cy="-6" r="4" fill="#FFFFFF"/>
+                    <circle cx="-6" cy="6" r="4" fill="#FFFFFF"/>
+                    <circle cx="6" cy="6" r="4" fill="#FFFFFF"/>
+                </g>
+                <g transform="translate(240, 760)">
+                    <circle cx="0" cy="0" r="4" fill="#FDE047"/>
+                    <circle cx="-6" cy="-6" r="4" fill="#FCA5A5"/>
+                    <circle cx="6" cy="-6" r="4" fill="#FCA5A5"/>
+                    <circle cx="-6" cy="6" r="4" fill="#FCA5A5"/>
+                    <circle cx="6" cy="6" r="4" fill="#FCA5A5"/>
+                </g>
+                <g transform="translate(290, 750)">
+                    <circle cx="0" cy="0" r="4" fill="#FDE047"/>
+                    <circle cx="-6" cy="-6" r="4" fill="#93C5FD"/>
+                    <circle cx="6" cy="-6" r="4" fill="#93C5FD"/>
+                    <circle cx="-6" cy="6" r="4" fill="#93C5FD"/>
+                    <circle cx="6" cy="6" r="4" fill="#93C5FD"/>
+                </g>
+
+            </svg>
+        </div>
+
+        <!-- HYDRO PANE -->
+        <div id="hydro" class="pane" style="background: linear-gradient(180deg, #7DD3FC 0%, #BAE6FD 100%);">
+            <svg class="infographic" viewBox="-60 -40 1320 880" preserveAspectRatio="xMidYMid slice">
+                <!-- Sun & Clouds -->
+                <circle cx="950" cy="150" r="40" fill="#FBBF24" stroke="#1E293B" stroke-width="4"/>
+                <g transform="translate(950, 150)">
+                    <path d="M 0 -50 L 0 -60 M 0 50 L 0 60 M -50 0 L -60 0 M 50 0 L 60 0 M -35 -35 L -45 -45 M 35 35 L 45 45 M -35 35 L -45 45 M 35 -35 L 45 -45" stroke="#1E293B" stroke-width="4" stroke-linecap="round"/>
+                </g>
+                <path d="M 200 150 Q 230 120 270 150 Q 310 130 330 160 Q 370 180 330 200 L 210 200 Q 170 180 200 150 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+
+                <!-- Mountains Background -->
+                <path d="M -50 400 L 100 200 L 250 400 L 400 150 L 600 400 L 800 250 L 1000 450 L 1250 250 L 1300 400 L 1300 800 L -50 800 Z" fill="#9CA3AF" stroke="#1E293B" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M 100 200 L 130 240 L 110 250 L 100 230 L 80 250 L 70 240 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M 400 150 L 440 200 L 410 210 L 400 190 L 370 220 L 360 200 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M 800 250 L 840 290 L 810 300 L 800 280 L 770 310 L 760 290 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+
+                <!-- Landmass -->
+                <path d="M -50 450 Q 200 350 450 500 T 900 450 T 1300 500 L 1300 800 L -50 800 Z" fill="#4ADE80" stroke="#1E293B" stroke-width="4"/>
+                <path d="M 300 550 Q 600 450 900 600 T 1300 650 L 1300 800 L 300 800 Z" fill="#22C55E" stroke="#1E293B" stroke-width="4"/>
+
+                <!-- Upper Reservoir Area -->
+                <g class="interactive-element" data-title="Water Reservoir" data-desc="A large man-made lake holding millions of gallons of water, storing immense potential energy due to its height." data-color="#3B82F6">
+                    <path d="M -50 380 Q 150 380 300 380 L 300 800 L -50 800 Z" fill="#3B82F6" stroke="#1E293B" stroke-width="4"/>
+                    <path d="M 20 400 L 80 400 M 150 420 L 220 420" stroke="#60A5FA" stroke-width="3" stroke-linecap="round"/>
+                </g>
+
+                <!-- Dam Structure -->
+                <g class="interactive-element" data-title="Hydro Dam Structure" data-desc="Massive reinforced concrete wall designed to hold back the immense pressure of the reservoir water." data-color="#94A3B8">
+                    <path d="M 280 350 L 380 350 L 500 750 L 250 750 Z" fill="#CBD5E1" stroke="#1E293B" stroke-width="5" stroke-linejoin="round"/>
+                    <rect x="300" y="380" width="15" height="20" fill="#94A3B8" stroke="#1E293B" stroke-width="3"/>
+                    <rect x="330" y="380" width="15" height="20" fill="#94A3B8" stroke="#1E293B" stroke-width="3"/>
+                    <rect x="360" y="380" width="15" height="20" fill="#94A3B8" stroke="#1E293B" stroke-width="3"/>
+                </g>
+
+                <!-- Powerhouse Building -->
+                <path d="M 400 520 L 740 520 L 720 490 L 420 490 Z" fill="#94A3B8" stroke="#1E293B" stroke-width="4" stroke-linejoin="round"/>
+                <rect x="420" y="520" width="300" height="230" rx="10" fill="#F8FAFC" stroke="#1E293B" stroke-width="5"/>
+                <!-- Cutaway inside powerhouse -->
+                <rect x="440" y="550" width="260" height="180" fill="#E2E8F0" stroke="#1E293B" stroke-width="4"/>
+
+                <!-- Penstock Cutaway (Pipe) -->
+                <g class="interactive-element" data-title="Penstock Cutaway" data-desc="A large pipe that funnels high-pressure water from the reservoir down to the turbine inside the powerhouse." data-color="#34D399">
+                    <path d="M 280 480 C 350 480 400 650 480 650 L 480 710 C 380 710 320 540 280 540 Z" fill="#3B82F6" stroke="#1E293B" stroke-width="4"/>
+                    <!-- Water flow lines -->
+                    <path d="M 300 510 C 350 510 390 680 480 680" stroke="#E0F2FE" stroke-width="6" stroke-dasharray="15 15" fill="none" style="animation: dash 1s linear infinite;"/>
+                </g>
+
+                <!-- Tailrace (Exit River) -->
+                <g class="interactive-element" data-title="Tailrace / River Flow" data-desc="After turning the turbine, the water slows down and exits cleanly back into the natural river system." data-color="#0EA5E9">
+                    <path d="M 500 710 C 560 760 650 710 800 750 C 950 790 1100 850 1300 850 L 1300 900 L 450 900 Z" fill="#3B82F6" stroke="#1E293B" stroke-width="4"/>
+                    <!-- Surface waves -->
+                    <path d="M 550 760 C 650 740 750 760 850 760" stroke="#93C5FD" stroke-width="4" stroke-linecap="round" fill="none"/>
+                </g>
+
+                <!-- Turbine inside Powerhouse -->
+                <g class="interactive-element" data-title="Hydro Turbine" data-desc="The kinetic force of the rushing water pushes the blades, converting water pressure into mechanical rotation." data-color="#0EA5E9" transform="translate(520, 680)">
+                    <!-- Housing -->
+                    <circle cx="0" cy="0" r="45" fill="#1E293B"/>
+                    <path d="M 0 20 Q 20 60 80 60 L 80 100 Q -20 100 -40 40 Z" fill="#3B82F6" stroke="#1E293B" stroke-width="4"/>
+                    
+                    <!-- Spinning Rotor -->
+                    <g style="animation: spin 1.5s linear infinite; transform-origin: 0 0;">
+                        <circle cx="0" cy="0" r="35" fill="none" stroke="#38BDF8" stroke-width="4"/>
+                        <path d="M 0 -35 L 15 -20 L 5 -5 Z" fill="#BAE6FD" stroke="#1E293B" stroke-width="2"/>
+                        <path d="M 0 35 L -15 20 L -5 5 Z" fill="#BAE6FD" stroke="#1E293B" stroke-width="2"/>
+                        <path d="M 35 0 L 20 15 L 5 5 Z" fill="#BAE6FD" stroke="#1E293B" stroke-width="2"/>
+                        <path d="M -35 0 L -20 -15 L -5 -5 Z" fill="#BAE6FD" stroke="#1E293B" stroke-width="2"/>
+                        <circle cx="0" cy="0" r="10" fill="#F8FAFC" stroke="#1E293B" stroke-width="3"/>
+                    </g>
+                </g>
+
+                <!-- Generator inside Powerhouse -->
+                <g class="interactive-element" data-title="Generator" data-desc="Connected directly to the turbine via a shaft, it spins electromagnets inside copper coils to generate alternating current (AC) electricity." data-color="#FBBF24" transform="translate(630, 640)">
+                    <!-- Shaft connecting turbine to generator -->
+                    <rect x="-80" y="30" width="80" height="15" fill="#94A3B8" stroke="#1E293B" stroke-width="3"/>
+                    <line x1="-80" y1="37" x2="0" y2="37" stroke="#64748B" stroke-width="2"/>
+                    
+                    <!-- Generator Casing -->
+                    <rect x="0" y="0" width="90" height="80" rx="15" fill="#10B981" stroke="#1E293B" stroke-width="4"/>
+                    <path d="M 25 0 L 25 80 M 45 0 L 45 80 M 65 0 L 65 80" stroke="#1E293B" stroke-width="3" opacity="0.4"/>
+                    
+                    <!-- Electricity Zap icon -->
+                    <path d="M 45 20 L 30 45 L 48 45 L 40 65 L 65 35 L 45 35 Z" fill="#FBBF24" stroke="#1E293B" stroke-width="2"/>
+                </g>
+
+                <!-- Transmission Lines Out -->
+                <g class="interactive-element" data-title="Electricity Transmission" data-desc="High-voltage power lines carry the generated green electricity over long distances to the grid." data-color="#F59E0B">
+                    <!-- Pole 1 -->
+                    <path d="M 760 620 L 780 480 L 800 620" fill="none" stroke="#64748B" stroke-width="4"/>
+                    <path d="M 740 510 L 820 510 M 760 550 L 800 550 M 780 480 L 780 620" stroke="#64748B" stroke-width="4"/>
+                    
+                    <!-- Pole 2 -->
+                    <path d="M 940 560 L 960 420 L 980 560" fill="none" stroke="#64748B" stroke-width="4"/>
+                    <path d="M 920 450 L 1000 450 M 940 490 L 980 490 M 960 420 L 960 560" stroke="#64748B" stroke-width="4"/>
+                    
+                    <!-- Animated Arrows -->
+                    <path d="M 680 640 Q 730 600 740 510" class="energy-line" fill="none" stroke-width="3"/>
+                    <path d="M 680 640 Q 730 620 820 510" class="energy-line" fill="none" stroke-width="3"/>
+                    <path d="M 740 510 Q 830 530 920 450" class="energy-line" fill="none" stroke-width="3"/>
+                    <path d="M 820 510 Q 910 530 1000 450" class="energy-line" fill="none" stroke-width="3"/>
+                    <path d="M 920 450 Q 1000 470 1060 420" class="energy-line" fill="none" stroke-width="3"/>
+                    <path d="M 1000 450 Q 1080 470 1120 450" class="energy-line" fill="none" stroke-width="3"/>
+                </g>
+
+                <!-- Downstream Town Community -->
+                <g class="interactive-element" data-title="Local Community" data-desc="Homes powered cleanly and sustainably by local onshore wind farms, reducing carbon emissions." data-color="#10B981" transform="translate(900, 680)">
+                    
+                    <!-- House 1 (Wait... it's a hydro dam town now!) -->
+                    <g transform="translate(150, -50) scale(0.8)">
+                        <rect x="0" y="30" width="50" height="40" fill="#FCA5A5" stroke="#1E293B" stroke-width="3"/>
+                        <path d="M -10 30 L 25 -10 L 60 30 Z" fill="#EF4444" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                        <rect x="15" y="45" width="10" height="15" fill="#78350F" stroke="#1E293B" stroke-width="2"/>
+                        <circle cx="40" cy="50" r="5" fill="#FEF08A" stroke="#1E293B" stroke-width="2"/>
+                    </g>
+
+                    <!-- House 2 -->
+                    <g transform="translate(60, 20) scale(0.9)">
+                        <rect x="0" y="30" width="60" height="50" fill="#FDE047" stroke="#1E293B" stroke-width="3"/>
+                        <path d="M -10 30 L 30 -10 L 70 30 Z" fill="#F97316" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                        <rect x="25" y="50" width="15" height="30" fill="#78350F" stroke="#1E293B" stroke-width="2"/>
+                        <circle cx="12" cy="55" r="6" fill="#FEF08A" stroke="#1E293B" stroke-width="2"/>
+                        <circle cx="48" cy="55" r="6" fill="#FEF08A" stroke="#1E293B" stroke-width="2"/>
+                    </g>
+                    
+                    <!-- Waterfront Path / Road -->
+                    <path d="M -100 80 L 300 120" stroke="#9CA3AF" stroke-width="8" fill="none" stroke-linecap="round"/>
+                    <path d="M -100 80 L 300 120" stroke="#F3F4F6" stroke-width="4" stroke-dasharray="10 10" fill="none" stroke-linecap="round"/>
+                    
+                    <!-- Street Lamp 1 -->
+                    <g transform="translate(20, 60)">
+                        <line x1="0" y1="30" x2="0" y2="-20" stroke="#1E293B" stroke-width="3"/>
+                        <path d="M -5 -20 Q 0 -30 15 -30 L 15 -25 L 0 -20 Z" fill="#1E293B"/>
+                        <circle cx="15" cy="-25" r="4" fill="#FEF08A" style="animation: pulse 2s infinite;"/>
+                        <!-- glow -->
+                        <path d="M 15 -25 L 5 10 L 25 10 Z" fill="#FEF08A" opacity="0.3"/>
+                    </g>
+
+                    <!-- Street Lamp 2 -->
+                    <g transform="translate(220, 80) scale(0.9)">
+                        <line x1="0" y1="30" x2="0" y2="-20" stroke="#1E293B" stroke-width="3"/>
+                        <path d="M 5 -20 Q 0 -30 -15 -30 L -15 -25 L 0 -20 Z" fill="#1E293B"/>
+                        <circle cx="-15" cy="-25" r="4" fill="#FEF08A" style="animation: pulse 2s infinite;"/>
+                        <!-- glow -->
+                        <path d="M -15 -25 L -25 10 L -5 10 Z" fill="#FEF08A" opacity="0.3"/>
+                    </g>
+
+                    <!-- Pine Trees -->
+                    <g transform="translate(180, 50) scale(0.8)">
+                        <rect x="-4" y="20" width="8" height="15" fill="#78350F" stroke="#1E293B" stroke-width="3"/>
+                        <path d="M 0 -15 L 25 30 L -25 30 Z" fill="#16A34A" stroke="#1E293B" stroke-width="3" stroke-linejoin="round"/>
+                    </g>
+
+                </g>
+            </svg>
+        </div>
+    </main>
+
+    <!-- FLOATING TOOLTIP -->
+    <div id="tooltip" class="clay-box">
+        <span class="tooltip-badge" id="tooltip-badge">Component</span>
+        <h3 id="tooltip-title">Title</h3>
+        <p id="tooltip-desc">Description</p>
     </div>
-</div>
 
-<script>
-const infoData = {
-    'wind':  { t: 'Wind Turbine', d: 'Extracts kinetic energy from moving air. The internal generator spins to produce AC electricity.', c: '#38bdf8' },
-    'hydro': { t: 'Hydroelectric Dam', d: 'Gravity forces water through internal turbines, spinning generators to produce massive amounts of baseload power.', c: '#34d399' },
-    'sun':   { t: 'Solar Radiation', d: 'The ultimate source. Electomagnetic radiation travels through space, providing endless free energy.', c: '#fde047' },
-    'panels':{ t: 'Solar Array & Inverter', d: 'Silicon panels generate DC power via the PV effect. The adjacent inverter converts it to AC for the grid.', c: '#fde047' },
-    'pv-cells':{ t: 'Photovoltaic Cell', d: 'Cross-section of P/N type silicon. Photons knock electrons loose, creating an electrical current.', c: '#fde047' },
-    'grid':  { t: 'Substation & Grid', d: 'Transformers step up the voltage of the combined clean energy, pushing it across the high-voltage network to cities.', c: '#a78bfa' }
-};
+    <!-- SIDEBAR (Deep Dive) -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <h2>Deep Dive Analysis</h2>
+            <button class="sidebar-close" id="close-sidebar">X</button>
+        </div>
+        <div class="sidebar-content">
+            
+            <div class="info-card clay-box">
+                <h4><div class="dot dot-solar"></div> Solar Power</h4>
+                <p>Solar energy is harvested using Photovoltaic (PV) cells made of semiconductor materials like silicon. When sunlight hits the cells, it knocks electrons loose, creating an electrical current. Modern advancements have dramatically lowered the cost of PV panels, making solar one of the fastest-growing energy sources globally.</p>
+                <br>
+                <strong>Efficiency:</strong> Commercial panels are typically 15-22% efficient at converting sunlight to electricity.
+            </div>
 
-document.addEventListener('DOMContentLoaded', () => {
-    const tt = document.getElementById('tooltip'), tT = document.getElementById('tt-title'), tD = document.getElementById('tt-desc'), tB = document.getElementById('tt-bar');
-    document.addEventListener('mousemove', e => {
-        if (tt.style.opacity==='1') {
-            let l=e.clientX+20,t=e.clientY+20; const r=tt.getBoundingClientRect();
-            if(l+r.width>innerWidth)l=e.clientX-r.width-15;if(t+r.height>innerHeight)t=e.clientY-r.height-15;
-            tt.style.transform = `translate(${l}px, ${t}px)`;
-            tt.style.left = '0'; tt.style.top = '0'; // Use transform for smoother tracking
-        }
-    });
-    document.querySelectorAll('.hover-target').forEach(el => {
-        el.addEventListener('mouseenter', () => {
-            const d = infoData[el.getAttribute('data-id')];
-            if(d) {
-                tT.textContent=d.t; tD.textContent=d.d;
-                tT.style.color = d.c; tB.style.background = d.c; tB.style.boxShadow = `0 0 8px ${d.c}`;
-                tt.style.opacity='1'; tt.style.transition='opacity 0.2s';
+            <div class="info-card clay-box">
+                <h4><div class="dot dot-wind"></div> Wind Energy</h4>
+                <p>Onshore wind farms utilize clusters of large turbines placed in open landscapes with high wind corridors. As the wind blows, it spins the aerodynamic blades, converting kinetic energy into mechanical energy, which a generator then turns into electricity. This power is transmitted via local grids to nearby communities.</p>
+                <br>
+                <strong>Scale:</strong> Utility-scale onshore turbines commonly have towers reaching over 100 meters high, maximizing exposure to stronger, unblocked winds.</p>
+            </div>
+
+            <div class="info-card clay-box">
+                <h4><div class="dot dot-hydro"></div> Hydroelectric Power</h4>
+                <p>Hydroelectricity remains the largest contributor to global renewable energy. By constructing a dam, potential energy is stored in a massive reservoir. When released, gravity pulls the water down through a penstock, spinning a heavy hydraulic turbine which turns an electromagnetic generator.</p>
+                <br>
+                <strong>Reliability:</strong> Unlike solar and wind, hydro provides "baseload" power, meaning it can generate electricity 24/7 on demand.</p>
+            </div>
+            
+            <div class="info-card clay-box ai-insight">
+                <h4><div class="dot dot-ai"></div> 💡 AI Insight</h4>
+                <p>The transition to a fully renewable grid requires a "symphony of sources". Because solar only works during the day, and wind is intermittent, hydroelectric dams act as massive <strong>water batteries</strong>. Grid operators can instantly release reservoir water to spin turbines the exact moment that solar drops off or wind stops blowing, ensuring a stable, uninterrupted flow of green energy.</p>
+            </div>
+
+        </div>
+    </aside>
+
+    <script>
+        // --- Tab Navigation Logic ---
+        const tabs = document.querySelectorAll('.tab-btn');
+        const panes = document.querySelectorAll('.pane');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                panes.forEach(p => p.classList.remove('active'));
+
+                tab.classList.add('active');
+                const targetId = tab.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+        // --- Sidebar Logic ---
+        const sidebar = document.getElementById('sidebar');
+        const openBtn = document.getElementById('open-sidebar');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        openBtn.addEventListener('click', () => { sidebar.classList.add('open'); });
+        closeBtn.addEventListener('click', () => { sidebar.classList.remove('open'); });
+
+        // --- Tooltip Logic ---
+        const tooltip = document.getElementById('tooltip');
+        const tooltipTitle = document.getElementById('tooltip-title');
+        const tooltipDesc = document.getElementById('tooltip-desc');
+        const tooltipBadge = document.getElementById('tooltip-badge');
+
+        let isTooltipVisible = false;
+
+        document.addEventListener('mouseover', (e) => {
+            const el = e.target.closest('.interactive-element');
+            if (el) {
+                isTooltipVisible = true;
+                tooltip.style.opacity = '1';
+                tooltipTitle.textContent = el.getAttribute('data-title');
+                tooltipDesc.textContent = el.getAttribute('data-desc');
+                
+                const color = el.getAttribute('data-color') || 'var(--text-dark)';
+                tooltipBadge.style.borderColor = color;
+                tooltipBadge.style.color = color;
+                tooltipBadge.style.backgroundColor = color + '15'; 
             }
         });
-        el.addEventListener('mouseleave', () => { tt.style.opacity='0'; tt.style.transition='opacity 0.2s, transform 0s 0.2s'; });
-    });
-    
-    // Sidebar toggle
-    const sb = document.getElementById('info-sidebar'), tb = document.getElementById('sidebar-toggle');
-    tb.addEventListener('click', () => sb.classList.toggle('open'));
-    document.getElementById('sidebar-close').addEventListener('click', () => sb.classList.remove('open'));
-    
-    // Tab switching logic
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Remove active classes
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-            // Add active class to clicked
-            btn.classList.add('active');
-            const targetId = btn.getAttribute('data-tab');
-            document.getElementById(targetId).classList.add('active');
-            
-            // Auto hide tooltip on tab switch
-            tt.style.opacity = '0';
+
+        document.addEventListener('mousemove', (e) => {
+            if (isTooltipVisible) {
+                let x = e.pageX + 20;
+                let y = e.pageY + 20;
+
+                const tooltipRect = tooltip.getBoundingClientRect();
+                if (x + tooltipRect.width > window.innerWidth) x = window.innerWidth - tooltipRect.width - 20;
+                if (y + tooltipRect.height > window.innerHeight) y = window.innerHeight - tooltipRect.height - 20;
+
+                tooltip.style.left = x + 'px';
+                tooltip.style.top = y + 'px';
+            }
         });
-    });
-});
-</script>
+
+        document.addEventListener('mouseout', (e) => {
+            const el = e.target.closest('.interactive-element');
+            if (el) {
+                isTooltipVisible = false;
+                tooltip.style.opacity = '0';
+            }
+        });
+    </script>
 </body>
 </html>

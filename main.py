@@ -8,6 +8,7 @@ import sys
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QHBoxLayout, QVBoxLayout,
     QPushButton, QLabel, QStackedWidget, QSizePolicy, QSpacerItem,
+    QFrame
 )
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QIcon, QFont
@@ -68,27 +69,38 @@ class MainWindow(QMainWindow):
         layout.setSpacing(0)
 
         # ── Sidebar ──
-        sidebar = QWidget()
+        sidebar = QFrame()
+        sidebar.setObjectName("SidebarFrame")
         sidebar.setFixedWidth(130)
-        sidebar.setStyleSheet(f"background-color: rgba(15, 23, 42, 0.88);")
+        sidebar.setStyleSheet(f"""
+            QFrame#SidebarFrame {{
+                border-image: url('assets/textures/backgrounds/sidebar.png') 0 0 0 0 stretch stretch;
+                border-right: 1px solid rgba(255, 255, 255, 0.1);
+            }}
+        """)
         sidebar_layout = QVBoxLayout(sidebar)
         sidebar_layout.setContentsMargins(0, 20, 0, 15)
         sidebar_layout.setSpacing(5)
 
         # Nav buttons
+        from PySide6.QtWidgets import QToolButton
         nav_items = [
-            ("🏠", "Home"),
-            ("📊", "Explorer"),
-            ("📚", "Learn"),
-            ("🏆", "Progress"),
-            ("🧠", "Quiz"),
-            ("🌍", "Phenomenas"),
+            ("assets/icons/ui/home.png", "Home"),
+            ("assets/icons/ui/explorer.png", "Explorer"),
+            ("assets/icons/ui/learn.png", "Learn"),
+            ("assets/icons/ui/progress.png", "Progress"),
+            ("assets/icons/ui/quiz.png", "Quiz"),
+            ("assets/icons/ui/phenomenas.png", "Phenomenas"),
         ]
 
         self.nav_buttons = []
-        for emoji, label in nav_items:
-            btn = QPushButton(f"{emoji}\n{label}")
-            btn.setFixedSize(120, 70)
+        for icon_path, label in nav_items:
+            btn = QToolButton()
+            btn.setText(label)
+            btn.setIcon(QIcon(icon_path))
+            btn.setIconSize(QSize(40, 40))
+            btn.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+            btn.setFixedSize(120, 80)
             btn.setFont(QFont("Segoe UI", 10))
             btn.setStyleSheet(self._nav_btn_style(False))
             btn.setCursor(Qt.PointingHandCursor)
@@ -163,24 +175,26 @@ class MainWindow(QMainWindow):
     def _nav_btn_style(self, selected: bool) -> str:
         if selected:
             return f"""
-                QPushButton {{
+                QToolButton {{
                     background-color: {COLORS['background']};
                     color: {COLORS['primary']};
                     border: none;
                     border-left: 3px solid {COLORS['primary']};
                     border-radius: 0px;
                     font-weight: bold;
+                    padding-top: 4px;
                 }}
             """
         else:
             return f"""
-                QPushButton {{
+                QToolButton {{
                     background-color: transparent;
                     color: {COLORS['text_secondary']};
                     border: none;
                     border-radius: 0px;
+                    padding-top: 4px;
                 }}
-                QPushButton:hover {{
+                QToolButton:hover {{
                     color: #FFFFFF;
                     background-color: rgba(255, 255, 255, 0.05);
                 }}

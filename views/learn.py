@@ -19,7 +19,7 @@ from app_logger import logger
 
 # Resolve assets directory relative to project root
 ASSETS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets")
-BACK_ICON_PATH = os.path.join(ASSETS_DIR, "back_arrow.png")
+BACK_ICON_PATH = os.path.join(ASSETS_DIR, "icons", "ui", "back_arrow.png")
 
 
 # ── Workers ──
@@ -109,9 +109,27 @@ class _BiomeCard(QFrame):
 
         color = biome.get("theme_color", COLORS["primary"])
         self.accent_color = color
+        
+        slug = biome.get("slug", "")
+        if slug == "blue_sphere":
+            self.card_bg = "assets/textures/cards/biome_ocean_card.png"
+            self.icon_path = "assets/icons/biomes/biome_ocean_icon.png"
+        elif slug == "green_lungs":
+            self.card_bg = "assets/textures/cards/biome_forest_card.png"
+            self.icon_path = "assets/icons/biomes/biome_forest_icon.png"
+        elif slug == "energy_grid":
+            self.card_bg = "assets/textures/cards/biome_energy_card.png"
+            self.icon_path = "assets/icons/biomes/biome_energy_icon.png"
+        elif slug == "circular_economy":
+            self.card_bg = "assets/textures/cards/biome_recycle_card.png"
+            self.icon_path = "assets/icons/biomes/biome_recycle_icon.png"
+        else:
+            self.card_bg = ""
+            self.icon_path = ""
 
-        self.setFixedSize(260, 310)
+        self.setFixedSize(340, 340)
         self.setCursor(Qt.PointingHandCursor)
+        self.setObjectName("BiomeCardFrame")
         self._apply_style(hovered=False)
 
         # Drop shadow for hover elevation
@@ -126,10 +144,23 @@ class _BiomeCard(QFrame):
     def _apply_style(self, hovered: bool):
         color = self.accent_color
         border = f"2px solid {color}" if hovered else f"1px solid {COLORS['border']}"
-        bg = "rgba(30, 41, 59, 0.95)" if hovered else COLORS["card_bg"]
+        
+        # Combine the texture image with a dark gradient overlay
+        if self.card_bg:
+            bg_rule = (
+                f"border-image: url('{self.card_bg}') 0 0 0 0 stretch stretch;"
+            )
+            # To add an overlay on top of border-image in PySide safely, we often need multiple drawing passes,
+            # but setting a background-color with transparency over a border-image achieves the dark overlay!
+            overlay_rule = "background-color: rgba(11, 25, 40, 0.65);"
+        else:
+            bg_rule = f"background-color: {COLORS['card_bg']};"
+            overlay_rule = ""
+
         self.setStyleSheet(f"""
-            _BiomeCard {{
-                background-color: {bg};
+            QFrame#BiomeCardFrame {{
+                {bg_rule}
+                {overlay_rule}
                 border: {border};
                 border-radius: 16px;
             }}
@@ -137,40 +168,53 @@ class _BiomeCard(QFrame):
 
     def _build_layout(self, biome):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(20, 20, 20, 16)
-        layout.setSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
+        
+        # Dark overlay container for text readability
+        overlay = QFrame()
+        overlay.setStyleSheet("QFrame { background-color: rgba(11, 31, 46, 0.65); border-radius: 16px; border: none; }")
+        col = QVBoxLayout(overlay)
+        col.setContentsMargins(20, 20, 20, 16)
+        col.setSpacing(0)
 
-        # Icon
-        icon = QLabel(biome.get("icon_name", "🌍"))
-        icon.setFont(QFont("Segoe UI Emoji", 36))
+        # Icon as QPixmap instead of Emoji
+        icon = QLabel()
         icon.setAlignment(Qt.AlignCenter)
         icon.setStyleSheet("border: none; background: transparent;")
-        layout.addWidget(icon)
+        if self.icon_path and os.path.exists(self.icon_path):
+            from PySide6.QtGui import QPixmap
+            pixmap = QPixmap(self.icon_path).scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            icon.setPixmap(pixmap)
+        else:
+            icon.setText(biome.get("icon_name", "🌍"))
+            icon.setFont(QFont("Segoe UI Emoji", 36))
+        
+        col.addWidget(icon)
 
-        layout.addSpacerItem(QSpacerItem(0, 8, QSizePolicy.Minimum, QSizePolicy.Fixed))
+        col.addSpacerItem(QSpacerItem(0, 8, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
         # Name
         name = QLabel(biome["name"])
-        name.setFont(QFont("Segoe UI", 16, QFont.Bold))
+        name.setFont(QFont("Segoe UI", 18, QFont.Bold))
         name.setAlignment(Qt.AlignCenter)
         name.setWordWrap(True)
         name.setStyleSheet(f"color: #FFFFFF; border: none; background: transparent;")
-        layout.addWidget(name)
+        col.addWidget(name)
 
-        layout.addSpacerItem(QSpacerItem(0, 6, QSizePolicy.Minimum, QSizePolicy.Fixed))
+        col.addSpacerItem(QSpacerItem(0, 6, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
         # Description (truncated)
         desc_text = biome.get("short_description", "")
-        if len(desc_text) > 90:
-            desc_text = desc_text[:87] + "..."
+        if len(desc_text) > 110:
+            desc_text = desc_text[:107] + "..."
         desc = QLabel(desc_text)
-        desc.setFont(QFont("Segoe UI", 10))
+        desc.setFont(QFont("Segoe UI", 11))
         desc.setWordWrap(True)
         desc.setAlignment(Qt.AlignCenter)
-        desc.setStyleSheet(f"color: {COLORS['text_secondary']}; border: none; background: transparent;")
-        layout.addWidget(desc)
+        desc.setStyleSheet(f"color: #E2E8F0; border: none; background: transparent;")
+        col.addWidget(desc)
 
-        layout.addSpacerItem(QSpacerItem(0, 10, QSizePolicy.Minimum, QSizePolicy.Expanding))
+        col.addSpacerItem(QSpacerItem(0, 10, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
         # Info row: difficulty + time
         info_row = QHBoxLayout()
@@ -185,7 +229,7 @@ class _BiomeCard(QFrame):
         diff_text, diff_color = diff_map.get(diff, ("🟢 Beginner", COLORS["primary"]))
 
         diff_label = QLabel(diff_text)
-        diff_label.setFont(QFont("Segoe UI", 9))
+        diff_label.setFont(QFont("Segoe UI", 10, QFont.Bold))
         diff_label.setStyleSheet(f"color: {diff_color}; border: none; background: transparent;")
         info_row.addWidget(diff_label)
 
@@ -193,13 +237,13 @@ class _BiomeCard(QFrame):
 
         mins = biome.get("estimated_minutes", 30)
         time_label = QLabel(f"⏱ {mins} min")
-        time_label.setFont(QFont("Segoe UI", 9))
+        time_label.setFont(QFont("Segoe UI", 10, QFont.Bold))
         time_label.setStyleSheet(f"color: {COLORS['text_secondary']}; border: none; background: transparent;")
         info_row.addWidget(time_label)
 
-        layout.addLayout(info_row)
+        col.addLayout(info_row)
 
-        layout.addSpacerItem(QSpacerItem(0, 6, QSizePolicy.Minimum, QSizePolicy.Fixed))
+        col.addSpacerItem(QSpacerItem(0, 6, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
         # XP preview — compute total XP available for this biome from DB lessons
         total_xp = biome.get("_total_xp", 0)
@@ -209,18 +253,18 @@ class _BiomeCard(QFrame):
         else:
             xp_text = f"⚡ {XP_VALUES['lesson_complete']} XP/lesson"
         xp_label = QLabel(xp_text)
-        xp_label.setFont(QFont("Segoe UI", 10, QFont.Bold))
+        xp_label.setFont(QFont("Segoe UI", 12, QFont.Bold))
         xp_label.setAlignment(Qt.AlignCenter)
         xp_label.setStyleSheet(f"color: {COLORS['xp_gold']}; border: none; background: transparent;")
-        layout.addWidget(xp_label)
+        col.addWidget(xp_label)
 
-        layout.addSpacerItem(QSpacerItem(0, 8, QSizePolicy.Minimum, QSizePolicy.Fixed))
+        col.addSpacerItem(QSpacerItem(0, 10, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
         # Explore button
         color = biome.get("theme_color", COLORS["primary"])
         btn = QPushButton("Explore →")
-        btn.setFixedHeight(36)
-        btn.setFont(QFont("Segoe UI", 11, QFont.Bold))
+        btn.setFixedHeight(40)
+        btn.setFont(QFont("Segoe UI", 12, QFont.Bold))
         btn.setCursor(Qt.PointingHandCursor)
         btn.setStyleSheet(f"""
             QPushButton {{
@@ -230,7 +274,9 @@ class _BiomeCard(QFrame):
             QPushButton:hover {{ opacity: 0.9; }}
         """)
         btn.clicked.connect(lambda: self.on_click(biome) if self.on_click else None)
-        layout.addWidget(btn)
+        col.addWidget(btn)
+        
+        layout.addWidget(overlay)
 
     def enterEvent(self, event):
         self._hovered = True
@@ -268,6 +314,14 @@ class LearnWidget(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self._stack)
+        
+        # Apply the glowing Learn-specific background
+        self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setStyleSheet(f"""
+            LearnWidget {{
+                border-image: url('assets/textures/backgrounds/learn_tab_bg.png') 0 0 0 0 stretch stretch;
+            }}
+        """)
 
         self._show_loading()
         self._load_biomes()
@@ -344,16 +398,22 @@ class LearnWidget(QWidget):
         # Header
         title = QLabel("🌍 Knowledge Biomes")
         title.setFont(QFont("Segoe UI", 28, QFont.Bold))
-        title.setStyleSheet("color: #FFFFFF;")
+        title.setStyleSheet("""
+            color: #FFFFFF; 
+            background: transparent;
+        """)
         layout.addWidget(title)
 
         layout.addSpacerItem(QSpacerItem(0, 5, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
-        sub = QLabel("Explore the four pillars of environmental science. Each biome is a self-contained learning world.")
-        sub.setFont(QFont("Segoe UI", 13))
-        sub.setWordWrap(True)
-        sub.setStyleSheet(f"color: {COLORS['text_secondary']};")
-        layout.addWidget(sub)
+        subtitle = QLabel("Explore the four pillars of environmental science. Each biome is a self-contained learning world.")
+        subtitle.setFont(QFont("Segoe UI", 14))
+        subtitle.setWordWrap(True)
+        subtitle.setStyleSheet("""
+            color: rgba(255, 255, 255, 0.9); 
+            background: transparent;
+        """)
+        layout.addWidget(subtitle)
 
         layout.addSpacerItem(QSpacerItem(0, 25, QSizePolicy.Minimum, QSizePolicy.Fixed))
 

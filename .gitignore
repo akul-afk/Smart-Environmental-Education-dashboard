@@ -27,3 +27,7 @@ Thumbs.db
 
 # Packaging
 *.exe
+
+.agents
+tmp_skills
+temp_skills

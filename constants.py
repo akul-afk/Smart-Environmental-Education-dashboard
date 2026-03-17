@@ -64,7 +64,7 @@ def qcolor(hex_str: str) -> QColor:
 # Global stylesheet for the dark theme
 GLOBAL_STYLESHEET = f"""
     QMainWindow {{
-        border-image: url(assets/textures/background_cybernature.png) 0 0 0 0 stretch stretch;
+        border-image: url(assets/textures/backgrounds/main_dashboard_bg.png) 0 0 0 0 stretch stretch;
         color: #FFFFFF;
         font-family: 'Segoe UI', 'Roboto', sans-serif;
     }}
